@@ -73,6 +73,26 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/reflection-chamber/reflection-chamber.routes').then(m => m.REFLECTION_ROUTES),
       },
+      {
+        path: 'chat',
+        loadChildren: () =>
+          import('./features/ai-chat/ai-chat.routes').then(m => m.AI_CHAT_ROUTES),
+      },
+      {
+        path: 'tasks',
+        loadChildren: () =>
+          import('./features/ai-tasks/ai-tasks.routes').then(m => m.AI_TASKS_ROUTES),
+      },
+      {
+        path: 'plans',
+        loadChildren: () =>
+          import('./features/ai-plans/ai-plans.routes').then(m => m.AI_PLANS_ROUTES),
+      },
+      {
+        path: 'reminders',
+        loadChildren: () =>
+          import('./features/ai-reminders/ai-reminders.routes').then(m => m.AI_REMINDERS_ROUTES),
+      },
     ],
   },
   { path: '**', redirectTo: 'spread' },

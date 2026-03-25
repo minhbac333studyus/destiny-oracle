@@ -308,6 +308,35 @@ Stores are provided at the component level (`providers: [FeatureStore]`) so they
 
 ---
 
+## AI Assistant Features (new)
+
+4 new feature pages added for the AI personal assistant:
+
+| Route | Feature | Description |
+|-------|---------|-------------|
+| `/chat` | **AI Chat** | Real-time SSE streaming chat with Claude AI. Suggestion chips, message history, auto-scroll. |
+| `/tasks` | **Tasks** | AI-generated tasks with toggleable steps. XP awarded per step, progress bars, active/completed tabs. |
+| `/plans` | **Saved Plans** | Browse saved workout/meal/routine plans. Click to view JSON content, version info, schedules. Delete support. |
+| `/reminders` | **Reminders** | Create, complete, snooze (30min), and delete reminders. Repeat types: daily/weekly/monthly. Inline create form. |
+
+All features use the existing dark theme design system, standalone components with OnPush change detection, and signal-based state management.
+
+### New API Methods in ApiService
+
+```
+chatStream(), getConversations(), deleteConversation()
+getPlans(), getPlanBySlug(), createPlan(), updatePlan(), deletePlan()
+getActiveTasks(), getCompletedTasks(), toggleTaskStep(), abandonTask()
+getReminders(), createReminder(), completeReminder(), snoozeReminder(), deleteReminder()
+getTodayInsight()
+```
+
+### Updated Navigation
+
+NavBar tabs: **Cards** | **Chat** | **Tasks** | **Goals** | **Profile**
+
+---
+
 ## What Is Pending / Not Yet Wired
 
 | Feature | Status | Notes |

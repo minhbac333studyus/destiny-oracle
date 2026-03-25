@@ -122,6 +122,118 @@ export class ApiService {
       .pipe(map(res => res.data));
   }
 
+  // ── AI Chat ──────────────────────────────────────────────────────────────
+
+  chatStream(message: string, conversationId?: string): Observable<string> {
+    return new Observable(observer => {
+      const body = JSON.stringify({ message, conversationId: conversationId || null });
+      fetch(`${this.baseUrl}/api/v1/chat/stream`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-User-Id': this.userId },
+        body,
+      }).then(async res => {
+        const reader = res.body?.getReader();
+        const decoder = new TextDecoder();
+        if (!reader) { observer.complete(); return; }
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const text = decoder.decode(value, { stream: true });
+          const lines = text.split('\n').filter(l => l.startsWith('data:'));
+          for (const line of lines) {
+            observer.next(line.replace('data:', ''));
+          }
+        }
+        observer.complete();
+      }).catch(err => observer.error(err));
+    });
+  }
+
+  getConversations(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/api/v1/chat/conversations`, { headers: this.headers() });
+  }
+
+  getConversation(convId: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/api/v1/chat/conversations/${convId}`, { headers: this.headers() });
+  }
+
+  deleteConversation(convId: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/api/v1/chat/conversations/${convId}`, { headers: this.headers() });
+  }
+
+  // ── Saved Plans ─────────────────────────────────────────────────────────
+
+  getPlans(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/api/v1/plans`, { headers: this.headers() });
+  }
+
+  getPlan(planId: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/api/v1/plans/${planId}`, { headers: this.headers() });
+  }
+
+  getPlanBySlug(slug: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/api/v1/plans/slug/${slug}`, { headers: this.headers() });
+  }
+
+  createPlan(plan: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/api/v1/plans`, plan, { headers: this.headers() });
+  }
+
+  updatePlan(planId: string, update: any): Observable<any> {
+    return this.http.put<any>(`${this.baseUrl}/api/v1/plans/${planId}`, update, { headers: this.headers() });
+  }
+
+  deletePlan(planId: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/api/v1/plans/${planId}`, { headers: this.headers() });
+  }
+
+  // ── Tasks ───────────────────────────────────────────────────────────────
+
+  getActiveTasks(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/api/v1/tasks/active`, { headers: this.headers() });
+  }
+
+  getCompletedTasks(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/api/v1/tasks/completed`, { headers: this.headers() });
+  }
+
+  toggleTaskStep(stepId: string): Observable<any> {
+    return this.http.patch<any>(`${this.baseUrl}/api/v1/tasks/steps/${stepId}/toggle`, {}, { headers: this.headers() });
+  }
+
+  abandonTask(taskId: string): Observable<void> {
+    return this.http.patch<void>(`${this.baseUrl}/api/v1/tasks/${taskId}/abandon`, {}, { headers: this.headers() });
+  }
+
+  // ── Reminders ───────────────────────────────────────────────────────────
+
+  getReminders(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/api/v1/reminders`, { headers: this.headers() });
+  }
+
+  createReminder(reminder: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/api/v1/reminders`, reminder, { headers: this.headers() });
+  }
+
+  completeReminder(id: string): Observable<any> {
+    return this.http.patch<any>(`${this.baseUrl}/api/v1/reminders/${id}/complete`, {}, { headers: this.headers() });
+  }
+
+  snoozeReminder(id: string, minutes: number): Observable<any> {
+    return this.http.patch<any>(`${this.baseUrl}/api/v1/reminders/${id}/snooze`, { minutes }, { headers: this.headers() });
+  }
+
+  deleteReminder(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/api/v1/reminders/${id}`, { headers: this.headers() });
+  }
+
+  // ── Insights ────────────────────────────────────────────────────────────
+
+  getTodayInsight(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/api/v1/insights/today`, { headers: this.headers() })
+      .pipe(catchError(() => of(null)));
+  }
+
   // ── Mappers ────────────────────────────────────────────────────────────────
 
   private mapToSpreadCard(c: any): SpreadCardSummary {

@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { NgClass } from '@angular/common';
 
-export type NavTab = 'today' | 'spread' | 'goals' | 'profile';
+export type NavTab = 'today' | 'spread' | 'chat' | 'tasks' | 'goals' | 'profile';
 
 @Component({
   selector: 'app-nav-bar',
@@ -23,8 +23,9 @@ export class NavBarComponent {
   @Output() tabChanged = new EventEmitter<NavTab>();
 
   readonly tabs: { id: NavTab; label: string }[] = [
-    { id: 'today',   label: 'Today'   },
-    { id: 'spread',  label: 'Spread'  },
+    { id: 'spread',  label: 'Cards'   },
+    { id: 'chat',    label: 'Chat'    },
+    { id: 'tasks',   label: 'Tasks'   },
     { id: 'goals',   label: 'Goals'   },
     { id: 'profile', label: 'Profile' },
   ];
