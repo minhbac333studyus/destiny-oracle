@@ -1,0 +1,97 @@
+<app-nav-bar
+  activeTab="spread"
+  [streakDays]="store.totalStreak()"
+  (tabChanged)="onTabChanged($event)" />
+
+<main class="spread-main">
+  <header class="spread-header">
+    <div>
+      <h1 class="spread-title">THE SPREAD</h1>
+      <p class="spread-sub">Your {{ store.cards().length }} cards</p>
+    </div>
+    <app-oracle-button variant="ghost" (click)="onTabChanged('today')">
+      + Check In
+    </app-oracle-button>
+  </header>
+
+  <app-quick-input />
+
+  <!-- Inline Add Card form -->
+  @if (showAddForm()) {
+    <div class="add-form-panel">
+      <div class="add-form-header">
+        <span class="add-form-icon">✨</span>
+        <h3 class="add-form-title">NEW ORACLE CARD</h3>
+        <button class="add-form-close" (click)="onCancelAdd()">✕</button>
+      </div>
+
+      <form [formGroup]="addForm" (ngSubmit)="onSubmitCard()" class="add-form-body">
+
+        <!-- Icon row + Label on same line -->
+        <div class="add-form-row">
+          <div class="add-form-field add-form-field--label">
+            <label class="add-form-label">ASPECT NAME</label>
+            <input formControlName="label" type="text"
+                   class="add-form-input"
+                   placeholder="e.g. My Health, My Startup…" />
+            @if (labelCtrl.invalid && labelCtrl.touched) {
+              <span class="add-form-error">Name is required</span>
+            }
+          </div>
+        </div>
+
+        <!-- Icon picker -->
+        <div class="add-form-field">
+          <label class="add-form-label">ICON</label>
+          <div class="icon-grid">
+            @for (icon of iconOptions; track icon) {
+              <button type="button" class="icon-btn"
+                      [class.selected]="selectedIcon() === icon"
+                      (click)="selectIcon(icon)">{{ icon }}</button>
+            }
+          </div>
+        </div>
+
+        <!-- Fear text -->
+        <div class="add-form-field">
+          <label class="add-form-label">YOUR FEARED FUTURE</label>
+          <textarea formControlName="fearText" rows="3"
+                    class="add-form-input add-form-textarea"
+                    placeholder="What does life look like in 10 years if nothing changes?"></textarea>
+          @if (fearCtrl.invalid && fearCtrl.touched) {
+            <span class="add-form-error">Please describe your fear (20+ characters)</span>
+          }
+        </div>
+
+        <div class="add-form-actions">
+          <app-oracle-button variant="ghost" type="button" (click)="onCancelAdd()">
+            Cancel
+          </app-oracle-button>
+          <app-oracle-button type="submit" [fullWidth]="false">
+            @if (submitting()) { Creating… } @else { CREATE CARD }
+          </app-oracle-button>
+        </div>
+      </form>
+    </div>
+  }
+
+  <!-- Real-time generation progress panel -->
+  @if (generatingCardId()) {
+    <app-generation-progress
+      [cardId]="generatingCardId()!"
+      [cardLabel]="generatingCardLabel()"
+      (completed)="onGenerationCompleted()"
+      (failed)="onGenerationFailed($event)"
+      (dismissed)="onGenerationDismissed()" />
+  }
+
+  @if (store.error()) {
+    <p class="error-msg">{{ store.error() }}</p>
+  } @else {
+    <app-spread-grid
+      [cards]="store.cards()"
+      [loading]="store.loading()"
+      (cardSelected)="onCardSelected($event)"
+      (addCardClicked)="onAddCard()" />
+  }
+</main>

@@ -1,0 +1,115 @@
+// ══════════════════════════════════════════════════════════════════════════
+// RADIANCE FX — golden sparks, ember particles, warm bloom
+// Used by card-visual.component.scss via @use 'cv-radiance'
+// ══════════════════════════════════════════════════════════════════════════
+
+// ─── Base radiance (behind card art) ──────────────────────────────────────
+
+.fx-radiance {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+// 8 directional golden sparks
+.spark {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 12px var(--gold), 0 0 24px rgba(255, 179, 71, 0.5);
+  animation: spark-burst 2.5s ease-out infinite;
+
+  &:nth-child(1) { left: 50%; top: 50%; animation-delay: 0.0s; --spark-tx: 85px;  --spark-ty: 85px;  }
+  &:nth-child(2) { left: 50%; top: 50%; animation-delay: 0.3s; --spark-tx: 0px;   --spark-ty: 120px; }
+  &:nth-child(3) { left: 50%; top: 50%; animation-delay: 0.6s; --spark-tx: -85px; --spark-ty: 85px;  }
+  &:nth-child(4) { left: 50%; top: 50%; animation-delay: 0.9s; --spark-tx: -120px;--spark-ty: 0px;   }
+  &:nth-child(5) { left: 50%; top: 50%; animation-delay: 1.2s; --spark-tx: -85px; --spark-ty: -85px; }
+  &:nth-child(6) { left: 50%; top: 50%; animation-delay: 1.5s; --spark-tx: 0px;   --spark-ty: -120px;}
+  &:nth-child(7) { left: 50%; top: 50%; animation-delay: 1.8s; --spark-tx: 85px;  --spark-ty: -85px; }
+  &:nth-child(8) { left: 50%; top: 50%; animation-delay: 2.1s; --spark-tx: 120px; --spark-ty: 0px;   }
+}
+
+@keyframes spark-burst {
+  0%  { transform: translate(0, 0) scale(1); opacity: 1; }
+  70% { transform: translate(var(--spark-tx, 80px), var(--spark-ty, -60px)) scale(0.5); opacity: 0.6; }
+  100%{ transform: translate(var(--spark-tx, 80px), var(--spark-ty, -60px)) scale(0); opacity: 0; }
+}
+
+// Radiance breathing glow
+.radiance-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200px;
+  height: 200px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(255, 179, 71, 0.25) 0%, transparent 65%);
+  animation: radiance-breathe 3s ease-in-out infinite;
+}
+
+@keyframes radiance-breathe {
+  0%, 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.4; }
+  50%      { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+}
+
+// ─── Radiance overlay (renders above card art image) ──────────────────────
+
+.fx-radiance-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+// Top warm golden bloom
+.radiance-bloom {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 130%;
+  height: 65%;
+  background: radial-gradient(ellipse at center,
+    rgba(240, 192, 96, 0.48) 0%,
+    rgba(255, 210, 80, 0.20) 38%,
+    transparent 70%);
+  filter: blur(22px);
+  animation: radiance-bloom-pulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes radiance-bloom-pulse {
+  0%   { opacity: 0.60; transform: translateX(-50%) scale(0.88); }
+  100% { opacity: 1.00; transform: translateX(-50%) scale(1.18); }
+}
+
+// Rising ember particles — 12 scattered
+.ember {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(240, 192, 96, 0.95);
+  box-shadow: 0 0 6px rgba(240, 192, 96, 0.90), 0 0 14px rgba(255, 150, 30, 0.50);
+  animation: ember-rise linear infinite;
+}
+
+@for $i from 1 through 12 {
+  .ember--#{$i} {
+    left:               (($i * 8) - 4) * 1%;
+    bottom:             (($i % 5) * 9 + 2) * 1%;
+    width:              (2 + ($i % 3)) * 1px;
+    height:             (2 + ($i % 3)) * 1px;
+    animation-duration: (2.8 + ($i % 5) * 0.7) * 1s;
+    animation-delay:    ($i * -0.55) * 1s;
+    --em-tx:            ((($i % 3) - 1) * 30 + ($i % 2) * 20) * 1px;
+    opacity:            0.70 + ($i % 3) * 0.10;
+  }
+}
+
+@keyframes ember-rise {
+  0%   { transform: translateY(0);      opacity: 0; }
+  8%   { opacity: 1; }
+  100% { transform: translateY(-280px); opacity: 0; }
+}

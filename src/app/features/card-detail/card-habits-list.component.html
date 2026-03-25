@@ -1,0 +1,23 @@
+<div class="habits-list">
+  <h3 class="habits-title">TODAY'S HABITS</h3>
+
+  @for (habit of habits; track habit.id) {
+    <button
+      class="habit-row"
+      [ngClass]="{ done: habit.completedToday }"
+      (click)="habitToggled.emit(habit.id)">
+      <span class="habit-check">
+        {{ habit.completedToday ? '✓' : '○' }}
+      </span>
+      <span class="habit-text">{{ habit.text }}</span>
+      @if (habit.streakDays > 0) {
+        <span class="habit-streak">🔥 {{ habit.streakDays }}</span>
+      }
+      <span class="habit-freq">{{ habit.frequency }}</span>
+    </button>
+  }
+
+  @if (habits.length === 0) {
+    <p class="habits-empty">No habits set. Add some to start tracking.</p>
+  }
+</div>

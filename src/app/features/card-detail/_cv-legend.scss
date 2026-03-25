@@ -1,0 +1,182 @@
+// ══════════════════════════════════════════════════════════════════════════
+// LEGEND FX — sakura petals, celestial halo, pink bloom and light rays
+// Used by card-visual.component.scss via @use 'cv-legend'
+// ══════════════════════════════════════════════════════════════════════════
+
+// ─── Base legend (behind card art) ────────────────────────────────────────
+
+.fx-legend {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+// Falling sakura petals — 10 pieces
+.sakura {
+  position: absolute;
+  background: var(--rose);
+  border-radius: 50% 0 50% 0;
+  opacity: 0;
+  filter: blur(0.5px);
+  box-shadow: 0 0 6px rgba(244, 114, 182, 0.5);
+
+  @for $i from 1 through 10 {
+    &:nth-child(#{$i}) {
+      left: #{($i * 10) - 5}#{'%'};
+      top: -10px;
+      animation: sakura-fall #{3 + ($i % 4)}s ease-in-out infinite;
+      animation-delay: #{$i * 0.5}s;
+      width: #{6 + ($i % 3) * 3}px;
+      height: #{6 + ($i % 3) * 3}px;
+    }
+  }
+}
+
+@keyframes sakura-fall {
+  0%   { transform: translateY(0) rotate(0deg) translateX(0); opacity: 0; }
+  10%  { opacity: 0.8; }
+  50%  { transform: translateY(200px) rotate(180deg) translateX(30px); opacity: 0.6; }
+  100% { transform: translateY(440px) rotate(360deg) translateX(-20px); opacity: 0; }
+}
+
+// Rotating celestial halo
+.legend-halo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 280px;
+  height: 280px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(244, 114, 182, 0.15) 0%, transparent 55%);
+  border: 1px solid rgba(244, 114, 182, 0.1);
+  animation: legend-rotate 20s linear infinite;
+}
+
+@keyframes legend-rotate {
+  0%   { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+// ─── Legend overlay (renders above card art image) ────────────────────────
+
+.fx-legend-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+// Top pink bloom
+.legend-bloom {
+  position: absolute;
+  top: -20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140%;
+  height: 70%;
+  background: radial-gradient(ellipse at top,
+    rgba(244, 114, 182, 0.65) 0%,
+    rgba(216, 130, 240, 0.30) 38%,
+    transparent 72%);
+  filter: blur(24px);
+  animation: legend-bloom-pulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes legend-bloom-pulse {
+  0%   { opacity: 0.70; transform: translateX(-50%) scale(0.92); }
+  100% { opacity: 1.00; transform: translateX(-50%) scale(1.14); }
+}
+
+// Pink sun rays
+.legend-ray {
+  position: absolute;
+  top: -5%;
+  height: 115%;
+  background: linear-gradient(180deg,
+    rgba(255, 200, 230, 0.55) 0%,
+    rgba(244, 114, 182, 0.18) 50%,
+    transparent 85%);
+  filter: blur(8px);
+  transform-origin: top center;
+  animation: legend-ray-shimmer ease-in-out infinite alternate;
+}
+
+.legend-ray--1 { left: 10%; width: 50px; transform: rotate(-16deg); animation-duration: 5.5s; animation-delay: 0s; }
+.legend-ray--2 { left: 32%; width: 65px; transform: rotate(-5deg);  animation-duration: 7.0s; animation-delay: -1.5s; opacity: 0.85; }
+.legend-ray--3 { left: 56%; width: 55px; transform: rotate(6deg);   animation-duration: 6.0s; animation-delay: -3s; }
+.legend-ray--4 { left: 76%; width: 42px; transform: rotate(18deg);  animation-duration: 8.0s; animation-delay: -2s; opacity: 0.70; }
+
+@keyframes legend-ray-shimmer {
+  0%   { opacity: 0.50; }
+  50%  { opacity: 1.00; }
+  100% { opacity: 0.35; }
+}
+
+// Drifting shimmer wash
+.legend-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 200, 230, 0.08) 0%,
+    rgba(216, 160, 255, 0.14) 35%,
+    rgba(255, 220, 180, 0.08) 65%,
+    rgba(180, 220, 255, 0.10) 100%
+  );
+  animation: legend-shimmer-drift 8s ease-in-out infinite alternate;
+}
+
+@keyframes legend-shimmer-drift {
+  0%   { opacity: 0.55; transform: translateX(-4%); }
+  100% { opacity: 1.00; transform: translateX(4%); }
+}
+
+// Falling overlay petals (15 pieces, wind-drifted)
+.ovl-petal {
+  position: absolute;
+  border-radius: 50% 0 50% 0;
+  background: rgba(255, 150, 200, 0.95);
+  box-shadow:
+    0 0 8px  rgba(255, 100, 180, 0.90),
+    0 0 18px rgba(244, 114, 182, 0.60),
+    0 0 30px rgba(216, 90,  180, 0.30);
+  animation: ovl-petal-fall ease-in-out infinite;
+}
+
+@for $i from 1 through 15 {
+  .ovl-petal--#{$i} {
+    left:               (($i * 7) - 4) * 1%;
+    top:                -16px;
+    width:              (6 + ($i % 4) * 3) * 1px;
+    height:             (6 + ($i % 4) * 3) * 1px;
+    animation-duration: (3.5 + ($i % 5) * 0.7) * 1s;
+    animation-delay:    ($i * -0.48) * 1s;
+    // Assign wind direction by cycle of 3
+    @if $i % 3 == 1      { animation-name: ovl-petal-fall-l; }
+    @else if $i % 3 == 2 { animation-name: ovl-petal-fall-r; }
+    @else                 { animation-name: ovl-petal-fall-c; }
+  }
+}
+
+@keyframes ovl-petal-fall-l {
+  0%   { transform: translateY(0)     translateX(0)    rotate(0deg);   opacity: 0; }
+  10%  { opacity: 1; }
+  55%  { opacity: 0.65; }
+  100% { transform: translateY(600px) translateX(-55px) rotate(270deg); opacity: 0; }
+}
+@keyframes ovl-petal-fall-r {
+  0%   { transform: translateY(0)     translateX(0)    rotate(0deg);   opacity: 0; }
+  10%  { opacity: 1; }
+  55%  { opacity: 0.65; }
+  100% { transform: translateY(600px) translateX(50px)  rotate(320deg); opacity: 0; }
+}
+@keyframes ovl-petal-fall-c {
+  0%   { transform: translateY(0)     translateX(0)    rotate(0deg);   opacity: 0; }
+  10%  { opacity: 1; }
+  40%  { transform: translateY(220px) translateX(22px)  rotate(110deg); }
+  55%  { opacity: 0.65; }
+  100% { transform: translateY(600px) translateX(-18px) rotate(300deg); opacity: 0; }
+}

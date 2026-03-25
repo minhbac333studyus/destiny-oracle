@@ -1,0 +1,38 @@
+<div class="fear-wrap">
+  <div class="progress-header">
+    <div class="step-dots">
+      @for (i of indexRange; track $index) {
+        <span class="dot" [class.active]="$index === currentIndex"></span>
+      }
+    </div>
+    <span class="progress-label">{{ currentIndex + 1 }} / {{ totalCount }}</span>
+  </div>
+
+  <div class="aspect-header">
+    <span class="aspect-icon">{{ _aspect.aspectIcon }}</span>
+    <div>
+      <h2 class="aspect-label">{{ _aspect.aspectLabel }}</h2>
+      <p class="aspect-prompt">What does your life look like in 10 years if nothing changes?</p>
+    </div>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onNext()" class="fear-form">
+    <div class="field">
+      <textarea
+        formControlName="fearText"
+        rows="5"
+        placeholder="Be honest. Describe the version of you that did nothing. The more specific, the more powerful the card…"
+      ></textarea>
+      @if (fearControl.invalid && fearControl.touched) {
+        <span class="field-error">Please describe your fear (at least 20 characters)</span>
+      }
+    </div>
+
+    <div class="step-nav">
+      <app-oracle-button variant="ghost" type="button" (click)="back.emit()">Back</app-oracle-button>
+      <app-oracle-button type="submit" [fullWidth]="true">
+        {{ currentIndex < totalCount - 1 ? 'NEXT ASPECT →' : 'SEE MY ORACLE' }}
+      </app-oracle-button>
+    </div>
+  </form>
+</div>

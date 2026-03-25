@@ -1,0 +1,31 @@
+<div class="stats-panel">
+  <div class="stage-progress">
+    <app-progress-ring
+      [percent]="stats.stageProgressPercent"
+      [size]="64"
+      [color]="stageColor" />
+    <div class="stage-progress-text">
+      <span class="stage-progress-pct">{{ stats.stageProgressPercent }}%</span>
+      <span class="stage-progress-label">to next stage</span>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat">
+      <span class="stat-value">{{ stats.currentStreak }}</span>
+      <span class="stat-label">Current Streak</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">{{ stats.longestStreak }}</span>
+      <span class="stat-label">Longest Streak</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">{{ stats.totalCheckIns }}</span>
+      <span class="stat-label">Total Check-ins</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">{{ stats.daysAtCurrentStage }}</span>
+      <span class="stat-label">Days at Stage</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,39 @@
+<div class="evolved-page">
+  <div class="evolved-particles">
+    @for (p of [1,2,3,4,5,6,7,8]; track p) {
+      <span class="evo-particle" [style.--i]="p"></span>
+    }
+  </div>
+
+  <div class="evolved-content">
+    <div class="evolved-icon">⚡</div>
+    <p class="evolved-label">CARD EVOLVED</p>
+    <h1 class="evolved-title">Your card has awakened</h1>
+
+    <div class="stage-transition">
+      <div class="stage-from">
+        <app-stage-badge [stage]="fromStage" />
+        <span class="stage-from-label">{{ fromLabel }}</span>
+      </div>
+      <span class="transition-arrow">→</span>
+      <div class="stage-to">
+        <app-stage-badge [stage]="toStage" />
+        <span class="stage-to-label">{{ toLabel }}</span>
+      </div>
+    </div>
+
+    <p class="evolved-message">
+      Real action changes real things. Your card feels the shift.
+      The storm is breaking.
+    </p>
+
+    <div class="evolved-actions">
+      <app-oracle-button [fullWidth]="true" (click)="onContinue()">
+        VIEW MY CARD
+      </app-oracle-button>
+      <app-oracle-button variant="ghost" [fullWidth]="true" (click)="onSpread()">
+        Back to Spread
+      </app-oracle-button>
+    </div>
+  </div>
+</div>

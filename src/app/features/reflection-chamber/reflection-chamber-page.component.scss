@@ -1,0 +1,30 @@
+.chamber-wrap {
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px 24px;
+  gap: 20px;
+}
+
+.chamber-icon {
+  font-size: 64px;
+  animation: float 4s ease-in-out infinite;
+}
+
+.chamber-title {
+  font-family: 'Cinzel', serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--gold);
+}
+
+.chamber-sub {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.8;
+  max-width: 360px;
+}

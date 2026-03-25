@@ -1,0 +1,175 @@
+// ══════════════════════════════════════════════════════════════════════════
+// CARD VISUAL — stage glow, card structure, and stage FX
+//
+// Per-stage FX content is split into separate partials (same directory):
+//   _cv-storm.scss     — rain, lightning, thunder
+//   _cv-fog.scss       — fog wisps, mist layers
+//   _cv-clearing.scss  — golden light rays, dust motes
+//   _cv-aura.scss      — energy rings, purple rays, glitter
+//   _cv-radiance.scss  — embers, golden bloom, sparks
+//   _cv-legend.scss    — sakura petals, celestial halo
+//   _cv-shared.scss    — cracks, lens flares, glitter, near-evolved pulse
+//
+// To change stage glow colors and animation timings:
+//   → edit src/styles/_stage-config.scss
+// ══════════════════════════════════════════════════════════════════════════
+
+// Stage-config provides the card-frame-glows mixin.
+// Resolved from src/styles/ via stylePreprocessorOptions.includePaths.
+@use 'stage-config' as sc;
+
+// Per-stage FX partials — each contains the effects for one stage
+@use 'cv-storm';
+@use 'cv-fog';
+@use 'cv-clearing';
+@use 'cv-aura';
+@use 'cv-radiance';
+@use 'cv-legend';
+@use 'cv-shared';
+
+// ── Host & card frame ─────────────────────────────────────────────────────
+
+:host {
+  display: block;
+  width: min(85%, 480px);
+  margin: 0 auto;
+}
+
+.card-frame {
+  position: relative;
+  width: min(85%, 480px);
+  aspect-ratio: 9 / 16;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(var(--stage-rgb, 99, 102, 241), 0.30);
+  // Default glow — stages without a custom mixin rule fall through to this
+  box-shadow:
+    0 0 60px rgba(var(--stage-rgb, 99, 102, 241), 0.30),
+    0 16px 48px rgba(0, 0, 0, 0.6);
+  transition: box-shadow 0.4s;
+  background: var(--glass);
+  backdrop-filter: blur(16px);
+
+  // Per-stage glow + animation — all values in _stage-config.scss.
+  // To change storm/fog/aura glow: edit $cv-storm-*, $cv-fog-*, $cv-aura-* there.
+  @include sc.card-frame-glows;
+}
+
+// ── FX layer — base container for all stage backgrounds/overlays ──────────
+
+.fx-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+// ── Card art (z-index 1 — above fx-layer, below overlays) ────────────────
+
+.card-art {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.card-art-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(var(--stage-rgb, 99, 102, 241), 0.30) 0%,
+    transparent 65%
+  );
+}
+
+.card-art-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  z-index: 1;
+}
+
+// Tarot frame overlay — sits on top of card image
+.card-frame-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  z-index: 4;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.7;
+}
+
+// Stage icon (shown when no card image yet)
+.card-art-icon {
+  font-size: 100px;
+  z-index: 1;
+  filter: drop-shadow(0 0 28px rgba(var(--stage-rgb, 99, 102, 241), 0.9));
+  animation: float 4s ease-in-out infinite;
+
+  .cracked & {
+    filter: drop-shadow(0 0 20px rgba(255, 60, 60, 0.6)) grayscale(0.5);
+  }
+}
+
+// Stage-colored drifting particles
+.card-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--stage-color, var(--accent));
+  opacity: 0;
+  box-shadow: 0 0 8px var(--stage-color, var(--accent));
+
+  &:nth-child(1) { left: 26%; top: 30%; animation: particle-drift 1.9s ease-out infinite; animation-delay: 0.3s; }
+  &:nth-child(2) { left: 42%; top: 40%; animation: particle-drift 2.3s ease-out infinite; animation-delay: 0.6s; }
+  &:nth-child(3) { left: 58%; top: 50%; animation: particle-drift 2.7s ease-out infinite; animation-delay: 0.9s; }
+  &:nth-child(4) { left: 74%; top: 60%; animation: particle-drift 3.1s ease-out infinite; animation-delay: 1.2s; }
+  &:nth-child(5) { left: 90%; top: 70%; animation: particle-drift 3.5s ease-out infinite; animation-delay: 1.5s; }
+}
+
+// ── Card nameplate ────────────────────────────────────────────────────────
+
+.card-nameplate {
+  padding: 20px 4px 0;
+  margin-top: 4px;
+}
+
+.card-stage-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--stage-color, var(--muted));
+  display: block;
+  margin-bottom: 6px;
+}
+
+.card-title {
+  font-family: 'Cinzel', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.card-tagline {
+  font-size: 14px;
+  color: var(--muted);
+  margin-top: 6px;
+  font-style: italic;
+}

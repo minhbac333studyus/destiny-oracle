@@ -1,0 +1,25 @@
+// ══════════════════════════════════════════════════════════════════════════
+// TILE AURA FX — mini aura rings for card tile grid
+// Used by spread-card-tile.component.scss via @use 'tile-aura'
+// ══════════════════════════════════════════════════════════════════════════
+
+// ─── Aura background (inside tile-fx, z-index 0, behind card art) ─────────
+
+.mini-aura-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1.5px solid rgba(168, 85, 247, 0.35);
+  animation: mini-aura-expand 3s ease-out infinite;
+}
+
+.mini-aura-ring--2 { animation-delay: 1.5s; }
+
+@keyframes mini-aura-expand {
+  0%   { width: 40px; height: 40px; opacity: 0.7; }
+  100% { width: 200px; height: 200px; opacity: 0; }
+}

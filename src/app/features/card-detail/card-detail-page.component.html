@@ -1,0 +1,488 @@
+<app-nav-bar activeTab="spread" (tabChanged)="onTabChanged($event)" />
+
+@if (store.loading()) {
+  <app-loading-oracle />
+} @else if (store.error()) {
+  <p class="error-msg">{{ store.error() }}</p>
+} @else if (store.card()) {
+  <div class="detail-layout">
+
+    <!-- Left: stage nav -->
+    <aside class="detail-aside">
+      <div class="stage-nav-scroll-wrap">
+        <app-card-stage-nav
+          [currentStage]="store.card()!.stats.currentStage"
+          [viewedStage]="viewStage()"
+          (stageSelected)="onStageSelected($event)" />
+      </div>
+    </aside>
+
+    <!-- Scrollable body (transparent on desktop, scroll container on mobile) -->
+    <div class="detail-body">
+
+      <!-- Center: card visual -->
+      <div class="detail-center">
+        <app-card-visual
+          [stage]="displayStage()"
+          [title]="displayContent().title"
+          [tagline]="displayContent().tagline"
+          [aspectKey]="store.card()!.aspectKey"
+          [imageUrl]="displayImageUrl()"
+          [progressPercent]="store.card()!.stats.stageProgressPercent" />
+
+        <div class="card-lore">
+          <p>{{ displayContent().lore }}</p>
+        </div>
+
+        <app-oracle-button variant="ghost" [fullWidth]="true" (click)="onEditDream()">
+          ✏ Edit My Card
+        </app-oracle-button>
+
+        <app-oracle-button variant="ghost" [fullWidth]="true" [disabled]="store.regenLoading()" (click)="onRegenStageImage()">
+          {{ store.regenLoading() ? '⏳ Generating…' : '🎨 Regen ' + displayStage() + ' image' }}
+        </app-oracle-button>
+      </div>
+
+      <!-- Right: stats + habits -->
+      <aside class="detail-panel">
+        <div class="panel-header">
+          <h1 class="panel-aspect">{{ store.card()!.aspectLabel }}</h1>
+          <p class="panel-fear-text">{{ store.card()!.fearOriginal }}</p>
+        </div>
+
+        <app-card-stats-panel [stats]="store.card()!.stats" />
+
+        <app-card-habits-list
+          [habits]="store.card()!.habits"
+          (habitToggled)="store.toggleHabit($event)" />
+
+        @if (store.nextStage()) {
+          <div class="next-stage-hint">
+            Next: <strong>{{ store.nextStage() }}</strong> — keep going
+          </div>
+        }
+
+        <app-oracle-button variant="ghost" [fullWidth]="true" (click)="onDeleteCard()" class="delete-btn">
+          🗑 Delete Card
+        </app-oracle-button>
+      </aside>
+
+    </div>
+
+  </div>
+
+  <!-- Dev-only debug tools -->
+  @if (isDevMode) {
+    <div class="debug-buttons">
+      <button class="debug-toggle" (click)="onDebugToggle()">🛠</button>
+      <button class="debug-toggle debug-toggle--info" (click)="onDebugInfoToggle()">📋</button>
+    </div>
+
+    @if (debugOpen()) {
+      <div class="debug-bar">
+        <div class="debug-row">
+          <label class="debug-label">Progress</label>
+          <input type="range" min="0" max="100" step="1"
+                 [value]="debugPercent()"
+                 (input)="onDebugPercentChange($event)"
+                 class="debug-slider" />
+          <span class="debug-value">{{ debugPercent() }}%</span>
+        </div>
+        <div class="debug-row">
+          <label class="debug-label">Stage</label>
+          <div class="debug-stages">
+            @for (s of debugStages; track s) {
+              <button class="debug-stage-btn"
+                      [class.active]="store.card()?.stats?.currentStage === s"
+                      (click)="onDebugStageChange(s)">
+                {{ debugLabels[s] }}
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (debugInfoOpen() && store.card()) {
+      <div class="debug-info-overlay" (click)="onDebugInfoToggle()">
+        <div class="debug-info-panel" (click)="$event.stopPropagation()">
+          <div class="debug-info-header">
+            <h3>Card Debug Info</h3>
+            <button class="debug-info-close" (click)="onDebugInfoToggle()">✕</button>
+          </div>
+          <div class="debug-info-body">
+
+            <section class="dinfo-section">
+              <h4>Identity</h4>
+              <div class="dinfo-grid">
+                <span class="dinfo-key">ID</span>
+                <span class="dinfo-val dinfo-mono">{{ store.card()!.id }}</span>
+                <span class="dinfo-key">Aspect Key</span>
+                <span class="dinfo-val dinfo-mono">{{ store.card()!.aspectKey }}</span>
+                <span class="dinfo-key">Aspect Label</span>
+                <span class="dinfo-val">{{ store.card()!.aspectLabel }}</span>
+                <span class="dinfo-key">Card Title</span>
+                <span class="dinfo-val">{{ store.card()!.cardTitle }}</span>
+                <span class="dinfo-key">Tagline</span>
+                <span class="dinfo-val">{{ store.card()!.cardTagline }}</span>
+              </div>
+            </section>
+
+            <section class="dinfo-section">
+              <h4>User Input</h4>
+              <div class="dinfo-block">
+                <span class="dinfo-key">Fear (original)</span>
+                <p class="dinfo-text">{{ store.card()!.fearOriginal || '—' }}</p>
+              </div>
+              <div class="dinfo-block">
+                <span class="dinfo-key">Dream (original)</span>
+                <p class="dinfo-text">{{ store.card()!.dreamOriginal || '—' }}</p>
+              </div>
+            </section>
+
+            <section class="dinfo-section">
+              <h4>Stats</h4>
+              <div class="dinfo-grid">
+                <span class="dinfo-key">Stage</span>
+                <span class="dinfo-val">{{ store.card()!.stats.currentStage }}</span>
+                <span class="dinfo-key">Progress</span>
+                <span class="dinfo-val">{{ store.card()!.stats.stageProgressPercent }}%</span>
+                <span class="dinfo-key">Current Streak</span>
+                <span class="dinfo-val">{{ store.card()!.stats.currentStreak }}</span>
+                <span class="dinfo-key">Longest Streak</span>
+                <span class="dinfo-val">{{ store.card()!.stats.longestStreak }}</span>
+                <span class="dinfo-key">Total Check-ins</span>
+                <span class="dinfo-val">{{ store.card()!.stats.totalCheckIns }}</span>
+                <span class="dinfo-key">Days at Stage</span>
+                <span class="dinfo-val">{{ store.card()!.stats.daysAtCurrentStage }}</span>
+              </div>
+            </section>
+
+            <section class="dinfo-section">
+              <h4>Lore Text</h4>
+              <p class="dinfo-text">{{ store.card()!.loreText || '—' }}</p>
+            </section>
+
+            <section class="dinfo-section">
+              <h4>Stage Content</h4>
+              @for (s of debugStages; track s) {
+                @if (store.card()!.stageContent?.[s]) {
+                  <div class="dinfo-stage-block">
+                    <span class="dinfo-stage-label">{{ debugLabels[s] }}</span>
+                    <div class="dinfo-grid">
+                      <span class="dinfo-key">Title</span>
+                      <span class="dinfo-val">{{ store.card()!.stageContent![s]!.title }}</span>
+                      <span class="dinfo-key">Tagline</span>
+                      <span class="dinfo-val">{{ store.card()!.stageContent![s]!.tagline }}</span>
+                    </div>
+                    @if (store.card()!.stageContent![s]!.actionScene) {
+                      <div class="dinfo-block">
+                        <span class="dinfo-key">Action Scene</span>
+                        <p class="dinfo-text dinfo-small dinfo-mono dinfo-highlight-action">{{ store.card()!.stageContent![s]!.actionScene }}</p>
+                      </div>
+                    }
+                    <div class="dinfo-block">
+                      <span class="dinfo-key">Lore</span>
+                      <p class="dinfo-text dinfo-small">{{ store.card()!.stageContent![s]!.lore }}</p>
+                    </div>
+                  </div>
+                }
+              }
+            </section>
+
+            <section class="dinfo-section">
+              <h4>Image History ({{ store.card()!.imageHistory.length }})</h4>
+              @for (img of store.card()!.imageHistory; track img.id) {
+                <div class="dinfo-img-entry">
+                  <div class="dinfo-img-thumb">
+                    <img [src]="img.imageUrl" [alt]="img.stage + ' image'" />
+                  </div>
+                  <div class="dinfo-img-meta">
+                    <div class="dinfo-grid">
+                      <span class="dinfo-key">Stage</span>
+                      <span class="dinfo-val">{{ img.stage }}</span>
+                      <span class="dinfo-key">Generated</span>
+                      <span class="dinfo-val dinfo-mono">{{ img.generatedAt | date:'medium' }}</span>
+                    </div>
+                    <div class="dinfo-block">
+                      <span class="dinfo-key">AI Prompt</span>
+                      <p class="dinfo-text dinfo-small dinfo-mono">{{ img.promptSummary || '—' }}</p>
+                    </div>
+                  </div>
+                </div>
+              }
+            </section>
+
+            <section class="dinfo-section">
+              <h4>Habits ({{ store.card()!.habits.length }})</h4>
+              @for (h of store.card()!.habits; track h.id) {
+                <div class="dinfo-grid">
+                  <span class="dinfo-key">{{ h.text }}</span>
+                  <span class="dinfo-val">{{ h.completedToday ? '✅' : '⬜' }} streak: {{ h.streakDays }}d ({{ h.frequency }})</span>
+                </div>
+              } @empty {
+                <p class="dinfo-text">No habits configured</p>
+              }
+            </section>
+
+            <section class="dinfo-section">
+              <h4>Raw Image URL</h4>
+              <p class="dinfo-text dinfo-mono dinfo-small">{{ store.card()!.imageUrl }}</p>
+            </section>
+
+            <!-- ═══ Prompt Generation Workflow Reference ═══ -->
+            <section class="dinfo-section dinfo-workflow">
+              <h4>AI Image Generation Workflow</h4>
+
+              <div class="dinfo-block">
+                <span class="dinfo-key">Pipeline</span>
+                <div class="dinfo-pipeline">
+                  <span class="pipe-step">User Fear + Dream</span>
+                  <span class="pipe-arrow">&#8594;</span>
+                  <span class="pipe-step">Claude generates stage lore</span>
+                  <span class="pipe-arrow">&#8594;</span>
+                  <span class="pipe-step">buildMetaPrompt()</span>
+                  <span class="pipe-arrow">&#8594;</span>
+                  <span class="pipe-step">Claude writes 6 image prompts</span>
+                  <span class="pipe-arrow">&#8594;</span>
+                  <span class="pipe-step">parseAiResponse()</span>
+                  <span class="pipe-arrow">&#8594;</span>
+                  <span class="pipe-step">Image AI generates art</span>
+                </div>
+              </div>
+
+              <div class="dinfo-block">
+                <span class="dinfo-key">Input to Meta Prompt</span>
+                <div class="dinfo-grid">
+                  <span class="dinfo-key">Aspect</span>
+                  <span class="dinfo-val">{{ store.card()!.aspectLabel }}</span>
+                  <span class="dinfo-key">Fear</span>
+                  <span class="dinfo-val dinfo-highlight-fear">{{ store.card()!.fearOriginal || '—' }}</span>
+                  <span class="dinfo-key">Dream</span>
+                  <span class="dinfo-val">{{ store.card()!.dreamOriginal || '—' }}</span>
+                </div>
+              </div>
+
+              <div class="dinfo-block">
+                <span class="dinfo-key dinfo-key-header">Main Character Behavior Per Stage</span>
+                <p class="dinfo-helper">The character is always the SAME chibi person. Their posture tells the emotional story.</p>
+                <div class="dinfo-stage-ref">
+                  <div class="dinfo-stage-row dinfo-stage-storm">
+                    <span class="dinfo-stage-badge">STORM</span>
+                    <span class="dinfo-stage-desc">Collapsed, curled, hiding, fists clenched, looking down or away. Worn dark oversized clothing — hiding in fabric.</span>
+                  </div>
+                  <div class="dinfo-stage-row dinfo-stage-fog">
+                    <span class="dinfo-stage-badge">FOG</span>
+                    <span class="dinfo-stage-desc">Reaching out blindly, standing still in confusion, half-turned, uncertain gaze. Muted tones, layered, still modest.</span>
+                  </div>
+                  <div class="dinfo-stage-row dinfo-stage-clearing">
+                    <span class="dinfo-stage-badge">CLEARING</span>
+                    <span class="dinfo-stage-desc">Lifting head, first eye contact with viewer, tentative step forward, hand on heart. Lighter fabrics, soft pastels.</span>
+                  </div>
+                  <div class="dinfo-stage-row dinfo-stage-aura">
+                    <span class="dinfo-stage-badge">AURA</span>
+                    <span class="dinfo-stage-desc">Standing tall, arms beginning to open, chin raised, quiet confidence. Elegant jewel tones (purple, teal), flowing silhouettes.</span>
+                  </div>
+                  <div class="dinfo-stage-row dinfo-stage-radiance">
+                    <span class="dinfo-stage-badge">RADIANCE</span>
+                    <span class="dinfo-stage-desc">Dynamic pose, arms spread wide, genuine smile, radiating energy. Luxurious gold accents, confident fashion.</span>
+                  </div>
+                  <div class="dinfo-stage-row dinfo-stage-legend">
+                    <span class="dinfo-stage-badge">LEGEND</span>
+                    <span class="dinfo-stage-desc">Sovereign posture, one hand blessing/inviting, serene and powerful. Mythic ornate gown with celestial details, crown or halo.</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="dinfo-block">
+                <span class="dinfo-key dinfo-key-header">Background Figures (2-4 per image)</span>
+                <p class="dinfo-helper">Derived from the user's fear — NOT hardcoded. The AI reads the fear and decides how bystanders would behave if that fear were true.</p>
+                <div class="dinfo-stage-ref">
+                  <div class="dinfo-stage-row dinfo-stage-storm">
+                    <span class="dinfo-stage-badge">STORM</span>
+                    <span class="dinfo-stage-desc">Figures EMBODY the fear — turning backs, laughing, succeeding while character fails, looking through them as if invisible.</span>
+                  </div>
+                  <div class="dinfo-stage-row dinfo-stage-fog">
+                    <span class="dinfo-stage-badge">FOG</span>
+                    <span class="dinfo-stage-desc">Figures blurred, distant, unreachable — character reaches out but no one responds.</span>
+                  </div>
+                  <div class="dinfo-stage-row dinfo-stage-clearing">
+                    <span class="dinfo-stage-badge">CLEARING</span>
+                    <span class="dinfo-stage-desc">ONE figure pauses, looks back, extends a hand — the first crack in the loneliness.</span>
+                  </div>
+                  <div class="dinfo-stage-row dinfo-stage-aura">
+                    <span class="dinfo-stage-badge">AURA</span>
+                    <span class="dinfo-stage-desc">2-3 figures drawn closer, watching with genuine curiosity or respect, mirroring the character's posture.</span>
+                  </div>
+                  <div class="dinfo-stage-row dinfo-stage-radiance">
+                    <span class="dinfo-stage-badge">RADIANCE</span>
+                    <span class="dinfo-stage-desc">Figures celebrating WITH the character — embracing, cheering, sharing the light.</span>
+                  </div>
+                  <div class="dinfo-stage-row dinfo-stage-legend">
+                    <span class="dinfo-stage-badge">LEGEND</span>
+                    <span class="dinfo-stage-desc">Figures beginning their OWN journeys inspired by the character — looking up in awe, telling stories, following the path.</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="dinfo-block">
+                <span class="dinfo-key dinfo-key-header">Visual Mood Per Stage</span>
+                <div class="dinfo-stage-ref">
+                  <div class="dinfo-stage-row dinfo-stage-storm">
+                    <span class="dinfo-stage-badge">STORM</span>
+                    <span class="dinfo-stage-desc">Dark stormy sky, rain, cold blue-purple tones, cracked ground, dim lighting.</span>
+                  </div>
+                  <div class="dinfo-stage-row dinfo-stage-fog">
+                    <span class="dinfo-stage-badge">FOG</span>
+                    <span class="dinfo-stage-desc">Silver-grey mist, diffused light, low visibility, dreamlike and disorienting.</span>
+                  </div>
+                  <div class="dinfo-stage-row dinfo-stage-clearing">
+                    <span class="dinfo-stage-badge">CLEARING</span>
+                    <span class="dinfo-stage-desc">Golden hour breakthrough, sun rays piercing clouds, warm amber light, first green growth.</span>
+                  </div>
+                  <div class="dinfo-stage-row dinfo-stage-aura">
+                    <span class="dinfo-stage-badge">AURA</span>
+                    <span class="dinfo-stage-desc">Twilight purple sky, ethereal energy, constellation patterns, mystical floating particles.</span>
+                  </div>
+                  <div class="dinfo-stage-row dinfo-stage-radiance">
+                    <span class="dinfo-stage-badge">RADIANCE</span>
+                    <span class="dinfo-stage-desc">Full golden sunlight, warm sparks, lens flares, everything glowing.</span>
+                  </div>
+                  <div class="dinfo-stage-row dinfo-stage-legend">
+                    <span class="dinfo-stage-badge">LEGEND</span>
+                    <span class="dinfo-stage-desc">Cherry blossoms falling, celestial twilight, both stars and dawn visible, timeless and mythic.</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="dinfo-block">
+                <span class="dinfo-key dinfo-key-header">Quality Check — Does Each Image...</span>
+                <div class="dinfo-checklist">
+                  <div>&#9744; Reflect the user's specific fear (not generic sadness)?</div>
+                  <div>&#9744; Show the SAME character across all 6 stages?</div>
+                  <div>&#9744; Have 2-4 background figures whose behavior matches the stage?</div>
+                  <div>&#9744; Show outfit progression from worn &#8594; regal?</div>
+                  <div>&#9744; Have the correct mood lighting and atmosphere?</div>
+                  <div>&#9744; End with tarot card composition and gold border?</div>
+                  <div>&#9744; Contain NO text, letters, or watermarks?</div>
+                </div>
+              </div>
+
+              <div class="dinfo-block">
+                <span class="dinfo-key dinfo-key-header">Prompt Writing Rules</span>
+                <p class="dinfo-helper">These rules are enforced in buildMetaPrompt() — the AI must follow them for every image prompt.</p>
+                <div class="dinfo-checklist">
+                  <div>&#10003; Write ONLY visual descriptions — no abstract emotions ("cautious optimism")</div>
+                  <div>&#10003; Describe PHYSICAL expression: "eyes wide, slight smile, chin raised"</div>
+                  <div>&#10003; Specify exact COLOR of every element (hair, outfit, sky, ground)</div>
+                  <div>&#10003; Background figures: exact pose + position ("turned 45&#176; away, 3ft left")</div>
+                  <div>&#10003; Every prompt self-contained — image AI has no memory between stages</div>
+                  <div>&#10003; Never reference "Storm version" — describe visually: "smaller grey silhouette in torn hoodie"</div>
+                </div>
+              </div>
+            </section>
+
+            <!-- ═══ Image Provider Architecture ═══ -->
+            <section class="dinfo-section dinfo-workflow">
+              <h4>Image Provider Architecture</h4>
+
+              <div class="dinfo-block">
+                <span class="dinfo-key">Design Pattern</span>
+                <p class="dinfo-text dinfo-small">
+                  Strategy Pattern — ImageProvider interface with swappable implementations.
+                  The active provider is selected by <code>app.image-provider</code> in application.yml.
+                </p>
+              </div>
+
+              <div class="dinfo-block">
+                <span class="dinfo-key">Architecture</span>
+                <div class="dinfo-arch">
+                  <div class="arch-row">
+                    <span class="arch-box arch-service">CardImageGenerationService</span>
+                  </div>
+                  <div class="arch-arrow">&#8595; imageProvider.generate(prompt)</div>
+                  <div class="arch-row">
+                    <span class="arch-box arch-interface">ImageProvider (interface)</span>
+                  </div>
+                  <div class="arch-arrow">&#8595; selected by app.image-provider config</div>
+                  <div class="arch-row arch-providers">
+                    <span class="arch-box arch-gemini">Gemini</span>
+                    <span class="arch-box arch-modelslab">ModelsLab</span>
+                    <span class="arch-box arch-future">+ Future</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="dinfo-block">
+                <span class="dinfo-key dinfo-key-header">Available Providers</span>
+                <div class="dinfo-stage-ref">
+                  <div class="dinfo-stage-row dinfo-stage-clearing">
+                    <span class="dinfo-stage-badge">GEMINI</span>
+                    <span class="dinfo-stage-desc">
+                      Google AI Imagen. Supports chibi reference image for character consistency.
+                      Config: app.gemini.api-key, app.gemini.model.
+                      Set: <code>app.image-provider=gemini</code>
+                    </span>
+                  </div>
+                  <div class="dinfo-stage-row dinfo-stage-aura">
+                    <span class="dinfo-stage-badge">MODELSLAB</span>
+                    <span class="dinfo-stage-desc">
+                      Stable Diffusion via ModelsLab API. Best anime quality (animagine-xl).
+                      Auto-appends anime style + negative prompt. Handles async polling.
+                      Config: app.modelslab.api-key, app.modelslab.model-id, width, height.
+                      Set: <code>app.image-provider=modelslab</code>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="dinfo-block">
+                <span class="dinfo-key dinfo-key-header">Adding a New Provider</span>
+                <div class="dinfo-checklist">
+                  <div>1. Create <code>NewProviderImageProvider.java</code> implementing <code>ImageProvider</code></div>
+                  <div>2. Annotate with <code>&#64;Component("providername")</code></div>
+                  <div>3. Implement <code>generate(prompt, chibiUrl)</code> &#8594; return base64 PNG</div>
+                  <div>4. Implement <code>providerName()</code> &#8594; return display name</div>
+                  <div>5. Add config under <code>app.providername.*</code> in application.yml</div>
+                  <div>6. Set <code>app.image-provider=providername</code> to activate</div>
+                  <div>&#10003; No changes needed in CardImageGenerationService or any other class</div>
+                </div>
+              </div>
+
+              <div class="dinfo-block">
+                <span class="dinfo-key dinfo-key-header">Key Files</span>
+                <div class="dinfo-stage-ref">
+                  <div class="dinfo-stage-row" style="border-color: #64748b">
+                    <span class="dinfo-stage-badge" style="color: #94a3b8">INTERFACE</span>
+                    <span class="dinfo-stage-desc dinfo-mono">service/ImageProvider.java</span>
+                  </div>
+                  <div class="dinfo-stage-row" style="border-color: #64748b">
+                    <span class="dinfo-stage-badge" style="color: #94a3b8">CONFIG</span>
+                    <span class="dinfo-stage-desc dinfo-mono">config/ImageProviderConfig.java</span>
+                  </div>
+                  <div class="dinfo-stage-row dinfo-stage-clearing">
+                    <span class="dinfo-stage-badge">GEMINI</span>
+                    <span class="dinfo-stage-desc dinfo-mono">service/impl/GeminiImageProvider.java</span>
+                  </div>
+                  <div class="dinfo-stage-row dinfo-stage-aura">
+                    <span class="dinfo-stage-badge">MODELSLAB</span>
+                    <span class="dinfo-stage-desc dinfo-mono">service/impl/ModelsLabImageProvider.java</span>
+                  </div>
+                  <div class="dinfo-stage-row" style="border-color: #64748b">
+                    <span class="dinfo-stage-badge" style="color: #94a3b8">PROMPTS</span>
+                    <span class="dinfo-stage-desc dinfo-mono">service/impl/ImagePromptServiceImpl.java</span>
+                  </div>
+                  <div class="dinfo-stage-row" style="border-color: #64748b">
+                    <span class="dinfo-stage-badge" style="color: #94a3b8">ORCH</span>
+                    <span class="dinfo-stage-desc dinfo-mono">service/impl/CardImageGenerationServiceImpl.java</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+    }
+  }
+}

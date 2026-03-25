@@ -1,0 +1,18 @@
+// ══════════════════════════════════════════════════════════════════════════
+// CARD STAGE UTILITY CLASSES — .stage-storm, .stage-fog, etc.
+// ══════════════════════════════════════════════════════════════════════════
+//
+// These classes wire up the --stage-color and --stage-rgb CSS custom
+// properties on any element that carries a stage class.
+// Components use these via [ngClass]="'stage-' + stage".
+//
+// All stage data (names, colors, RGB values) comes from _stage-config.scss.
+// To add or change a stage, edit _stage-config.scss — not this file.
+//
+// ══════════════════════════════════════════════════════════════════════════
+
+@use 'stage-config' as sc;
+
+// Generates one rule per stage, e.g.:
+//   .stage-storm { --stage-color: var(--stage-storm); --stage-rgb: 99, 102, 241; }
+@include sc.stage-utility-classes;

@@ -1,0 +1,178 @@
+// ══════════════════════════════════════════════════════════════════════════
+// SPREAD CARD TILE — tile structure, glow, and stage FX
+//
+// Per-stage FX content is split into separate partials (same directory):
+//   _tile-storm.scss    — mini rain, lightning, storm overlay
+//   _tile-fog.scss      — mini fog wisps, mist, background drift
+//   _tile-clearing.scss — mini golden rays, glow, dust motes
+//   _tile-aura.scss     — mini energy rings
+//   _tile-radiance.scss — mini bloom, embers, sparks
+//   _tile-legend.scss   — mini sakura petals, pink bloom, rays
+//   _tile-flares.scss   — lens flare mini variants V1–V5
+//   _tile-shared.scss   — near-evolved tile pulse animation
+//
+// To change stage glow colors and animation timings:
+//   → edit src/styles/_stage-config.scss
+// ══════════════════════════════════════════════════════════════════════════
+
+// Stage-config provides the tile-glows mixin.
+// Angular resolves 'stage-config' from src/styles/ via stylePreprocessorOptions.
+@use 'stage-config' as sc;
+
+// Per-stage FX partials — each contains the effects for one stage
+@use 'tile-storm';
+@use 'tile-fog';
+@use 'tile-clearing';
+@use 'tile-aura';
+@use 'tile-radiance';
+@use 'tile-legend';
+@use 'tile-flares';
+@use 'tile-shared';
+
+// ── Tile frame ────────────────────────────────────────────────────────────
+
+.tile {
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  animation: fade-up 0.5s ease both;
+
+  &:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: var(--stage-color, rgba(255, 255, 255, 0.25));
+    box-shadow:
+      0 16px 48px rgba(0, 0, 0, 0.5),
+      0 0 30px rgba(var(--stage-rgb, 99, 102, 241), 0.35);
+  }
+
+  // Stage-specific glow + animation — ALL VALUES in _stage-config.scss.
+  // To change storm/fog glow: edit $tile-storm-* / $tile-fog-* there.
+  @include sc.tile-glows;
+}
+
+// ── Tile image area ───────────────────────────────────────────────────────
+
+.tile-img {
+  position: relative;
+  aspect-ratio: 9 / 16;
+  background: linear-gradient(
+    135deg,
+    rgba(var(--stage-rgb, 99, 102, 241), 0.15) 0%,
+    rgba(var(--stage-rgb, 99, 102, 241), 0.05) 100%
+  );
+  overflow: hidden;
+}
+
+.tile-art-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  z-index: 1;
+}
+
+// Tarot frame overlay — sits on top of the card image
+.tile-frame-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  z-index: 4;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.7;
+}
+
+.tile-img-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at center,
+    rgba(var(--stage-rgb, 99, 102, 241), 0.30) 0%,
+    transparent 65%);
+  position: relative;
+  z-index: 1;
+}
+
+.tile-aspect-icon {
+  font-size: 64px;
+  filter: drop-shadow(0 0 20px rgba(var(--stage-rgb, 99, 102, 241), 0.8));
+  animation: float 4s ease-in-out infinite;
+
+  .cracked & {
+    filter: drop-shadow(0 0 14px rgba(255, 60, 60, 0.5)) grayscale(0.5);
+  }
+}
+
+.streak-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  background: rgba(8, 12, 32, 0.80);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 179, 71, 0.3);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gold);
+}
+
+// ── Tile FX layer — base container for stage backgrounds/overlays ─────────
+
+.tile-fx {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+// ── Tile body ─────────────────────────────────────────────────────────────
+
+.tile-body {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.tile-aspect {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.tile-title {
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.25;
+}
+
+.tile-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+// Stage glow @keyframes (frost-pulse-storm, frost-pulse-fog)
+// are in src/styles/_stage-animations.scss — emitted once globally.

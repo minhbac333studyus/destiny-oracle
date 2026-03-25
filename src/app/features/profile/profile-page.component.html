@@ -1,0 +1,61 @@
+<app-nav-bar activeTab="profile" (tabChanged)="onTabChanged($event)" />
+
+<main class="profile-main">
+  <header class="profile-header">
+    <div class="avatar">
+      @if (user()?.avatarUrl) {
+        <img [src]="user()?.avatarUrl" [alt]="user()?.displayName" />
+      } @else {
+        <span class="avatar-placeholder">🔮</span>
+      }
+    </div>
+    <div>
+      <h1 class="profile-name">{{ user()?.displayName }}</h1>
+      <p class="profile-since">Member since {{ user()?.joinedAt | date:'MMMM yyyy' }}</p>
+    </div>
+  </header>
+
+  <form [formGroup]="form" (ngSubmit)="onSave()" class="profile-form">
+    <section class="form-section">
+      <h2 class="section-title">IDENTITY</h2>
+
+      <div class="field">
+        <label class="field-label">DISPLAY NAME</label>
+        <input formControlName="displayName" type="text" />
+      </div>
+
+      <div class="field">
+        <label class="field-label">EMAIL</label>
+        <input formControlName="email" type="email" />
+      </div>
+    </section>
+
+    <section class="form-section">
+      <h2 class="section-title">NOTIFICATIONS</h2>
+
+      <div class="toggle-row">
+        <div>
+          <p class="toggle-label">Daily Reminder</p>
+          <p class="toggle-sub">Your card is waiting for you</p>
+        </div>
+        <label class="toggle">
+          <input formControlName="notificationsEnabled" type="checkbox" />
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+
+      <div class="field">
+        <label class="field-label">REMINDER TIME</label>
+        <input formControlName="dailyReminderTime" type="time" />
+      </div>
+    </section>
+
+    <div class="profile-actions">
+      <app-oracle-button type="submit" [fullWidth]="true">SAVE CHANGES</app-oracle-button>
+    </div>
+  </form>
+
+  <div class="logout-section">
+    <button class="logout-btn" (click)="onLogout()">Sign Out</button>
+  </div>
+</main>

@@ -1,0 +1,74 @@
+.habits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.habits-title {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.habit-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  border: 0.5px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: all 0.2s;
+  font-family: 'Noto Sans JP', sans-serif;
+
+  &:hover { border-color: var(--border-hover); }
+
+  &.done {
+    border-color: var(--success-dim);
+    background: var(--success-dim);
+
+    .habit-check { color: var(--success); }
+    .habit-text  { color: var(--muted); text-decoration: line-through; }
+  }
+}
+
+.habit-check {
+  font-size: 18px;
+  color: var(--hint);
+  flex-shrink: 0;
+  width: 22px;
+  text-align: center;
+  transition: color 0.2s;
+}
+
+.habit-text {
+  flex: 1;
+  font-size: 15px;
+  color: var(--text);
+  transition: all 0.2s;
+}
+
+.habit-streak {
+  font-size: 13px;
+  color: var(--gold);
+}
+
+.habit-freq {
+  font-size: 12px;
+  color: var(--hint);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.habits-empty {
+  font-size: 15px;
+  color: var(--hint);
+  text-align: center;
+  padding: 16px;
+}

@@ -1,0 +1,149 @@
+// ══════════════════════════════════════════════════════════════════════════
+// STORM FX — rain, lightning bolts, thunder flash
+// Used by card-visual.component.scss via @use 'cv-storm'
+// ══════════════════════════════════════════════════════════════════════════
+
+// ─── Storm scene background (behind card art) ────────────────────────────
+
+.fx-storm-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background: linear-gradient(180deg, #08051a 0%, #110d28 45%, #1a1235 100%);
+}
+
+// ─── Storm overlay (renders above card art image) ─────────────────────────
+
+.fx-storm-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+// ── Rain ──────────────────────────────────────────────────────────────────
+
+.fx-rain {
+  position: absolute; inset: 0; overflow: hidden; z-index: 2;
+}
+
+.raindrop {
+  position: absolute;
+  width: 1.5px;
+  border-radius: 0 0 2px 2px;
+  background: linear-gradient(180deg, transparent, rgba(185, 205, 255, 0.85));
+  animation: rain-fall linear infinite;
+
+  @for $i from 1 through 20 {
+    &:nth-child(#{$i}) {
+      left: #{($i * 5) - 2}#{'%'};
+      animation-duration: #{0.35 + ($i % 5) * 0.12}s;
+      animation-delay: #{($i % 7) * 0.09}s;
+      height: #{12 + ($i % 5) * 5}px;
+      opacity: #{0.5 + ($i % 3) * 0.15};
+    }
+  }
+}
+
+@keyframes rain-fall {
+  0%   { transform: translateY(-20px) skewX(-8deg); opacity: 0; }
+  8%   { opacity: 1; }
+  100% { transform: translateY(460px) skewX(-8deg); opacity: 0; }
+}
+
+// ── Branching SVG lightning bolt ──────────────────────────────────────────
+
+.fx-lbolt {
+  position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  opacity: 0;
+
+  &--1 { animation: bolt-strike 4.5s ease-out infinite; }
+  &--2 { animation: bolt-strike 4.5s ease-out infinite; animation-delay: 2.2s; animation-duration: 6s; }
+}
+
+.bolt-svg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  overflow: visible;
+}
+
+.b-trunk {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 3px #fff) drop-shadow(0 0 8px rgba(210,190,255,0.95)) drop-shadow(0 0 18px rgba(160,120,255,0.70));
+}
+
+.b-branch {
+  fill: none;
+  stroke: rgba(230, 220, 255, 0.90);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 2px rgba(255,255,255,0.9)) drop-shadow(0 0 6px rgba(180,150,255,0.75));
+}
+
+.b-thin {
+  stroke-width: 1;
+  stroke: rgba(210, 200, 255, 0.70);
+}
+
+// Bright glow at bolt origin point in cloud
+.bolt-origin {
+  position: absolute;
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,240,1) 0%, rgba(230,210,255,0.85) 25%, rgba(180,140,255,0.4) 55%, transparent 75%);
+  filter: blur(5px);
+  transform: translate(-50%, -50%);
+
+  &.bo--1 { top: 2px; left: 58%; }
+  &.bo--2 { top: 2px; left: 33%; }
+}
+
+@keyframes bolt-strike {
+  0%, 86%, 100% { opacity: 0; }
+  88%   { opacity: 1; }
+  88.8% { opacity: 0.1; }
+  89.5% { opacity: 0.9; }
+  90%   { opacity: 0; }
+}
+
+// ── Full-screen electric flash ────────────────────────────────────────────
+
+.fx-lightning {
+  position: absolute; inset: 0; z-index: 4;
+  background: rgba(220, 210, 255, 0.25);
+  opacity: 0;
+  animation: lightning-strike 4.5s ease-out infinite;
+}
+
+.fx-lightning--2 {
+  animation-delay: 2.3s;
+  animation-duration: 6s;
+}
+
+@keyframes lightning-strike {
+  0%, 87%, 100% { opacity: 0; }
+  88%   { opacity: 1; }
+  88.6% { opacity: 0; }
+  89.2% { opacity: 0.60; }
+  89.8% { opacity: 0; }
+}
+
+.fx-thunder-flash {
+  position: absolute; inset: 0; z-index: 2;
+  background:
+    radial-gradient(ellipse 85% 55% at 58% 2%, rgba(210,190,255,0.55) 0%, transparent 55%),
+    radial-gradient(ellipse 45% 40% at 33% 3%, rgba(190,170,255,0.40) 0%, transparent 50%);
+  opacity: 0;
+  animation: thunder-pulse 6s ease infinite;
+}
+
+@keyframes thunder-pulse {
+  0%, 85%, 100% { opacity: 0; }
+  87%  { opacity: 1; }
+  88%  { opacity: 0; }
+  89%  { opacity: 0.65; }
+  90%  { opacity: 0; }
+}

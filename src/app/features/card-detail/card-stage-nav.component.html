@@ -1,0 +1,15 @@
+<nav class="stage-nav">
+  @for (stage of stages; track stage) {
+    <button
+      class="stage-btn"
+      [ngClass]="['stage-' + stage, isActive(stage) ? 'active' : '', isReached(stage) ? 'reached' : 'locked']"
+      [disabled]="!isReached(stage)"
+      (click)="stageSelected.emit(stage)">
+      <span class="stage-btn-name">{{ label(stage) }}</span>
+      <span class="stage-btn-days">{{ days(stage) }}</span>
+      @if (currentStage === stage) {
+        <span class="stage-indicator">◆</span>
+      }
+    </button>
+  }
+</nav>

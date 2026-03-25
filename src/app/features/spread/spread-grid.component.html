@@ -1,0 +1,19 @@
+<div class="spread-grid">
+  @if (loading) {
+    @for (s of skeletonCount; track $index) {
+      <app-skeleton-card-tile />
+    }
+  } @else {
+    @for (card of cards; track card.id) {
+      <app-spread-card-tile
+        [card]="card"
+        (tileClicked)="cardSelected.emit($event)" />
+    }
+
+    <!-- Add Card tile -->
+    <div class="add-card-tile" (click)="addCardClicked.emit()" role="button" aria-label="Add new card">
+      <div class="add-card-icon">＋</div>
+      <p class="add-card-label">ADD CARD</p>
+    </div>
+  }
+</div>

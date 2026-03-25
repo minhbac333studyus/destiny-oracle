@@ -1,0 +1,49 @@
+<app-nav-bar activeTab="today" (tabChanged)="onTabChanged($event)" />
+
+<main class="checkin-main">
+  <header class="checkin-header">
+    <div>
+      <h1 class="checkin-title">TODAY'S CHECK-IN</h1>
+      <p class="checkin-date">{{ store.session()?.date }}</p>
+    </div>
+    <div class="checkin-score">
+      <span class="score-num">{{ store.completedCount() }}</span>
+      <span class="score-sep">/</span>
+      <span class="score-total">{{ store.totalCount() }}</span>
+      <span class="score-label">done</span>
+    </div>
+  </header>
+
+  @if (store.loading()) {
+    <app-loading-oracle message="Loading your daily habits…" />
+  } @else if (store.session()) {
+    @if (store.allDone()) {
+      <div class="all-done-banner">
+        <span>✨</span>
+        <span>All done for today — your cards feel it.</span>
+      </div>
+    }
+
+    <div class="habit-list">
+      @for (item of store.session()!.items; track item.habitId) {
+        <button
+          class="habit-item"
+          [ngClass]="{ checked: item.isChecked }"
+          (click)="store.toggle(item.habitId)">
+          <span class="habit-aspect-icon">{{ item.aspectKey | aspectIcon }}</span>
+          <div class="habit-info">
+            <span class="habit-aspect-label">{{ item.aspectLabel }}</span>
+            <span class="habit-text">{{ item.habitText }}</span>
+          </div>
+          <span class="habit-check-icon">{{ item.isChecked ? '✓' : '○' }}</span>
+        </button>
+      }
+    </div>
+
+    <div class="checkin-footer">
+      <app-oracle-button [fullWidth]="true" (click)="onDone()">
+        {{ store.allDone() ? 'BACK TO SPREAD' : 'SAVE & CONTINUE' }}
+      </app-oracle-button>
+    </div>
+  }
+</main>

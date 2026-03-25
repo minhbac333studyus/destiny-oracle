@@ -1,0 +1,85 @@
+<div class="questions-wrap">
+  <div class="questions-header">
+    <h2 class="questions-title">CREATE YOUR CARD</h2>
+    <p class="questions-sub">Name one area of your life you want to transform.<br>Answer honestly — this becomes your card.</p>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="questions-form">
+
+    <!-- Aspect Name -->
+    <div class="field">
+      <label class="field-label">WHAT AREA OF YOUR LIFE IS THIS ABOUT?</label>
+      <input
+        formControlName="aspectLabel"
+        type="text"
+        placeholder="e.g. My career, Financial freedom, My relationship with..."
+        class="field-input" />
+      @if (form.get('aspectLabel')?.invalid && form.get('aspectLabel')?.touched) {
+        <span class="field-error">Give your card a name (at least 2 characters)</span>
+      }
+    </div>
+
+    <!-- Fear 1 -->
+    <div class="field">
+      <label class="field-label">WHAT FEELS MOST UNCERTAIN RIGHT NOW?</label>
+      <p class="field-hint">What keeps you up at night about this area of your life?</p>
+      <textarea
+        formControlName="fear1"
+        rows="3"
+        placeholder="I feel uncertain about..."
+      ></textarea>
+      @if (form.get('fear1')?.invalid && form.get('fear1')?.touched) {
+        <span class="field-error">Please share what feels uncertain (at least 10 characters)</span>
+      }
+    </div>
+
+    <!-- Fear 2 -->
+    <div class="field">
+      <label class="field-label">WHAT IS THE WORST CASE IF NOTHING CHANGES?</label>
+      <p class="field-hint">Imagine 5-10 years from now. What does your life look like if you never address this?</p>
+      <textarea
+        formControlName="fear2"
+        rows="4"
+        placeholder="If nothing changes, I'm afraid that..."
+      ></textarea>
+      @if (form.get('fear2')?.invalid && form.get('fear2')?.touched) {
+        <span class="field-error">Describe the feared future (at least 10 characters)</span>
+      }
+    </div>
+
+    <!-- Fear 3 -->
+    <div class="field">
+      <label class="field-label">WHAT CAN YOU DO OR TRY TO DO NOW?</label>
+      <p class="field-hint">Even the smallest step counts. What action feels possible today?</p>
+      <textarea
+        formControlName="fear3"
+        rows="3"
+        placeholder="I could start by..."
+      ></textarea>
+      @if (form.get('fear3')?.invalid && form.get('fear3')?.touched) {
+        <span class="field-error">Share what you could try (at least 10 characters)</span>
+      }
+    </div>
+
+    <!-- Dream -->
+    <div class="field">
+      <label class="field-label dream-label">WHAT IS THE BEST CASE?</label>
+      <p class="field-hint">If everything goes right — what does your life look like?</p>
+      <textarea
+        formControlName="dream"
+        rows="3"
+        placeholder="In my best future, I..."
+      ></textarea>
+      @if (form.get('dream')?.invalid && form.get('dream')?.touched) {
+        <span class="field-error">Describe your dream outcome (at least 10 characters)</span>
+      }
+    </div>
+
+    <div class="step-nav">
+      <app-oracle-button variant="ghost" type="button" (click)="back.emit()">Back</app-oracle-button>
+      <app-oracle-button type="submit" [fullWidth]="true" [disabled]="loading">
+        {{ loading ? 'CREATING YOUR CARD...' : 'CREATE MY CARD' }}
+      </app-oracle-button>
+    </div>
+  </form>
+</div>

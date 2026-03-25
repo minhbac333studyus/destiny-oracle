@@ -1,0 +1,37 @@
+<div class="login-page">
+  <div class="login-card">
+    <h1 class="login-title">CONQUER<br>FUTURE</h1>
+    <p class="login-subtitle">Your journey begins with a single step</p>
+
+    <form (ngSubmit)="onSubmit()" class="login-form">
+      <div class="input-wrapper">
+        <input
+          type="email"
+          [(ngModel)]="email"
+          name="email"
+          placeholder="Enter your email"
+          class="login-input"
+          [disabled]="loading()"
+          autocomplete="email"
+          autofocus />
+      </div>
+
+      @if (error()) {
+        <p class="login-error">{{ error() }}</p>
+      }
+
+      <button
+        type="submit"
+        class="login-btn"
+        [disabled]="loading() || !email.trim()">
+        @if (loading()) {
+          Entering...
+        } @else {
+          Enter
+        }
+      </button>
+    </form>
+
+    <p class="login-hint">New users will be guided through onboarding</p>
+  </div>
+</div>

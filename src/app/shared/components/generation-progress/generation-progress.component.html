@@ -1,0 +1,74 @@
+<div class="progress-panel">
+  <div class="panel-header">
+    <div class="panel-title-row">
+      <span class="panel-icon">🔮</span>
+      <div>
+        <h3 class="panel-title">FORGING YOUR CARD</h3>
+        <p class="panel-sub">{{ cardLabel }}</p>
+      </div>
+    </div>
+    <button class="dismiss-btn" (click)="dismissed.emit()" title="Dismiss">✕</button>
+  </div>
+
+  @if (noJobYet()) {
+    <div class="waiting-row">
+      <span class="pulse-dot"></span>
+      <span class="waiting-text">Initializing pipeline…</span>
+    </div>
+  } @else {
+    <!-- Progress bar -->
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" [style.width.%]="job()?.progressPercent ?? 0"></div>
+      </div>
+      <span class="progress-pct">{{ job()?.progressPercent ?? 0 }}%</span>
+    </div>
+
+    <p class="phase-label">{{ phaseLabel() }}</p>
+
+    <!-- Steps -->
+    <div class="steps-grid">
+      <!-- Prompt phase -->
+      <div class="phase-col">
+        <div class="phase-heading">
+          <span class="phase-dot prompt-dot"></span>
+          PROMPT PHASE
+        </div>
+        @for (step of promptSteps(); track step.id) {
+          <div class="step-row" [class]="'step-' + step.status.toLowerCase()">
+            <span class="step-icon">{{ statusIcon(step.status) }}</span>
+            <div class="step-body">
+              <span class="step-name">{{ stageLabel(step.stage) }}</span>
+              @if (step.status === 'RUNNING') {
+                <span class="step-msg running-pulse">generating…</span>
+              } @else if (step.message && step.status === 'DONE') {
+                <span class="step-msg">{{ step.message }}</span>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Image phase -->
+      <div class="phase-col">
+        <div class="phase-heading">
+          <span class="phase-dot image-dot"></span>
+          IMAGE PHASE
+        </div>
+        @for (step of imageSteps(); track step.id) {
+          <div class="step-row" [class]="'step-' + step.status.toLowerCase()">
+            <span class="step-icon">{{ statusIcon(step.status) }}</span>
+            <div class="step-body">
+              <span class="step-name">{{ stageLabel(step.stage) }}</span>
+              @if (step.status === 'RUNNING') {
+                <span class="step-msg running-pulse">painting…</span>
+              } @else if (step.status === 'DONE') {
+                <span class="step-msg">saved</span>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

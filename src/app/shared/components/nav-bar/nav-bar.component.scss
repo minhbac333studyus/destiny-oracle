@@ -1,0 +1,117 @@
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 32px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: sticky;
+  top: 0;
+  background: rgba(8, 12, 32, 0.85);
+  backdrop-filter: blur(24px);
+  z-index: 100;
+
+  @media (max-width: 600px) {
+    padding: 12px 16px;
+    gap: 8px;
+  }
+}
+
+.nav-logo {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-decoration: none;
+  text-shadow: 0 0 20px rgba(255, 179, 71, 0.5);
+  flex-shrink: 0;
+
+  @media (max-width: 600px) {
+    font-size: 13px;
+    letter-spacing: 2px;
+  }
+
+  @media (max-width: 400px) {
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+}
+
+.nav-tabs {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+
+  @media (max-width: 600px) {
+    gap: 4px;
+  }
+}
+
+.nav-tab {
+  background: none;
+  border: 1px solid transparent;
+  padding: 8px 20px;
+  border-radius: 24px;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.25s;
+  white-space: nowrap;
+
+  &:hover {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  &.active {
+    color: #fff;
+    background: linear-gradient(135deg, rgba(94, 207, 255, 0.20), rgba(168, 85, 247, 0.20));
+    border-color: rgba(94, 207, 255, 0.30);
+    box-shadow: 0 0 16px rgba(94, 207, 255, 0.15);
+  }
+
+  @media (max-width: 600px) {
+    padding: 6px 12px;
+    font-size: 12px;
+    letter-spacing: 0;
+  }
+
+  @media (max-width: 400px) {
+    padding: 5px 9px;
+    font-size: 11px;
+  }
+}
+
+.nav-streak {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--gold);
+  text-shadow: 0 0 12px rgba(255, 179, 71, 0.4);
+  flex-shrink: 0;
+
+  /* Hide text label on small screens — keep just the flame + number */
+  @media (max-width: 600px) {
+    font-size: 13px;
+    gap: 4px;
+  }
+
+  /* Hide streak entirely on very small screens to give tabs room */
+  @media (max-width: 480px) {
+    display: none;
+  }
+}
+
+.streak-flame {
+  font-size: 18px;
+
+  @media (max-width: 600px) {
+    font-size: 15px;
+  }
+}

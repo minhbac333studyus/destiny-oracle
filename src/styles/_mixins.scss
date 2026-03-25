@@ -1,0 +1,27 @@
+@mixin glass-panel {
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+@mixin gold-glow($intensity: 0.4) {
+  box-shadow: 0 0 24px rgba(255, 179, 71, $intensity), 0 0 48px rgba(168, 85, 247, $intensity * 0.3);
+}
+
+@mixin card-shadow {
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -1,0 +1,50 @@
+<app-nav-bar activeTab="spread" (tabChanged)="onCancel()" />
+
+<main class="edit-main">
+  <header class="edit-header">
+    <h1 class="edit-title">EDIT YOUR CARD</h1>
+    <p class="edit-sub">Refine your feared description. The card will regenerate at your current stage.</p>
+  </header>
+
+  @if (status() === 'generating') {
+    <div class="regen-state">
+      <div class="regen-spinner">🔮</div>
+      <p class="regen-text">The Oracle is reinterpreting your fate…</p>
+    </div>
+  } @else if (status() === 'success') {
+    <div class="regen-success">
+      <span>✨</span>
+      <p>Your card has been reborn.</p>
+    </div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="edit-form">
+      <div class="field">
+        <label class="field-label">YOUR FEARED FUTURE</label>
+        <textarea
+          formControlName="fearText"
+          rows="6"
+          placeholder="Describe the life you fear if nothing changes…"
+        ></textarea>
+        @if (fearControl.invalid && fearControl.touched) {
+          <span class="field-error">Please enter at least 20 characters</span>
+        }
+      </div>
+
+      <div class="field">
+        <label class="field-label">ADDITIONAL CONTEXT <span class="optional">(optional)</span></label>
+        <textarea
+          formControlName="additionalContext"
+          rows="3"
+          placeholder="Any additional context to consider…"
+        ></textarea>
+      </div>
+
+      <div class="edit-actions">
+        <app-oracle-button variant="ghost" type="button" (click)="onCancel()">Cancel</app-oracle-button>
+        <app-oracle-button type="submit" [fullWidth]="true">
+          REGENERATE CARD
+        </app-oracle-button>
+      </div>
+    </form>
+  }
+</main>

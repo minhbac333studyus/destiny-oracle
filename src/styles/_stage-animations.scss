@@ -1,0 +1,41 @@
+// ══════════════════════════════════════════════════════════════════════════
+// STAGE GLOW ANIMATIONS — global @keyframes for card and tile glow pulses
+// ══════════════════════════════════════════════════════════════════════════
+//
+// All glow shadow values are imported from _stage-config.scss.
+// To change a glow effect, edit _stage-config.scss — not this file.
+// This file is included once globally via styles.scss.
+//
+// ══════════════════════════════════════════════════════════════════════════
+
+@use 'stage-config' as sc;
+
+// ── Card frame (detail page) — Storm ─────────────────────────────────────
+@keyframes cv-frost-storm {
+  0%, 100% { box-shadow: sc.$cv-storm-rest; }
+  50%      { box-shadow: sc.$cv-storm-pulse; }
+}
+
+// ── Card frame (detail page) — Fog ───────────────────────────────────────
+@keyframes cv-frost-fog {
+  0%, 100% { box-shadow: sc.$cv-fog-rest; }
+  50%      { box-shadow: sc.$cv-fog-pulse; }
+}
+
+// ── Card frame (detail page) — Aura ──────────────────────────────────────
+@keyframes cv-glow-aura {
+  0%, 100% { box-shadow: sc.$cv-aura-rest; }
+  50%      { box-shadow: sc.$cv-aura-pulse; }
+}
+
+// ── Card tile (spread grid) — Storm ──────────────────────────────────────
+@keyframes frost-pulse-storm {
+  0%, 100% { box-shadow: sc.$tile-storm-rest; }
+  50%      { box-shadow: sc.$tile-storm-pulse; }
+}
+
+// ── Card tile (spread grid) — Fog ────────────────────────────────────────
+@keyframes frost-pulse-fog {
+  0%, 100% { box-shadow: sc.$tile-fog-rest; }
+  50%      { box-shadow: sc.$tile-fog-pulse; }
+}

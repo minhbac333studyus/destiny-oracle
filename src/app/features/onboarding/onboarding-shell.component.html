@@ -1,0 +1,16 @@
+@switch (store.currentStep()) {
+  @case ('welcome') {
+    <app-welcome-step (proceed)="store.goToStep('questions')" />
+  }
+  @case ('questions') {
+    <app-questions-step
+      [loading]="creating()"
+      (saved)="onQuestionsSaved($event)"
+      (back)="store.goToStep('welcome')" />
+  }
+  @case ('card-reveal') {
+    <app-card-reveal-step
+      [aspectLabel]="store.data().aspectLabel"
+      (complete)="onComplete()" />
+  }
+}

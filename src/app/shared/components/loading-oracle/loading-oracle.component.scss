@@ -1,0 +1,20 @@
+.loading-oracle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 60px 24px;
+}
+
+.oracle-symbol {
+  font-size: 44px;
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.oracle-text {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  letter-spacing: 2px;
+  color: var(--muted);
+}

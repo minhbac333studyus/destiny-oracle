@@ -1,0 +1,23 @@
+<div class="reveal-wrap">
+  <div class="reveal-header">
+    <h2 class="reveal-title">YOUR CARD IS READY</h2>
+    <p class="reveal-sub">Your first card has been created. It begins in The Storm.<br>Your journey starts now.</p>
+  </div>
+
+  <div class="card-showcase">
+    <div class="reveal-card stage-storm">
+      <div class="card-icon">🔮</div>
+      <div class="card-aspect">{{ aspectLabel }}</div>
+      <app-stage-badge [stage]="stormStage" />
+    </div>
+  </div>
+
+  <p class="reveal-hint">You can add more cards later from the Spread page.</p>
+
+  <div class="reveal-footer">
+    <p class="reveal-cta-text">This is your Oracle. Change it.</p>
+    <app-oracle-button (click)="complete.emit()">
+      START CONQUERING
+    </app-oracle-button>
+  </div>
+</div>

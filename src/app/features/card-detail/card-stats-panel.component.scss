@@ -1,0 +1,64 @@
+.stats-panel {
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  border: 0.5px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.stage-progress {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.stage-progress-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.stage-progress-pct {
+  font-family: 'Cinzel', serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.stage-progress-label {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.stat {
+  background: var(--glass);
+  border: 0.5px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-value {
+  font-family: 'Cinzel', serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.stat-label {
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+}

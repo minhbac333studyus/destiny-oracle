@@ -1,0 +1,228 @@
+<div class="card-frame" [class]="'stage-' + stage" [class.near-evolved]="nearEvolved">
+
+  <!-- ═══ Stage-specific background effects ═══ -->
+  <div class="fx-layer">
+
+    <!-- STORM: dark background only -->
+    @if (stage === 'storm') {
+      <div class="fx-storm-bg"></div>
+    }
+
+    <!-- FOG: drifting mist layers -->
+    @if (stage === 'fog') {
+      <div class="fx-fog">
+        <div class="fog-layer fog-layer--1"></div>
+        <div class="fog-layer fog-layer--2"></div>
+        <div class="fog-layer fog-layer--3"></div>
+      </div>
+    }
+
+    <!-- CLEARING: light rays breaking through -->
+    @if (stage === 'clearing') {
+      <div class="fx-clearing">
+        <div class="light-ray light-ray--1"></div>
+        <div class="light-ray light-ray--2"></div>
+        <div class="light-ray light-ray--3"></div>
+      </div>
+    }
+
+    <!-- AURA: energy pulse rings -->
+    @if (stage === 'aura') {
+      <div class="fx-aura">
+        <div class="aura-ring aura-ring--1"></div>
+        <div class="aura-ring aura-ring--2"></div>
+        <div class="aura-ring aura-ring--3"></div>
+      </div>
+    }
+
+    <!-- RADIANCE: golden particle burst -->
+    @if (stage === 'radiance') {
+      <div class="fx-radiance">
+        @for (s of [1,2,3,4,5,6,7,8]; track s) {
+          <span class="spark"></span>
+        }
+        <div class="radiance-glow"></div>
+      </div>
+    }
+
+    <!-- LEGEND: sakura / celestial particles -->
+    @if (stage === 'legend') {
+      <div class="fx-legend">
+        @for (p of [1,2,3,4,5,6,7,8,9,10]; track p) {
+          <span class="sakura"></span>
+        }
+        <div class="legend-halo"></div>
+      </div>
+    }
+  </div>
+
+  <!-- ═══ Crack overlay at 0% ═══ -->
+
+  <!-- ═══ Lens flare flash points (every 10%) ═══ -->
+  @if (flares.length > 0) {
+    <div class="fx-flashes">
+      @for (f of flares; track f.id) {
+        <div
+          class="flare"
+          [class]="'flare flare-v' + f.variant"
+          [ngStyle]="{
+            top: f.top,
+            left: f.left,
+            'animation-delay': f.delay,
+            '--flare-scale': f.scale
+          }">
+        </div>
+      }
+    </div>
+  }
+
+  <div class="card-art">
+    <div class="card-art-bg"></div>
+    @if (imageUrl && !imageError) {
+      <img class="card-art-img" [src]="imageUrl"
+           [alt]="aspectKey + ' ' + stage + ' stage art'"
+           (error)="onImageError()" />
+    } @else {
+      <span class="card-art-icon">{{ aspectKey | aspectIcon }}</span>
+    }
+    <div class="card-particles">
+      @for (p of [1,2,3,4,5]; track p) {
+        <span class="particle"></span>
+      }
+    </div>
+    <!-- Tarot frame overlay -->
+    <img class="card-frame-overlay" src="assets/frame/frame.jpg" alt="" />
+  </div>
+
+  <!-- ═══ Fog FX overlay (above card art image) ═══ -->
+  @if (stage === 'fog') {
+    <div class="fx-fog-overlay">
+      <div class="fog-wisp fog-wisp--1"></div>
+      <div class="fog-wisp fog-wisp--2"></div>
+      <div class="fog-wisp fog-wisp--3"></div>
+      <div class="fog-wisp fog-wisp--4"></div>
+      <div class="fog-bottom-mist"></div>
+    </div>
+  }
+
+  <!-- ═══ Aura FX overlay (above card art image) ═══ -->
+  @if (stage === 'aura') {
+    <div class="fx-aura-overlay">
+      <div class="aura-bloom"></div>
+      <!-- Multi-angle purple light rays with varied saturation -->
+      <div class="aura-ray aura-ray--1"></div>
+      <div class="aura-ray aura-ray--2"></div>
+      <div class="aura-ray aura-ray--3"></div>
+      <div class="aura-ray aura-ray--4"></div>
+      <div class="aura-ray aura-ray--5"></div>
+      <div class="aura-ray aura-ray--6"></div>
+      <div class="aura-shimmer"></div>
+      <!-- Purple glitter sparkles (twinkling in place, aura-only) -->
+      @for (g of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]; track g) {
+        <span class="aura-glitter aura-glitter--{{g}}"></span>
+      }
+    </div>
+  }
+
+  <!-- ═══ Radiance FX overlay (above card art image) ═══ -->
+  @if (stage === 'radiance') {
+    <div class="fx-radiance-overlay">
+      <div class="radiance-bloom"></div>
+      @for (e of [1,2,3,4,5,6,7,8,9,10,11,12]; track e) {
+        <span class="ember ember--{{e}}"></span>
+      }
+    </div>
+  }
+
+  <!-- ═══ Clearing FX overlay (above card art image) ═══ -->
+  @if (stage === 'clearing') {
+    <div class="fx-clearing-overlay">
+      <div class="clearing-glow"></div>
+      <div class="clearing-ray clearing-ray--1"></div>
+      <div class="clearing-ray clearing-ray--2"></div>
+      <div class="clearing-ray clearing-ray--3"></div>
+      <div class="clearing-ray clearing-ray--4"></div>
+      @for (m of [1,2,3,4,5,6,7,8]; track m) {
+        <span class="dust-mote dust-mote--{{m}}"></span>
+      }
+    </div>
+  }
+
+  <!-- ═══ Legend FX overlay (above card art image) ═══ -->
+  @if (stage === 'legend') {
+    <div class="fx-legend-overlay">
+      <div class="legend-bloom"></div>
+      <div class="legend-ray legend-ray--1"></div>
+      <div class="legend-ray legend-ray--2"></div>
+      <div class="legend-ray legend-ray--3"></div>
+      <div class="legend-ray legend-ray--4"></div>
+      <div class="legend-shimmer"></div>
+      @for (p of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]; track p) {
+        <span class="ovl-petal ovl-petal--{{p}}"></span>
+      }
+    </div>
+  }
+
+  <!-- ═══ Storm FX overlay (above card art image) ═══ -->
+  @if (stage === 'storm') {
+    <div class="fx-storm-overlay">
+      <div class="fx-rain">
+        @for (r of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]; track r) {
+          <span class="raindrop"></span>
+        }
+      </div>
+      <div class="fx-lbolt fx-lbolt--1">
+        <div class="bolt-origin bo--1"></div>
+        <svg class="bolt-svg" viewBox="0 0 320 430" preserveAspectRatio="none">
+          <path class="b-trunk" d="M185 0 L172 65 L192 68 L155 175 L175 178 L118 305 L145 310 L98 430"/>
+          <path class="b-branch" d="M172 65 L118 115 L88 158"/>
+          <path class="b-branch b-thin" d="M118 115 L90 130 L72 160"/>
+          <path class="b-branch" d="M155 175 L208 228 L238 275"/>
+          <path class="b-branch b-thin" d="M208 228 L230 215 L258 220"/>
+          <path class="b-branch" d="M118 305 L72 352 L48 410"/>
+        </svg>
+      </div>
+      <div class="fx-lbolt fx-lbolt--2">
+        <div class="bolt-origin bo--2"></div>
+        <svg class="bolt-svg" viewBox="0 0 320 430" preserveAspectRatio="none">
+          <path class="b-trunk" d="M105 0 L118 58 L98 62 L130 158 L110 162 L148 285 L125 290 L162 430"/>
+          <path class="b-branch" d="M118 58 L168 100 L195 135"/>
+          <path class="b-branch" d="M130 158 L82 198 L58 245"/>
+          <path class="b-branch b-thin" d="M82 198 L60 188 L38 202"/>
+        </svg>
+      </div>
+      <div class="fx-lightning"></div>
+      <div class="fx-lightning fx-lightning--2"></div>
+      <div class="fx-thunder-flash"></div>
+    </div>
+  }
+
+  <!-- ═══ Shared glitter (all stages — scales with progress %) ═══ -->
+  @if (glitter.length > 0) {
+    <div class="fx-glitter-layer">
+      @for (g of glitter; track g.id) {
+        <span
+          [class]="g.isGold ? 'glt glt-gold' : 'glt glt-silver'"
+          [ngStyle]="{
+            left: g.left,
+            bottom: g.bottom,
+            width: g.size + 'px',
+            height: g.size + 'px',
+            'animation-delay': g.delay,
+            'animation-duration': g.duration
+          }">
+        </span>
+      }
+    </div>
+  }
+
+</div>
+
+<!-- Nameplate sits below the card, never covering the art -->
+<div class="card-nameplate">
+  <span class="card-stage-label">{{ stageLabel }}</span>
+  <h2 class="card-title">{{ title }}</h2>
+  @if (tagline) {
+    <p class="card-tagline">{{ tagline }}</p>
+  }
+</div>

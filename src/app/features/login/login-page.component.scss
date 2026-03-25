@@ -1,0 +1,110 @@
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(160deg, #0b0c1a 0%, #1a1040 40%, #0d1230 100%);
+  padding: 24px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.login-title {
+  font-family: 'Cinzel', serif;
+  font-size: 2.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #d4a856;
+  line-height: 1.15;
+  margin-bottom: 12px;
+  text-shadow: 0 0 40px rgba(212, 168, 86, 0.3);
+}
+
+.login-subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 48px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.login-input {
+  width: 100%;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  color: #e8e0d0;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  &:focus {
+    border-color: rgba(212, 168, 86, 0.5);
+    box-shadow: 0 0 20px rgba(212, 168, 86, 0.15);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+.login-btn {
+  padding: 14px 24px;
+  background: linear-gradient(135deg, #d4a856, #b8860b);
+  border: none;
+  border-radius: 12px;
+  color: #0b0c1a;
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+
+  &:hover:not(:disabled) {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.login-error {
+  color: #ff6b6b;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.login-hint {
+  margin-top: 32px;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.25);
+}

@@ -1,0 +1,9 @@
+@use 'styles/tokens';
+@use 'styles/reset';
+@use 'styles/typography';
+@use 'styles/mixins' as *;
+@use 'styles/animations';
+@use 'styles/card-stages';
+// Global @keyframes for stage glow pulse animations.
+// Emitted once here so component SCSSs don't need to duplicate them.
+@use 'styles/stage-animations';

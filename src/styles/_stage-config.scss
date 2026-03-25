@@ -1,0 +1,228 @@
+// ══════════════════════════════════════════════════════════════════════════
+// STAGE CONFIG — SINGLE SOURCE OF TRUTH FOR ALL STAGE VISUAL EFFECTS
+// ══════════════════════════════════════════════════════════════════════════
+//
+// HOW TO USE:
+//   • To change a stage color → edit the $stage-map below.
+//   • To change a stage's glow intensity or color → edit the $cv-* or $tile-* variables.
+//   • To add a new stage → add an entry to $stage-map, then add glow variables below.
+//   • This file exports ONLY variables and mixins — no CSS is emitted unless you
+//     call a mixin. Global keyframes are emitted by _stage-animations.scss.
+//
+// IMPORTED BY:
+//   • src/styles/_tokens.scss          → generates --stage-* CSS custom properties
+//   • src/styles/_card-stages.scss     → generates .stage-* CSS classes
+//   • src/styles/_stage-animations.scss → @keyframes for glow pulses
+//   • card-visual.component.scss       → card frame glow rules
+//   • spread-card-tile.component.scss  → card tile glow rules
+//
+// ══════════════════════════════════════════════════════════════════════════
+
+@use 'sass:map';
+
+// ── STAGE IDENTITY ────────────────────────────────────────────────────────
+// One entry per stage: color (hex), rgb (comma-separated string for rgba()),
+// label (display name), days (timeline string).
+// Add or reorder stages here — the rest of the system follows automatically.
+
+$stage-map: (
+  storm: (
+    color: #6366f1,
+    rgb:   '99, 102, 241',
+    label: 'The Storm',
+    days:  'Day 1–30',
+  ),
+  fog: (
+    color: #818cf8,
+    rgb:   '129, 140, 248',
+    label: 'The Fog',
+    days:  'Day 31–90',
+  ),
+  clearing: (
+    color: #5ecfff,
+    rgb:   '94, 207, 255',
+    label: 'The Clearing',
+    days:  'Day 91–180',
+  ),
+  aura: (
+    color: #a855f7,
+    rgb:   '168, 85, 247',
+    label: 'The Aura',
+    days:  'Day 181–270',
+  ),
+  radiance: (
+    color: #ffb347,
+    rgb:   '255, 179, 71',
+    label: 'The Radiance',
+    days:  'Day 271–364',
+  ),
+  legend: (
+    color: #f472b6,
+    rgb:   '244, 114, 182',
+    label: 'The Legend',
+    days:  'Day 365',
+  ),
+);
+
+// ── CARD FRAME GLOW — DETAIL PAGE ─────────────────────────────────────────
+// Box-shadow layers for the large card frame in card-visual.component.
+// Only storm, fog, and aura have animated custom glows.
+// Each stage has a "rest" state (0%, 100%) and a "pulse" state (50%).
+// The animation breathes between rest and pulse.
+// Drop shadow layer (last line in each) is the same for all stages.
+
+// ── Storm: cold blue electricity frost spreading around the border
+$cv-storm-rest: (
+  0 0 0    3px rgba(100, 160, 255, 0.14),  // inner tight ring
+  0 0 24px  6px rgba( 80, 140, 255, 0.28), // mid spread
+  0 0 60px 14px rgba( 60, 110, 220, 0.18), // outer halo
+  0 0 100px 24px rgba(40,  80, 180, 0.10), // far fade
+  0 16px 48px rgba(0, 0, 0, 0.6)           // depth shadow
+);
+$cv-storm-pulse: (
+  0 0 0    4px rgba(120, 175, 255, 0.24),  // brighter on pulse
+  0 0 36px 10px rgba( 90, 155, 255, 0.38),
+  0 0 80px 20px rgba( 70, 125, 230, 0.24),
+  0 0 130px 34px rgba(50,  95, 195, 0.14),
+  0 16px 48px rgba(0, 0, 0, 0.6)
+);
+$cv-storm-duration: 4s; // breathing cycle speed
+
+// ── Fog: silvery icy mist gently spreading from the border
+$cv-fog-rest: (
+  0 0 0    3px rgba(180, 200, 255, 0.12),
+  0 0 28px  8px rgba(160, 185, 240, 0.22),
+  0 0 70px 18px rgba(140, 165, 220, 0.14),
+  0 0 110px 28px rgba(120, 145, 200, 0.08),
+  0 16px 48px rgba(0, 0, 0, 0.6)
+);
+$cv-fog-pulse: (
+  0 0 0    4px rgba(200, 218, 255, 0.20),
+  0 0 42px 14px rgba(175, 198, 248, 0.30),
+  0 0 90px 26px rgba(155, 178, 230, 0.20),
+  0 0 140px 38px rgba(135, 158, 210, 0.12),
+  0 16px 48px rgba(0, 0, 0, 0.6)
+);
+$cv-fog-duration: 7s; // slower breathing than storm — feels heavier
+
+// ── Aura: mystical purple energy radiating from the border
+$cv-aura-rest: (
+  0 0 0    3px rgba(168,  85, 247, 0.18),
+  0 0 24px  6px rgba(168,  85, 247, 0.32),
+  0 0 60px 14px rgba(140,  60, 220, 0.22),
+  0 0 100px 24px rgba(120,  40, 200, 0.12),
+  0 16px 48px rgba(0, 0, 0, 0.6)
+);
+$cv-aura-pulse: (
+  0 0 0    4px rgba(190, 110, 255, 0.28),
+  0 0 36px 10px rgba(175,  95, 250, 0.42),
+  0 0 80px 20px rgba(155,  70, 235, 0.28),
+  0 0 130px 34px rgba(135,  50, 215, 0.16),
+  0 16px 48px rgba(0, 0, 0, 0.6)
+);
+$cv-aura-duration: 5s;
+
+// ── CARD TILE GLOW — SPREAD GRID ──────────────────────────────────────────
+// Smaller, softer glows for the grid tiles on the spread page.
+// Mirrors the frame glows but scaled down.
+
+// ── Storm tile
+$tile-storm-rest: (
+  0 0 0    2px rgba(100, 160, 255, 0.12),
+  0 0 18px  4px rgba( 80, 140, 255, 0.22),
+  0 0 44px  8px rgba( 60, 110, 220, 0.15),
+  0 8px 32px rgba(0, 0, 0, 0.5)
+);
+$tile-storm-pulse: (
+  0 0 0    3px rgba(120, 175, 255, 0.22),
+  0 0 28px  8px rgba( 90, 155, 255, 0.35),
+  0 0 64px 16px rgba( 70, 125, 230, 0.22),
+  0 8px 32px rgba(0, 0, 0, 0.5)
+);
+$tile-storm-duration: 4s;
+
+// ── Fog tile
+$tile-fog-rest: (
+  0 0 0    2px rgba(180, 200, 255, 0.10),
+  0 0 22px  6px rgba(160, 185, 240, 0.18),
+  0 0 54px 12px rgba(140, 165, 220, 0.10),
+  0 8px 32px rgba(0, 0, 0, 0.5)
+);
+$tile-fog-pulse: (
+  0 0 0    3px rgba(200, 218, 255, 0.18),
+  0 0 34px 10px rgba(175, 198, 248, 0.26),
+  0 0 70px 18px rgba(155, 178, 230, 0.16),
+  0 8px 32px rgba(0, 0, 0, 0.5)
+);
+$tile-fog-duration: 7s;
+
+// ══ HELPER FUNCTIONS ══════════════════════════════════════════════════════
+
+/// Returns a single property from the $stage-map for the given stage.
+/// @param {string} $stage - stage key (e.g., 'storm')
+/// @param {string} $prop  - property key (e.g., 'color', 'rgb', 'label')
+@function stage-get($stage, $prop) {
+  @return map.get(map.get($stage-map, $stage), $prop);
+}
+
+// ══ MIXINS ════════════════════════════════════════════════════════════════
+
+// ── CSS custom properties ─────────────────────────────────────────────────
+// Call inside :root { } in _tokens.scss to generate --stage-* vars.
+// Example output:  --stage-storm: #6366f1;  --stage-storm-rgb: 99, 102, 241;
+@mixin stage-css-vars {
+  @each $name, $cfg in $stage-map {
+    --stage-#{$name}:     #{map.get($cfg, color)};
+    --stage-#{$name}-rgb: #{map.get($cfg, rgb)};
+  }
+}
+
+// ── .stage-* utility classes ──────────────────────────────────────────────
+// Call at top level in _card-stages.scss to generate:
+//   .stage-storm { --stage-color: var(--stage-storm); --stage-rgb: 99, 102, 241; }
+@mixin stage-utility-classes {
+  @each $name, $cfg in $stage-map {
+    $rgb: map.get($cfg, rgb);
+    .stage-#{$name} {
+      --stage-color: var(--stage-#{$name});
+      --stage-rgb:   #{$rgb};
+    }
+  }
+}
+
+// ── Card frame glows (card-visual detail page) ────────────────────────────
+// Include inside the .card-frame selector.
+// Generates: &.stage-storm { box-shadow: ...; animation: ...; }
+// Clearing / Radiance / Legend fall through to the default rgba(--stage-rgb) shadow.
+@mixin card-frame-glows {
+  // Storm — cold blue frost
+  &.stage-storm {
+    box-shadow: $cv-storm-rest;
+    animation: cv-frost-storm $cv-storm-duration ease-in-out infinite;
+  }
+  // Fog — silvery icy mist
+  &.stage-fog {
+    box-shadow: $cv-fog-rest;
+    animation: cv-frost-fog $cv-fog-duration ease-in-out infinite;
+  }
+  // Aura — purple energy (clearing/radiance/legend use default rgba shadow)
+  &.stage-aura {
+    box-shadow: $cv-aura-rest;
+    animation: cv-glow-aura $cv-aura-duration ease-in-out infinite;
+  }
+}
+
+// ── Card tile glows (spread grid) ─────────────────────────────────────────
+// Include inside the .tile selector.
+@mixin tile-glows {
+  // Storm
+  &.stage-storm {
+    box-shadow: $tile-storm-rest;
+    animation: frost-pulse-storm $tile-storm-duration ease-in-out infinite;
+  }
+  // Fog
+  &.stage-fog {
+    box-shadow: $tile-fog-rest;
+    animation: frost-pulse-fog $tile-fog-duration ease-in-out infinite;
+  }
+}

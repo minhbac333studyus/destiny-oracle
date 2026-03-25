@@ -1,0 +1,176 @@
+// ══════════════════════════════════════════════════════════════════════════
+// AURA FX — expanding energy rings, purple light rays, glitter sparkles
+// Used by card-visual.component.scss via @use 'cv-aura'
+// ══════════════════════════════════════════════════════════════════════════
+
+// ─── Base aura rings (behind card art) ────────────────────────────────────
+
+.fx-aura {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.aura-ring {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 2px solid rgba(168, 85, 247, 0.4);
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+  animation: aura-expand 3s ease-out infinite;
+}
+
+.aura-ring--2 { animation-delay: 1s; }
+.aura-ring--3 { animation-delay: 2s; }
+
+@keyframes aura-expand {
+  0% {
+    width: 80px; height: 80px; opacity: 0.8;
+    border-color: rgba(168, 85, 247, 0.6);
+    box-shadow: 0 0 30px rgba(168, 85, 247, 0.4);
+  }
+  100% {
+    width: 320px; height: 320px; opacity: 0;
+    border-color: transparent;
+    box-shadow: 0 0 0 transparent;
+  }
+}
+
+// ─── Aura overlay (renders above card art image) ──────────────────────────
+
+.fx-aura-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+// Central purple bloom
+.aura-bloom {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 130%;
+  height: 60%;
+  background: radial-gradient(ellipse at center,
+    rgba(168, 85, 247, 0.25) 0%,
+    rgba(140, 60, 220, 0.10) 35%,
+    transparent 70%);
+  filter: blur(24px);
+  animation: aura-bloom-pulse 5s ease-in-out infinite alternate;
+}
+
+@keyframes aura-bloom-pulse {
+  0%   { opacity: 0.40; transform: translateX(-50%) scale(0.92); }
+  100% { opacity: 0.75; transform: translateX(-50%) scale(1.12); }
+}
+
+// Multi-angle thin light rays — narrow beams from all edges
+.aura-ray {
+  position: absolute;
+  filter: blur(3px);
+  animation: aura-ray-shimmer ease-in-out infinite alternate;
+}
+
+// From top (thin beams angled down)
+.aura-ray--1 {
+  top: -5%; left: 28%; width: 12px; height: 55%;
+  transform: rotate(-8deg); transform-origin: top center;
+  animation-duration: 7s; animation-delay: 0s;
+  background: linear-gradient(180deg, rgba(190, 140, 255, 0.30) 0%, rgba(168, 85, 247, 0.08) 50%, transparent 85%);
+}
+.aura-ray--2 {
+  top: -5%; left: 68%; width: 10px; height: 45%;
+  transform: rotate(12deg); transform-origin: top center;
+  animation-duration: 9s; animation-delay: -2s;
+  background: linear-gradient(180deg, rgba(210, 170, 255, 0.25) 0%, rgba(180, 120, 240, 0.06) 50%, transparent 85%);
+}
+// From left edge
+.aura-ray--3 {
+  top: 22%; left: -3%; width: 45%; height: 10px;
+  transform: rotate(-5deg); transform-origin: left center;
+  animation-duration: 8s; animation-delay: -3.5s;
+  background: linear-gradient(90deg, rgba(168, 85, 247, 0.28) 0%, rgba(180, 120, 255, 0.06) 50%, transparent 85%);
+}
+// From right edge
+.aura-ray--4 {
+  top: 55%; right: -3%; width: 40%; height: 8px;
+  transform: rotate(4deg); transform-origin: right center;
+  animation-duration: 6.5s; animation-delay: -1s;
+  background: linear-gradient(-90deg, rgba(200, 150, 255, 0.24) 0%, rgba(160, 90, 230, 0.05) 50%, transparent 85%);
+}
+// From bottom (thin beams upward)
+.aura-ray--5 {
+  bottom: -5%; left: 18%; width: 14px; height: 40%;
+  transform: rotate(6deg); transform-origin: bottom center;
+  animation-duration: 8.5s; animation-delay: -4s;
+  background: linear-gradient(0deg, rgba(180, 100, 255, 0.28) 0%, rgba(168, 85, 247, 0.06) 50%, transparent 85%);
+}
+.aura-ray--6 {
+  bottom: -5%; left: 62%; width: 11px; height: 35%;
+  transform: rotate(-10deg); transform-origin: bottom center;
+  animation-duration: 7.5s; animation-delay: -2.5s;
+  background: linear-gradient(0deg, rgba(220, 180, 255, 0.22) 0%, rgba(190, 130, 245, 0.05) 50%, transparent 85%);
+}
+
+@keyframes aura-ray-shimmer {
+  0%   { opacity: 0.30; }
+  50%  { opacity: 0.70; }
+  100% { opacity: 0.20; }
+}
+
+// Subtle shimmer wash
+.aura-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(168, 85, 247, 0.03) 0%,
+    rgba(200, 140, 255, 0.06) 30%,
+    rgba(140, 60, 220, 0.04) 60%,
+    rgba(220, 180, 255, 0.05) 100%
+  );
+  animation: aura-shimmer-drift 10s ease-in-out infinite alternate;
+}
+
+@keyframes aura-shimmer-drift {
+  0%   { opacity: 0.30; transform: translateX(-3%); }
+  100% { opacity: 0.60; transform: translateX(3%); }
+}
+
+// Purple glitter — twinkling sparkle points scattered across lower half
+.aura-glitter {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(220, 180, 255, 0.95);
+  box-shadow:
+    0 0 4px rgba(168, 85, 247, 0.90),
+    0 0 10px rgba(200, 140, 255, 0.60),
+    0 0 20px rgba(168, 85, 247, 0.30);
+  animation: aura-glitter-twinkle ease-in-out infinite;
+}
+
+@for $i from 1 through 20 {
+  .aura-glitter--#{$i} {
+    left:               (($i * 5) - 2) * 1%;
+    bottom:             (($i % 6) * 7 + 2) * 1%;
+    width:              (2 + ($i % 3)) * 1px;
+    height:             (2 + ($i % 3)) * 1px;
+    animation-duration: (1.2 + ($i % 5) * 0.5) * 1s;
+    animation-delay:    ($i * -0.35) * 1s;
+  }
+}
+
+@keyframes aura-glitter-twinkle {
+  0%   { opacity: 0; transform: scale(0.5); }
+  20%  { opacity: 1; transform: scale(1.2); }
+  50%  { opacity: 0.6; transform: scale(0.8); }
+  80%  { opacity: 1; transform: scale(1.0); }
+  100% { opacity: 0; transform: scale(0.3); }
+}

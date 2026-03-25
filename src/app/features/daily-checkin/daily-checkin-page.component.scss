@@ -1,0 +1,132 @@
+.checkin-main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+}
+
+.checkin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 28px;
+}
+
+.checkin-title {
+  font-family: 'Cinzel', serif;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.checkin-date {
+  font-size: 15px;
+  color: var(--muted);
+}
+
+.checkin-score {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.score-num {
+  font-family: 'Cinzel', serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.score-sep { color: var(--muted); font-size: 20px; }
+
+.score-total {
+  font-family: 'Cinzel', serif;
+  font-size: 20px;
+  color: var(--muted);
+}
+
+.score-label {
+  font-size: 13px;
+  color: var(--hint);
+  margin-left: 4px;
+  letter-spacing: 1px;
+}
+
+.all-done-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--success-dim);
+  border: 0.5px solid rgba(74, 222, 128, 0.25);
+  border-radius: 16px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  font-size: 16px;
+  color: var(--success);
+  animation: fade-up 0.4s ease;
+}
+
+.habit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.habit-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  border: 0.5px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 16px 18px;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  font-family: 'Noto Sans JP', sans-serif;
+  transition: all 0.2s;
+
+  &:hover { border-color: var(--border-hover); }
+
+  &.checked {
+    background: var(--success-dim);
+    border-color: rgba(74, 222, 128, 0.2);
+
+    .habit-check-icon { color: var(--success); }
+    .habit-text { color: var(--muted); }
+  }
+}
+
+.habit-aspect-icon { font-size: 28px; flex-shrink: 0; }
+
+.habit-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.habit-aspect-label {
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.habit-text {
+  font-size: 16px;
+  color: var(--text);
+  transition: color 0.2s;
+}
+
+.habit-check-icon {
+  font-size: 20px;
+  color: var(--hint);
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+
+.checkin-footer { margin-top: 8px; }

@@ -1,0 +1,87 @@
+// ══════════════════════════════════════════════════════════════════════════
+// TILE STORM FX — mini storm overlay for card tile grid
+// Used by spread-card-tile.component.scss via @use 'tile-storm'
+// ══════════════════════════════════════════════════════════════════════════
+
+// ─── Storm overlay (above card art, z-index 2) ────────────────────────────
+
+.mini-storm-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.mini-storm-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #0d0820 0%, #160f30 50%, #1a1240 100%);
+  z-index: 0;
+}
+
+.mini-rain {
+  position: absolute;
+  width: 1.5px;
+  height: 10px;
+  background: linear-gradient(180deg, transparent, rgba(180, 200, 255, 0.80));
+  border-radius: 0 0 2px 2px;
+  animation: mini-rain-fall linear infinite;
+  z-index: 2;
+
+  @for $i from 1 through 8 {
+    &:nth-child(#{$i}) {
+      left: #{($i * 12) - 4}#{'%'};
+      animation-duration: #{0.4 + ($i % 4) * 0.12}s;
+      animation-delay: #{($i % 5) * 0.08}s;
+      opacity: #{0.55 + ($i % 3) * 0.15};
+    }
+  }
+}
+
+@keyframes mini-rain-fall {
+  0%   { transform: translateY(-12px) skewX(-6deg); opacity: 0; }
+  8%   { opacity: 1; }
+  100% { transform: translateY(250px) skewX(-6deg); opacity: 0; }
+}
+
+.mini-bolt {
+  position: absolute;
+  top: 6%;
+  left: 52%;
+  width: 7px;
+  height: 44px;
+  background: linear-gradient(180deg, #ffffff 0%, #d0c0ff 50%, rgba(180,140,255,0.5) 100%);
+  clip-path: polygon(35% 0%, 100% 0%, 60% 42%, 95% 42%, 0% 100%, 40% 58%, 5% 58%);
+  filter:
+    drop-shadow(0 0 3px rgba(255,255,255,0.95))
+    drop-shadow(0 0 7px rgba(200,160,255,0.80));
+  opacity: 0;
+  z-index: 3;
+  animation: bolt-strike 4s ease-out infinite;
+}
+
+.mini-lightning {
+  position: absolute;
+  inset: 0;
+  background: rgba(220, 210, 255, 0.20);
+  opacity: 0;
+  z-index: 4;
+  animation: lightning-strike 4s ease-out infinite;
+}
+
+@keyframes lightning-strike {
+  0%, 88%, 100% { opacity: 0; }
+  89%   { opacity: 0.9; }
+  89.5% { opacity: 0; }
+  90%   { opacity: 0.55; }
+  90.5% { opacity: 0; }
+}
+
+@keyframes bolt-strike {
+  0%, 87%, 100% { opacity: 0; }
+  89%   { opacity: 1; }
+  89.8% { opacity: 0; }
+  90.5% { opacity: 0.80; }
+  91%   { opacity: 0; }
+}

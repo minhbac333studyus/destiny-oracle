@@ -1,0 +1,50 @@
+<app-nav-bar activeTab="spread" (tabChanged)="onCancel()" />
+
+<main class="add-main">
+  <header class="add-header">
+    <h1 class="add-title">ADD A NEW ASPECT</h1>
+    <p class="add-sub">Create a custom life dimension for your Oracle spread.</p>
+  </header>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="add-form">
+    <div class="field">
+      <label class="field-label">ASPECT NAME</label>
+      <input formControlName="label" type="text" placeholder="e.g. My Startup, My Art, My Health Journey…" />
+      @if (labelControl.invalid && labelControl.touched) {
+        <span class="field-error">Name is required</span>
+      }
+    </div>
+
+    <div class="field">
+      <label class="field-label">CHOOSE AN ICON</label>
+      <div class="icon-grid">
+        @for (icon of iconOptions; track icon) {
+          <button
+            type="button"
+            class="icon-btn"
+            [class.selected]="selectedIcon() === icon"
+            (click)="selectIcon(icon)">
+            {{ icon }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">YOUR FEARED FUTURE</label>
+      <textarea
+        formControlName="fearText"
+        rows="5"
+        placeholder="What does this look like in 10 years if nothing changes?"
+      ></textarea>
+      @if (fearControl.invalid && fearControl.touched) {
+        <span class="field-error">Please describe your fear (at least 20 characters)</span>
+      }
+    </div>
+
+    <div class="add-actions">
+      <app-oracle-button variant="ghost" type="button" (click)="onCancel()">Cancel</app-oracle-button>
+      <app-oracle-button type="submit" [fullWidth]="true">CREATE ORACLE CARD</app-oracle-button>
+    </div>
+  </form>
+</main>

@@ -1,0 +1,126 @@
+<div
+  class="tile"
+  [class]="'stage-' + card.stage"
+  [class.near-evolved]="card.progressPercent >= 70"
+  (click)="tileClicked.emit(card.id)"
+  role="button"
+  [attr.aria-label]="card.aspectLabel + ' card'">
+
+  <div class="tile-img">
+    <!-- Stage FX (lighter versions) -->
+    <div class="tile-fx">
+      @if (card.stage === 'storm') {
+        <div class="mini-storm-bg"></div>
+      }
+      @if (card.stage === 'fog') {
+        <div class="mini-fog"></div>
+        <div class="mini-fog mini-fog--2"></div>
+      }
+      @if (card.stage === 'clearing') {
+        <div class="mini-ray"></div>
+        <div class="mini-ray mini-ray--2"></div>
+      }
+      @if (card.stage === 'aura') {
+        <div class="mini-aura-ring"></div>
+        <div class="mini-aura-ring mini-aura-ring--2"></div>
+      }
+      @if (card.stage === 'radiance') {
+        @for (s of [1,2,3,4]; track s) { <span class="mini-spark"></span> }
+      }
+      @if (card.stage === 'legend') {
+        @for (p of [1,2,3,4,5]; track p) { <span class="mini-sakura"></span> }
+      }
+    </div>
+
+    <!-- Lens flare flash points for tile -->
+    @if (flares.length > 0) {
+      <div class="tile-flashes">
+        @for (f of flares; track f.id) {
+          <div
+            class="flare-mini"
+            [class]="'flare-mini flare-mini-v' + f.variant"
+            [ngStyle]="{
+              top: f.top,
+              left: f.left,
+              'animation-delay': f.delay,
+              '--flare-scale': f.scale
+            }">
+          </div>
+        }
+      </div>
+    }
+
+    @if (card.imageUrl && !imageError) {
+      <img class="tile-art-img" [src]="card.imageUrl"
+           [alt]="card.aspectKey + ' ' + card.stage + ' stage art'"
+           (error)="onImageError()" />
+    } @else {
+      <div class="tile-img-placeholder">
+        <span class="tile-aspect-icon">{{ card.aspectKey | aspectIcon }}</span>
+      </div>
+    }
+    <!-- Tarot frame overlay -->
+    <img class="tile-frame-overlay" src="assets/frame/frame.jpg" alt="" />
+    @if (card.stage === 'clearing') {
+      <div class="mini-clearing-overlay">
+        <div class="mini-clearing-glow"></div>
+        <div class="mini-clearing-ray mini-clearing-ray--1"></div>
+        <div class="mini-clearing-ray mini-clearing-ray--2"></div>
+        <div class="mini-clearing-ray mini-clearing-ray--3"></div>
+        @for (m of [1,2,3,4,5]; track m) {
+          <span class="mini-dust-mote mini-dust-mote--{{m}}"></span>
+        }
+      </div>
+    }
+    @if (card.stage === 'fog') {
+      <div class="mini-fog-overlay">
+        <div class="mini-fog-wisp mini-fog-wisp--1"></div>
+        <div class="mini-fog-wisp mini-fog-wisp--2"></div>
+        <div class="mini-fog-bottom-mist"></div>
+      </div>
+    }
+    @if (card.stage === 'radiance') {
+      <div class="mini-radiance-overlay">
+        <div class="mini-radiance-bloom"></div>
+        @for (e of [1,2,3,4,5,6]; track e) {
+          <span class="mini-ember mini-ember--{{e}}"></span>
+        }
+      </div>
+    }
+    @if (card.stage === 'legend') {
+      <div class="mini-legend-overlay">
+        <div class="mini-legend-bloom"></div>
+        <div class="mini-legend-ray mini-legend-ray--1"></div>
+        <div class="mini-legend-ray mini-legend-ray--2"></div>
+        <div class="mini-legend-ray mini-legend-ray--3"></div>
+        <div class="mini-legend-shimmer"></div>
+        @for (p of [1,2,3,4,5,6,7,8]; track p) {
+          <span class="mini-ovl-petal mini-ovl-petal--{{p}}"></span>
+        }
+      </div>
+    }
+    @if (card.stage === 'storm') {
+      <div class="mini-storm-overlay">
+        @for (r of [1,2,3,4,5,6,7,8]; track r) { <span class="mini-rain"></span> }
+        <div class="mini-bolt"></div>
+        <div class="mini-lightning"></div>
+      </div>
+    }
+    @if (card.streakDays > 0) {
+      <span class="streak-badge">🔥 {{ card.streakDays }}</span>
+    }
+  </div>
+
+  <div class="tile-body">
+    <p class="tile-aspect">{{ card.aspectLabel }}</p>
+    <p class="tile-title">{{ card.cardTitle }}</p>
+
+    <div class="tile-footer">
+      <app-stage-badge [stage]="card.stage" />
+      <app-progress-ring
+        [percent]="card.progressPercent"
+        [size]="32"
+        [color]="stageColor" />
+    </div>
+  </div>
+</div>

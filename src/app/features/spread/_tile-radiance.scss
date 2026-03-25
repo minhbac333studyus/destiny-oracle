@@ -1,0 +1,89 @@
+// ══════════════════════════════════════════════════════════════════════════
+// TILE RADIANCE FX — mini radiance overlay + sparks for card tile grid
+// Used by spread-card-tile.component.scss via @use 'tile-radiance'
+// ══════════════════════════════════════════════════════════════════════════
+
+// ─── Radiance overlay (above card art, z-index 2) ─────────────────────────
+
+.mini-radiance-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.mini-radiance-bloom {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140%;
+  height: 55%;
+  background: radial-gradient(ellipse at center,
+    rgba(240, 192, 96, 0.42) 0%,
+    rgba(255, 210, 80, 0.18) 38%,
+    transparent 70%);
+  filter: blur(14px);
+  animation: mini-radiance-bloom-pulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes mini-radiance-bloom-pulse {
+  0%   { opacity: 0.55; transform: translateX(-50%) scale(0.88); }
+  100% { opacity: 1.00; transform: translateX(-50%) scale(1.14); }
+}
+
+.mini-ember {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(240, 192, 96, 0.95);
+  box-shadow: 0 0 5px rgba(240, 192, 96, 0.90), 0 0 10px rgba(255, 150, 30, 0.45);
+  animation: mini-ember-rise linear infinite;
+}
+
+@for $i from 1 through 6 {
+  .mini-ember--#{$i} {
+    left:               ($i * 15 - 5) * 1%;
+    bottom:             (($i % 3) * 10 + 3) * 1%;
+    width:              (2 + ($i % 2)) * 1px;
+    height:             (2 + ($i % 2)) * 1px;
+    animation-duration: (2.5 + ($i % 3) * 0.8) * 1s;
+    animation-delay:    ($i * -0.6) * 1s;
+    --me-tx:            ((($i % 3) - 1) * 25 + ($i % 2) * 15) * 1px;
+    opacity:            0.70 + ($i % 3) * 0.12;
+  }
+}
+
+@keyframes mini-ember-rise {
+  0%   { transform: translateY(0);      opacity: 0; }
+  10%  { opacity: 1; }
+  100% { transform: translateY(-200px); opacity: 0; }
+}
+
+// ─── Radiance sparks (inside tile-fx, z-index 0, behind card art) ─────────
+
+.mini-spark {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 8px var(--gold);
+  left: 50%;
+  top: 50%;
+  animation: mini-spark-fly 2s ease-out infinite;
+
+  @for $i from 1 through 4 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.5}s;
+      --ms-tx: #{(-1 + ($i % 2) * 2) * 40 + ($i * 10)}px;
+      --ms-ty: #{(-1 + (($i + 1) % 2) * 2) * 30 - ($i * 8)}px;
+    }
+  }
+}
+
+@keyframes mini-spark-fly {
+  0%   { transform: translate(0, 0) scale(1); opacity: 0.8; }
+  70%  { transform: translate(var(--ms-tx, 40px), var(--ms-ty, -30px)) scale(0.4); opacity: 0.4; }
+  100% { transform: translate(var(--ms-tx, 40px), var(--ms-ty, -30px)) scale(0); opacity: 0; }
+}

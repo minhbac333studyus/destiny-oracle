@@ -1,0 +1,86 @@
+// ══════════════════════════════════════════════════════════════════════════
+// TILE FOG FX — mini fog overlay + background fog for card tile grid
+// Used by spread-card-tile.component.scss via @use 'tile-fog'
+// ══════════════════════════════════════════════════════════════════════════
+
+// ─── Fog overlay (above card art, z-index 2) ──────────────────────────────
+
+.mini-fog-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.mini-fog-wisp {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.mini-fog-wisp--1 {
+  width: 180%; height: 45%;
+  top: 20%; left: -40%;
+  background: radial-gradient(ellipse, rgba(220, 228, 255, 0.30) 0%, transparent 70%);
+  filter: blur(18px);
+  animation: mini-fog-drift-r 18s ease-in-out infinite alternate;
+}
+
+.mini-fog-wisp--2 {
+  width: 160%; height: 38%;
+  top: 55%; left: -25%;
+  background: radial-gradient(ellipse, rgba(190, 205, 255, 0.24) 0%, transparent 70%);
+  filter: blur(22px);
+  animation: mini-fog-drift-l 24s ease-in-out infinite alternate;
+}
+
+.mini-fog-bottom-mist {
+  position: absolute;
+  bottom: 0; left: -10%; right: -10%;
+  height: 35%;
+  background: linear-gradient(0deg,
+    rgba(180, 198, 255, 0.38) 0%,
+    rgba(200, 215, 255, 0.15) 55%,
+    transparent 100%);
+  filter: blur(10px);
+  animation: mini-fog-swell 8s ease-in-out infinite alternate;
+}
+
+@keyframes mini-fog-drift-r {
+  0%   { transform: translateX(0);    opacity: 0.90; }
+  100% { transform: translateX(20%);  opacity: 0.55; }
+}
+@keyframes mini-fog-drift-l {
+  0%   { transform: translateX(0);    opacity: 0.70; }
+  100% { transform: translateX(-18%); opacity: 0.95; }
+}
+@keyframes mini-fog-swell {
+  0%   { height: 28%; opacity: 0.75; }
+  100% { height: 44%; opacity: 1.00; }
+}
+
+// ─── Fog background (inside tile-fx, z-index 0, behind card art) ──────────
+
+.mini-fog {
+  position: absolute;
+  width: 200%;
+  height: 100%;
+  top: 30%;
+  left: -50%;
+  background: radial-gradient(ellipse at center, rgba(129, 140, 248, 0.18) 0%, transparent 65%);
+  filter: blur(30px);
+  animation: mini-fog-drift 10s ease-in-out infinite alternate;
+}
+
+.mini-fog--2 {
+  top: 60%;
+  left: -30%;
+  animation-duration: 14s;
+  animation-direction: alternate-reverse;
+  opacity: 0.5;
+}
+
+@keyframes mini-fog-drift {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(25%); }
+}

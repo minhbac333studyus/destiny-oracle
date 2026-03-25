@@ -1,0 +1,23 @@
+<div class="reveal-wrap">
+  <div class="reveal-header">
+    <h2 class="reveal-title">YOUR REGRET SPREAD</h2>
+    <p class="reveal-sub">These are your 10 Oracle cards. Each one shows a feared future.<br>They are yours to change.</p>
+  </div>
+
+  <div class="card-spread">
+    @for (fear of fears; track fear.aspectKey) {
+      <div class="reveal-card stage-storm">
+        <div class="card-icon">{{ fear.aspectIcon }}</div>
+        <div class="card-aspect">{{ fear.aspectLabel }}</div>
+        <app-stage-badge [stage]="stormStage" />
+      </div>
+    }
+  </div>
+
+  <div class="reveal-footer">
+    <p class="reveal-cta-text">This is your Oracle. Change it.</p>
+    <app-oracle-button (click)="complete.emit()">
+      ENTER THE ORACLE
+    </app-oracle-button>
+  </div>
+</div>

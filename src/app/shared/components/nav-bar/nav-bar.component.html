@@ -1,0 +1,21 @@
+<nav class="nav">
+  <a class="nav-logo" routerLink="/spread">CONQUER FUTURE</a>
+
+  <div class="nav-tabs">
+    @for (tab of tabs; track tab.id) {
+      <button
+        class="nav-tab"
+        [ngClass]="{ active: activeTab === tab.id }"
+        (click)="select(tab.id)">
+        {{ tab.label }}
+      </button>
+    }
+  </div>
+
+  @if (streakDays > 0) {
+    <div class="nav-streak">
+      <span class="streak-flame">🔥</span>
+      <span>{{ streakDays }} day streak</span>
+    </div>
+  }
+</nav>

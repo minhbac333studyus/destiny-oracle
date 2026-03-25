@@ -1,0 +1,146 @@
+// ══════════════════════════════════════════════════════════════════════════
+// TILE LEGEND FX — mini legend overlay + sakura for card tile grid
+// Used by spread-card-tile.component.scss via @use 'tile-legend'
+// ══════════════════════════════════════════════════════════════════════════
+
+// ─── Legend overlay (above card art, z-index 2) ───────────────────────────
+
+.mini-legend-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.mini-legend-bloom {
+  position: absolute;
+  top: -15%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 150%;
+  height: 60%;
+  background: radial-gradient(ellipse at top,
+    rgba(244, 114, 182, 0.65) 0%,
+    rgba(216, 130, 240, 0.28) 40%,
+    transparent 72%);
+  filter: blur(16px);
+  animation: mini-legend-bloom-pulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes mini-legend-bloom-pulse {
+  0%   { opacity: 0.65; transform: translateX(-50%) scale(0.90); }
+  100% { opacity: 1.00; transform: translateX(-50%) scale(1.16); }
+}
+
+.mini-legend-ray {
+  position: absolute;
+  top: -5%;
+  height: 110%;
+  background: linear-gradient(180deg,
+    rgba(255, 200, 230, 0.50) 0%,
+    rgba(244, 114, 182, 0.14) 55%,
+    transparent 85%);
+  filter: blur(5px);
+  transform-origin: top center;
+  animation: mini-legend-ray-shimmer ease-in-out infinite alternate;
+}
+
+.mini-legend-ray--1 { left: 18%; width: 38px; transform: rotate(-13deg); animation-duration: 5s;   animation-delay: 0s; }
+.mini-legend-ray--2 { left: 46%; width: 48px; transform: rotate(-2deg);  animation-duration: 7s;   animation-delay: -2s; opacity: 0.85; }
+.mini-legend-ray--3 { left: 70%; width: 32px; transform: rotate(14deg);  animation-duration: 6.5s; animation-delay: -1s; opacity: 0.70; }
+
+@keyframes mini-legend-ray-shimmer {
+  0%   { opacity: 0.45; }
+  50%  { opacity: 1.00; }
+  100% { opacity: 0.30; }
+}
+
+.mini-legend-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 200, 230, 0.10) 0%,
+    rgba(216, 160, 255, 0.16) 40%,
+    rgba(255, 220, 180, 0.10) 70%,
+    rgba(180, 220, 255, 0.10) 100%
+  );
+  animation: mini-legend-shimmer-drift 8s ease-in-out infinite alternate;
+}
+
+@keyframes mini-legend-shimmer-drift {
+  0%   { opacity: 0.50; transform: translateX(-5%); }
+  100% { opacity: 1.00; transform: translateX(5%); }
+}
+
+.mini-ovl-petal {
+  position: absolute;
+  border-radius: 50% 0 50% 0;
+  background: rgba(255, 150, 200, 0.95);
+  box-shadow:
+    0 0 6px  rgba(255, 100, 180, 0.90),
+    0 0 14px rgba(244, 114, 182, 0.55);
+  animation: mini-ovl-petal-fall ease-in-out infinite;
+}
+
+@for $i from 1 through 8 {
+  .mini-ovl-petal--#{$i} {
+    left:               ($i * 12 - 4) * 1%;
+    top:                -12px;
+    width:              (4 + ($i % 3) * 3) * 1px;
+    height:             (4 + ($i % 3) * 3) * 1px;
+    animation-duration: (2.8 + ($i % 4) * 0.5) * 1s;
+    animation-delay:    ($i * -0.52) * 1s;
+    @if $i % 3 == 1 { animation-name: mini-petal-fall-l; }
+    @else if $i % 3 == 2 { animation-name: mini-petal-fall-r; }
+    @else { animation-name: mini-petal-fall-c; }
+  }
+}
+
+@keyframes mini-petal-fall-l {
+  0%   { transform: translateY(0)     translateX(0)    rotate(0deg);   opacity: 0; }
+  10%  { opacity: 1; }
+  55%  { opacity: 0.60; }
+  100% { transform: translateY(350px) translateX(-38px) rotate(250deg); opacity: 0; }
+}
+@keyframes mini-petal-fall-r {
+  0%   { transform: translateY(0)     translateX(0)    rotate(0deg);   opacity: 0; }
+  10%  { opacity: 1; }
+  55%  { opacity: 0.60; }
+  100% { transform: translateY(350px) translateX(35px)  rotate(290deg); opacity: 0; }
+}
+@keyframes mini-petal-fall-c {
+  0%   { transform: translateY(0)     translateX(0)    rotate(0deg);   opacity: 0; }
+  10%  { opacity: 1; }
+  40%  { transform: translateY(140px) translateX(16px)  rotate(100deg); }
+  55%  { opacity: 0.60; }
+  100% { transform: translateY(350px) translateX(-12px) rotate(270deg); opacity: 0; }
+}
+
+// ─── Legend sakura (inside tile-fx, z-index 0, behind card art) ───────────
+
+.mini-sakura {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--rose);
+  border-radius: 50% 0 50% 0;
+  opacity: 0;
+  box-shadow: 0 0 4px rgba(244, 114, 182, 0.4);
+
+  @for $i from 1 through 5 {
+    &:nth-child(#{$i}) {
+      left: #{$i * 18}#{'%'};
+      top: -6px;
+      animation: mini-sakura-fall #{2.5 + ($i % 3)}s ease-in-out infinite;
+      animation-delay: #{$i * 0.6}s;
+    }
+  }
+}
+
+@keyframes mini-sakura-fall {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+  10%  { opacity: 0.7; }
+  100% { transform: translateY(250px) rotate(270deg) translateX(15px); opacity: 0; }
+}

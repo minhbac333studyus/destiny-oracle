@@ -1,0 +1,96 @@
+.edit-main {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+}
+
+.edit-header { margin-bottom: 32px; }
+
+.edit-title {
+  font-family: 'Cinzel', serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.edit-sub {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.edit-form { display: flex; flex-direction: column; gap: 20px; }
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  color: var(--muted);
+}
+
+.optional { color: var(--hint); font-size: 10px; }
+
+textarea {
+  width: 100%;
+  background: var(--bg2);
+  border: 0.5px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.2s;
+  line-height: 1.7;
+
+  &:focus { border-color: var(--gold-border); }
+  &::placeholder { color: var(--hint); }
+}
+
+.field-error { font-size: 12px; color: var(--danger); }
+
+.edit-actions { display: flex; gap: 12px; }
+
+.regen-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 60px 0;
+  text-align: center;
+}
+
+.regen-spinner {
+  font-size: 48px;
+  animation: pulse-glow 1s ease-in-out infinite;
+}
+
+.regen-text {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: var(--muted);
+}
+
+.regen-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 60px 0;
+  text-align: center;
+  font-size: 16px;
+  color: var(--success);
+  animation: fade-up 0.4s ease;
+
+  span { font-size: 40px; }
+}

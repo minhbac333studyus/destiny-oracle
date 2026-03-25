@@ -1,0 +1,26 @@
+<div class="quick-input-bar">
+  <div class="input-wrapper">
+    <span class="input-icon">⚡</span>
+    <input
+      type="text"
+      class="input-field"
+      [(ngModel)]="inputText"
+      (keydown)="onKeyDown($event)"
+      placeholder="What did you do today? e.g. 'Went running for 30 min'"
+    />
+    <button class="send-btn" (click)="onSubmit()" [disabled]="!inputText.trim()">
+      Log It
+    </button>
+  </div>
+
+  @if (showConfirmation() && lastParsed()) {
+    <div class="confirmation">
+      <span class="conf-icon">{{ lastParsed()!.aspectKey | aspectIcon }}</span>
+      <div class="conf-text">
+        <strong>+{{ lastParsed()!.xpGained }} XP</strong> logged to
+        <span class="conf-aspect">{{ lastParsed()!.aspectLabel }}</span>
+      </div>
+      <span class="conf-check">✓</span>
+    </div>
+  }
+</div>

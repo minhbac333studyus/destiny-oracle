@@ -1,0 +1,58 @@
+// ══════════════════════════════════════════════════════════════════════════
+// DESIGN TOKENS — global CSS custom properties
+// ══════════════════════════════════════════════════════════════════════════
+//
+// Stage colors are generated from _stage-config.scss ($stage-map).
+// To change a stage color, edit _stage-config.scss — not this file.
+//
+// ══════════════════════════════════════════════════════════════════════════
+
+@use 'stage-config' as sc;
+
+:root {
+  // ── Backgrounds — sunset sky gradient tones (SAO horizon feel)
+  --bg:  #0c1028;
+  --bg2: #141838;
+  --bg3: #1c2048;
+
+  // ── Glass panel overlays
+  --glass:        rgba(12, 16, 40, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.12);
+
+  // ── Borders
+  --border:       rgba(255, 255, 255, 0.10);
+  --border-hover: rgba(255, 200, 120, 0.35);
+
+  // ── Text — warm bright white
+  --text:  #f5f0ff;
+  --muted: rgba(220, 210, 240, 0.60);
+  --hint:  rgba(220, 210, 240, 0.30);
+
+  // ── Brand palette
+  --gold:        #ffb347;
+  --gold-dim:    rgba(255, 179, 71, 0.15);
+  --gold-border: rgba(255, 179, 71, 0.35);
+  --accent:      #5ecfff;
+  --accent-dim:  rgba(94, 207, 255, 0.12);
+  --purple:      #a855f7;
+  --rose:        #f472b6;
+  --success:     #34d399;
+  --success-dim: rgba(52, 211, 153, 0.12);
+  --danger:      #fb7185;
+
+  // ── Card stage colors — generated from $stage-map in _stage-config.scss
+  // Output: --stage-storm: #6366f1; --stage-storm-rgb: 99, 102, 241; etc.
+  @include sc.stage-css-vars;
+
+  // ── Spacing scale
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+
+  // ── Card dimensions — BIGGER
+  --card-w:      320px;
+  --card-h:      420px;
+  --card-radius: 16px;
+}

@@ -1,0 +1,39 @@
+// ══════════════════════════════════════════════════════════════════════════
+// TILE SHARED FX — near-evolved pulse animation for card tile grid
+// Used by spread-card-tile.component.scss via @use 'tile-shared'
+// ══════════════════════════════════════════════════════════════════════════
+
+// ─── Near-evolved tile pulse (≥ 90% progress) ────────────────────────────
+// Four double-beats per cycle (5 s), long rest at the end.
+
+.tile.near-evolved {
+  transform-origin: center;
+  transition: none;
+  animation: tile-evolve-pulse 5s ease-in-out infinite;
+}
+
+@keyframes tile-evolve-pulse {
+  // ── REST ──────────────────────────────────────────────────────────
+  0%  { transform: scale(1.0); outline: 1px solid rgba(var(--stage-rgb, 99, 102, 241), 0.0);  outline-offset: 0px;  box-shadow: none; }
+  // ── BEAT 1 ────────────────────────────────────────────────────────
+  6%  { transform: scale(1.0);  outline: 1px solid rgba(var(--stage-rgb, 99, 102, 241), 0.95); outline-offset: 8px;  box-shadow: 0 0 50px rgba(var(--stage-rgb, 99, 102, 241), 0.50), 0 0 16px rgba(255,255,255,0.15); }
+  10% { transform: scale(1.04); outline: 1px solid rgba(var(--stage-rgb, 99, 102, 241), 0.95); outline-offset: 16px; box-shadow: 0 0 65px rgba(var(--stage-rgb, 99, 102, 241), 0.60), 0 0 20px rgba(255,255,255,0.18); }
+  14% { transform: scale(1.07); outline: 1px solid rgba(var(--stage-rgb, 99, 102, 241), 0.55); outline-offset: 2px;  box-shadow: 0 0 40px rgba(var(--stage-rgb, 99, 102, 241), 0.35); }
+  20% { transform: scale(1.0);  outline: 1px solid rgba(var(--stage-rgb, 99, 102, 241), 0.0);  outline-offset: 0px;  box-shadow: none; }
+  // ── BEAT 2 ────────────────────────────────────────────────────────
+  27% { transform: scale(1.0);  outline: 1px solid rgba(var(--stage-rgb, 99, 102, 241), 0.95); outline-offset: 8px;  box-shadow: 0 0 50px rgba(var(--stage-rgb, 99, 102, 241), 0.50), 0 0 16px rgba(255,255,255,0.15); }
+  31% { transform: scale(1.04); outline: 1px solid rgba(var(--stage-rgb, 99, 102, 241), 0.95); outline-offset: 16px; box-shadow: 0 0 65px rgba(var(--stage-rgb, 99, 102, 241), 0.60), 0 0 20px rgba(255,255,255,0.18); }
+  35% { transform: scale(1.07); outline: 1px solid rgba(var(--stage-rgb, 99, 102, 241), 0.55); outline-offset: 2px;  box-shadow: 0 0 40px rgba(var(--stage-rgb, 99, 102, 241), 0.35); }
+  41% { transform: scale(1.0);  outline: 1px solid rgba(var(--stage-rgb, 99, 102, 241), 0.0);  outline-offset: 0px;  box-shadow: none; }
+  // ── BEAT 3 ────────────────────────────────────────────────────────
+  48% { transform: scale(1.0);  outline: 1px solid rgba(var(--stage-rgb, 99, 102, 241), 0.95); outline-offset: 8px;  box-shadow: 0 0 50px rgba(var(--stage-rgb, 99, 102, 241), 0.50), 0 0 16px rgba(255,255,255,0.15); }
+  52% { transform: scale(1.04); outline: 1px solid rgba(var(--stage-rgb, 99, 102, 241), 0.95); outline-offset: 16px; box-shadow: 0 0 65px rgba(var(--stage-rgb, 99, 102, 241), 0.60), 0 0 20px rgba(255,255,255,0.18); }
+  56% { transform: scale(1.07); outline: 1px solid rgba(var(--stage-rgb, 99, 102, 241), 0.55); outline-offset: 2px;  box-shadow: 0 0 40px rgba(var(--stage-rgb, 99, 102, 241), 0.35); }
+  62% { transform: scale(1.0);  outline: 1px solid rgba(var(--stage-rgb, 99, 102, 241), 0.0);  outline-offset: 0px;  box-shadow: none; }
+  // ── BEAT 4 ────────────────────────────────────────────────────────
+  69% { transform: scale(1.0);  outline: 1px solid rgba(var(--stage-rgb, 99, 102, 241), 0.95); outline-offset: 8px;  box-shadow: 0 0 50px rgba(var(--stage-rgb, 99, 102, 241), 0.50), 0 0 16px rgba(255,255,255,0.15); }
+  73% { transform: scale(1.04); outline: 1px solid rgba(var(--stage-rgb, 99, 102, 241), 0.95); outline-offset: 16px; box-shadow: 0 0 65px rgba(var(--stage-rgb, 99, 102, 241), 0.60), 0 0 20px rgba(255,255,255,0.18); }
+  77% { transform: scale(1.07); outline: 1px solid rgba(var(--stage-rgb, 99, 102, 241), 0.55); outline-offset: 2px;  box-shadow: 0 0 40px rgba(var(--stage-rgb, 99, 102, 241), 0.35); }
+  // ── LONG REST ─────────────────────────────────────────────────────
+  83%, 100% { transform: scale(1.0); outline: 1px solid rgba(var(--stage-rgb, 99, 102, 241), 0.0); outline-offset: 0px; box-shadow: none; }
+}

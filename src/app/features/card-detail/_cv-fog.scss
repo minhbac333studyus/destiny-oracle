@@ -1,0 +1,114 @@
+// ══════════════════════════════════════════════════════════════════════════
+// FOG FX — drifting mist layers and wispy overlay
+// Used by card-visual.component.scss via @use 'cv-fog'
+// ══════════════════════════════════════════════════════════════════════════
+
+// ─── Base fog layers (behind card art) ────────────────────────────────────
+
+.fx-fog {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.fog-layer {
+  position: absolute;
+  width: 200%;
+  height: 100%;
+  background: radial-gradient(ellipse at center, rgba(129, 140, 248, 0.20) 0%, transparent 70%);
+  filter: blur(40px);
+}
+
+.fog-layer--1 {
+  top: 20%;
+  left: -50%;
+  animation: fog-drift-1 12s ease-in-out infinite alternate;
+}
+.fog-layer--2 {
+  top: 50%;
+  left: -30%;
+  animation: fog-drift-2 16s ease-in-out infinite alternate;
+  opacity: 0.6;
+}
+.fog-layer--3 {
+  top: 70%;
+  left: -60%;
+  animation: fog-drift-3 10s ease-in-out infinite alternate;
+  opacity: 0.4;
+}
+
+@keyframes fog-drift-1 { 0% { transform: translateX(0); } 100% { transform: translateX(30%); } }
+@keyframes fog-drift-2 { 0% { transform: translateX(0); } 100% { transform: translateX(-20%); } }
+@keyframes fog-drift-3 { 0% { transform: translateX(0) translateY(0); } 100% { transform: translateX(25%) translateY(-10%); } }
+
+// ─── Fog overlay (renders above card art image) ───────────────────────────
+
+.fx-fog-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+.fog-wisp {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.fog-wisp--1 {
+  width: 180%; height: 40%;
+  top: 15%; left: -40%;
+  background: radial-gradient(ellipse, rgba(220, 228, 255, 0.28) 0%, transparent 70%);
+  filter: blur(28px);
+  animation: fog-wisp-right 20s ease-in-out infinite alternate;
+}
+.fog-wisp--2 {
+  width: 160%; height: 35%;
+  top: 42%; left: -20%;
+  background: radial-gradient(ellipse, rgba(190, 205, 255, 0.22) 0%, transparent 70%);
+  filter: blur(36px);
+  animation: fog-wisp-left 26s ease-in-out infinite alternate;
+}
+.fog-wisp--3 {
+  width: 130%; height: 28%;
+  top: 5%; left: -10%;
+  background: radial-gradient(ellipse, rgba(240, 242, 255, 0.18) 0%, transparent 65%);
+  filter: blur(20px);
+  animation: fog-wisp-right 15s ease-in-out infinite alternate;
+  animation-delay: -6s;
+}
+.fog-wisp--4 {
+  width: 170%; height: 45%;
+  top: 62%; left: -55%;
+  background: radial-gradient(ellipse, rgba(200, 215, 255, 0.20) 0%, transparent 70%);
+  filter: blur(32px);
+  animation: fog-wisp-left 30s ease-in-out infinite alternate;
+  animation-delay: -10s;
+}
+
+.fog-bottom-mist {
+  position: absolute;
+  bottom: 0; left: -10%; right: -10%;
+  height: 38%;
+  background: linear-gradient(0deg,
+    rgba(180, 198, 255, 0.35) 0%,
+    rgba(200, 215, 255, 0.18) 50%,
+    transparent 100%);
+  filter: blur(14px);
+  animation: fog-swell 9s ease-in-out infinite alternate;
+}
+
+@keyframes fog-wisp-right {
+  0%   { transform: translateX(0)   scaleY(1.0); opacity: 0.85; }
+  100% { transform: translateX(22%) scaleY(1.15); opacity: 0.55; }
+}
+@keyframes fog-wisp-left {
+  0%   { transform: translateX(0)    scaleY(1.0); opacity: 0.75; }
+  100% { transform: translateX(-20%) scaleY(1.20); opacity: 0.45; }
+}
+@keyframes fog-swell {
+  0%   { height: 30%; opacity: 0.70; }
+  100% { height: 48%; opacity: 1.00; }
+}

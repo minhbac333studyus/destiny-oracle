@@ -1,0 +1,141 @@
+.goals-main {
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+}
+
+.goals-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.goals-title {
+  font-family: 'Cinzel', serif;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.goals-sub { font-size: 15px; color: var(--muted); }
+
+.goals-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.goal-card {
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  border: 0.5px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: border-color 0.2s;
+
+  &:hover { border-color: var(--border-hover); }
+  &.status-completed { opacity: 0.6; }
+}
+
+.goal-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.goal-aspect-icon { font-size: 30px; flex-shrink: 0; }
+
+.goal-meta { flex: 1; }
+
+.goal-aspect-label {
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.goal-title {
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.goal-progress-pct {
+  font-family: 'Cinzel', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+.progress-bar {
+  height: 5px;
+  background: var(--glass);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--accent));
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.milestones {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.milestone-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 0.5px solid transparent;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-family: 'Noto Sans JP', sans-serif;
+  transition: all 0.2s;
+
+  &:hover { background: var(--glass); border-color: var(--glass-border); }
+
+  &.achieved {
+    .milestone-check { color: var(--success); }
+    .milestone-text  { color: var(--muted); text-decoration: line-through; }
+  }
+}
+
+.milestone-check {
+  font-size: 16px;
+  color: var(--hint);
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+}
+
+.milestone-text {
+  flex: 1;
+  font-size: 15px;
+  color: var(--text);
+  transition: all 0.2s;
+}
+
+.milestone-date {
+  font-size: 13px;
+  color: var(--success);
+  flex-shrink: 0;
+}
