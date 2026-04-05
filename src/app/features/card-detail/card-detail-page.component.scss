@@ -66,9 +66,9 @@
 
 .card-lore {
   background: var(--glass);
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(var(--blur-lg));
   border: 1px solid var(--glass-border);
-  border-radius: 16px;
+  border-radius: var(--card-radius);
   padding: 20px 24px;
   width: 100%;
 
@@ -142,7 +142,7 @@
   position: fixed;
   bottom: 16px;
   right: 16px;
-  z-index: 200;
+  z-index: var(--z-debug);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -168,9 +168,9 @@
   bottom: 70px;
   left: 16px;
   right: 16px;
-  z-index: 200;
+  z-index: var(--z-debug);
   background: rgba(12, 14, 36, 0.95);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(var(--blur-lg));
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 16px;
   padding: 16px 20px;
@@ -245,7 +245,7 @@
   font-weight: 500;
   color: var(--muted);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all var(--transition-default);
   white-space: nowrap;
 
   &:hover {
@@ -265,7 +265,7 @@
 .debug-info-overlay {
   position: fixed;
   inset: 0;
-  z-index: 300;
+  z-index: var(--z-debug);
   background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
@@ -275,7 +275,7 @@
 
 .debug-info-panel {
   background: rgba(12, 14, 36, 0.98);
-  backdrop-filter: blur(24px);
+  backdrop-filter: blur(var(--blur-xl));
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 16px;
   width: 100%;
@@ -515,14 +515,14 @@
   line-height: 1.6;
 }
 
-// Stage-specific colors for the reference rows — uses CSS vars from _stage-config.scss.
+// Stage-specific colors for the reference rows — auto-generated from stage CSS vars.
 // To change stage colors → edit src/styles/_stage-config.scss ($stage-map).
-.dinfo-stage-storm    { border-color: var(--stage-storm);    .dinfo-stage-badge { color: var(--stage-fog); } }
-.dinfo-stage-fog      { border-color: var(--stage-fog);      .dinfo-stage-badge { color: #a5b4fc; } }
-.dinfo-stage-clearing { border-color: var(--stage-clearing); .dinfo-stage-badge { color: #7dd3fc; } }
-.dinfo-stage-aura     { border-color: var(--stage-aura);     .dinfo-stage-badge { color: #c084fc; } }
-.dinfo-stage-radiance { border-color: var(--stage-radiance); .dinfo-stage-badge { color: #fbbf24; } }
-.dinfo-stage-legend   { border-color: var(--stage-legend);   .dinfo-stage-badge { color: #f9a8d4; } }
+@each $name in storm, fog, clearing, aura, radiance, legend {
+  .dinfo-stage-#{$name} {
+    border-color: var(--stage-#{$name});
+    .dinfo-stage-badge { color: var(--stage-#{$name}); }
+  }
+}
 
 .dinfo-checklist {
   display: flex;

@@ -1,0 +1,112 @@
+<div class="tasks-page">
+  <app-nav-bar activeTab="tasks" (tabChanged)="onTabChanged($event)" />
+
+  <div class="container">
+
+    <!-- ═══ Daily Plan Section ═══ -->
+    @if (todayPlan()) {
+      <app-daily-plan-section [plan]="todayPlan()" (planUpdated)="onPlanUpdated()" />
+    } @else {
+      <div class="generate-plan-cta">
+        <div class="cta-buttons">
+          <button class="generate-btn" (click)="generatePlan()" [disabled]="generatingPlan()">
+            @if (generatingPlan()) {
+              <span class="spinner"></span> Generating...
+            } @else {
+              🗓️ Generate Today's Plan
+            }
+          </button>
+          <button class="settings-btn" (click)="showTemplateForm.set(true)" title="Schedule Settings">⚙️</button>
+        </div>
+        <p class="cta-hint">AI will create a backward plan from your terminal goal</p>
+      </div>
+    }
+
+    <!-- Schedule Template Modal -->
+    @if (showTemplateForm()) {
+      <app-schedule-template-form
+        (close)="showTemplateForm.set(false)"
+        (saved)="showTemplateForm.set(false)" />
+    }
+
+    <!-- ═══ Tasks Section ═══ -->
+    <div class="page-header">
+      <h2>Tasks</h2>
+      <div class="tab-toggle">
+        <button [class.active]="tab() === 'active'" (click)="tab.set('active'); loadTasks()">Active</button>
+        <button [class.active]="tab() === 'completed'" (click)="tab.set('completed'); loadTasks()">Done</button>
+      </div>
+    </div>
+
+    @if (loading()) {
+      <div class="loading">Loading tasks...</div>
+    }
+
+    @if (!loading() && tasks().length === 0) {
+      <div class="empty">
+        <div class="empty-icon">📋</div>
+        <p>No {{ tab() }} tasks yet.</p>
+        <p class="hint">Ask the AI to create a workout plan or task list!</p>
+        <button class="go-chat" (click)="router.navigate(['/chat'])">💬 Open Chat</button>
+      </div>
+    }
+
+    <div class="task-list">
+      @for (task of tasks(); track task.id) {
+        <div class="task-card">
+          <div class="task-header">
+            <div>
+              <span class="task-category">{{ task.category }}</span>
+              <h3 class="task-name">{{ task.name }}</h3>
+            </div>
+            <div class="task-progress">
+              <span class="progress-text">{{ task.completedSteps }}/{{ task.totalSteps }}</span>
+              <div class="progress-bar">
+                <div class="progress-fill" [style.width.%]="(task.completedSteps / task.totalSteps) * 100"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="steps">
+            @for (step of task.steps; track step.id) {
+              <button class="step" [class.done]="step.completed" (click)="toggleStep(step.id)">
+                <span class="check">{{ step.completed ? '✅' : '⬜' }}</span>
+                <span class="step-title">{{ step.title }}</span>
+                @if (task.xpPerStep && !step.completed) {
+                  <span class="xp-badge">+{{ task.xpPerStep }} XP</span>
+                }
+              </button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- ═══ Reminders Section ═══ -->
+    @if (reminders().length > 0) {
+      <div class="reminders-section">
+        <h3 class="section-title">⏰ Reminders</h3>
+        <div class="reminder-list">
+          @for (r of reminders(); track r.id) {
+            <div class="reminder-card" [class.past]="isPast(r.scheduledAt)" [class.completed]="r.completed" [class.completing]="dismissingId() === r.id">
+              <div class="reminder-info">
+                <span class="reminder-time">{{ formatTime(r.scheduledAt) }}</span>
+                <span class="reminder-title">{{ r.title }}</span>
+                @if (r.body) {
+                  <span class="reminder-body">{{ r.body }}</span>
+                }
+                @if (r.repeatType && r.repeatType !== 'NONE') {
+                  <span class="reminder-repeat">🔁 {{ r.repeatType }}</span>
+                }
+              </div>
+              <div class="reminder-actions">
+                <button class="reminder-btn done-btn" (click)="completeReminder(r.id)" title="Complete">✓</button>
+                <button class="reminder-btn del-btn" (click)="deleteReminder(r.id)" title="Delete">✕</button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>

@@ -1,9 +1,11 @@
+@use 'sass:math';
+
 @mixin glass-panel {
   background: var(--glass);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(var(--blur-lg));
   border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
 }
 
 @mixin gold-glow($intensity: 0.4) {
@@ -11,7 +13,7 @@
 }
 
 @mixin card-shadow {
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow: var(--shadow-lg), 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
 @mixin flex-center {
@@ -24,4 +26,25 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/// Generates nth-child rules for scattered particle effects (rain, dust, petals, etc).
+/// @param {number} $count     - number of particles
+/// @param {number} $dur-min   - minimum animation duration (s)
+/// @param {number} $dur-max   - maximum animation duration (s)
+/// @param {string} $direction - 'vertical' (top-scattered) or 'horizontal' (left-scattered)
+@mixin particle-scatter($count, $dur-min: 2, $dur-max: 4, $direction: 'horizontal') {
+  @for $i from 1 through $count {
+    &:nth-child(#{$i}) {
+      @if $direction == 'horizontal' {
+        left: math.percentage(math.div(($i - 1) * 89, $count) + 5) * 0.01;
+      } @else {
+        top: math.percentage(math.div(($i - 1) * 89, $count) + 5) * 0.01;
+      }
+      $range: $dur-max - $dur-min;
+      $step: if($count > 1, math.div($range, $count - 1), 0);
+      animation-duration: #{$dur-min + $step * ($i - 1)}s;
+      animation-delay: #{math.div(-$dur-max * $i, $count)}s;
+    }
+  }
 }

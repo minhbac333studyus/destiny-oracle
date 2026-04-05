@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { adminGuard } from './shared/guards/admin.guard';
 import { authGuard } from './shared/guards/auth.guard';
 import { onboardingCompleteGuard } from './shared/guards/onboarding-complete.guard';
 
@@ -63,10 +64,10 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/profile/profile.routes').then(m => m.PROFILE_ROUTES),
       },
-      {
-        path: 'goals',
+{
+        path: 'nutrition',
         loadChildren: () =>
-          import('./features/goals/goals.routes').then(m => m.GOALS_ROUTES),
+          import('./features/nutrition/nutrition.routes').then(m => m.NUTRITION_ROUTES),
       },
       {
         path: 'reflection',
@@ -92,6 +93,12 @@ export const routes: Routes = [
         path: 'reminders',
         loadChildren: () =>
           import('./features/ai-reminders/ai-reminders.routes').then(m => m.AI_REMINDERS_ROUTES),
+      },
+      {
+        path: 'monitor',
+        canActivate: [adminGuard],
+        loadChildren: () =>
+          import('./features/monitor/monitor.routes').then(m => m.MONITOR_ROUTES),
       },
     ],
   },

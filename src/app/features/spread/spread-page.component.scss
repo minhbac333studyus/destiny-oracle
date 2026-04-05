@@ -1,14 +1,14 @@
 .spread-main {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 32px 100px;
+  padding: var(--space-xl) 32px 100px;
 }
 
 .spread-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 40px;
+  margin-bottom: var(--space-xl);
 }
 
 .spread-title {
@@ -28,7 +28,7 @@
 .error-msg {
   color: var(--danger);
   font-size: 16px;
-  padding: 24px 0;
+  padding: var(--space-lg) 0;
 }
 
 /* ── Inline Add Card form panel ──────────────────────── */
@@ -36,7 +36,7 @@
   background: var(--bg2, #0e1117);
   border: 1px solid var(--gold-border, rgba(240,192,96,0.3));
   border-radius: 16px;
-  padding: 20px 24px 24px;
+  padding: 20px var(--space-lg) var(--space-lg);
   margin-bottom: 28px;
   animation: slide-down 0.2s ease;
 }
@@ -79,19 +79,19 @@
 .add-form-body {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-md);
 }
 
 .add-form-row {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 16px;
+  gap: var(--space-md);
 }
 
 .add-form-field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-sm);
 }
 
 .add-form-label {
@@ -130,7 +130,7 @@
 .icon-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-sm);
 }
 
 .icon-btn {
@@ -158,5 +158,5 @@
   display: flex;
   gap: 12px;
   justify-content: flex-end;
-  padding-top: 4px;
+  padding-top: var(--space-xs);
 }

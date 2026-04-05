@@ -1,0 +1,93 @@
+<div class="body-comp-section">
+  <div class="section-header">
+    <h2 class="section-title">Body Composition</h2>
+    <button class="log-btn" (click)="showForm = !showForm">
+      {{ showForm ? 'Cancel' : '+ Log' }}
+    </button>
+  </div>
+
+  @if (latest) {
+    <div class="latest-card">
+      <div class="stat-row">
+        <div class="stat">
+          <span class="stat-label">Weight</span>
+          <span class="stat-value">{{ latest.weightKg | number:'1.1-1' }} <small>kg</small></span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Body Fat</span>
+          <span class="stat-value">{{ latest.bodyFatPct | number:'1.1-1' }}<small>%</small></span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Muscle</span>
+          <span class="stat-value">{{ latest.muscleMassPct | number:'1.1-1' }}<small>%</small></span>
+        </div>
+      </div>
+      @if (goals?.targetWeightKg || goals?.targetBodyFatPct || goals?.targetMusclePct) {
+        <div class="targets-row">
+          @if (goals?.targetWeightKg) {
+            <span class="target-tag">Target: {{ goals!.targetWeightKg }}kg</span>
+          }
+          @if (goals?.targetBodyFatPct) {
+            <span class="target-tag">Target BF: {{ goals!.targetBodyFatPct }}%</span>
+          }
+          @if (goals?.targetMusclePct) {
+            <span class="target-tag">Target Muscle: {{ goals!.targetMusclePct }}%</span>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  @if (showForm) {
+    <div class="comp-form">
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Weight (kg)</label>
+          <input type="number" [(ngModel)]="weightKg" step="0.1" placeholder="e.g. 75.5" />
+        </div>
+        <div class="form-field">
+          <label>Body Fat %</label>
+          <input type="number" [(ngModel)]="bodyFatPct" step="0.1" placeholder="e.g. 15.0" />
+        </div>
+        <div class="form-field">
+          <label>Muscle %</label>
+          <input type="number" [(ngModel)]="muscleMassPct" step="0.1" placeholder="e.g. 42.0" />
+        </div>
+      </div>
+      <div class="form-field full">
+        <label>Notes</label>
+        <input type="text" [(ngModel)]="notes" placeholder="Optional notes..." />
+      </div>
+      <button class="save-btn" (click)="submit()">Save Entry</button>
+    </div>
+  }
+
+  @if (history.length > 1) {
+    <div class="history-list">
+      <h3 class="history-title">History</h3>
+      @for (entry of history; track entry.id; let i = $index) {
+        <div class="history-row">
+          <span class="history-date">{{ entry.logDate | date:'MMM d' }}</span>
+          <span class="history-val">
+            {{ entry.weightKg | number:'1.1-1' }}kg
+            @if (i < history.length - 1) {
+              <span class="trend">{{ trend(entry.weightKg, history[i+1].weightKg) }}</span>
+            }
+          </span>
+          <span class="history-val">
+            {{ entry.bodyFatPct | number:'1.1-1' }}%
+            @if (i < history.length - 1) {
+              <span class="trend">{{ trend(entry.bodyFatPct, history[i+1].bodyFatPct) }}</span>
+            }
+          </span>
+          <span class="history-val">
+            {{ entry.muscleMassPct | number:'1.1-1' }}%
+            @if (i < history.length - 1) {
+              <span class="trend">{{ trend(entry.muscleMassPct, history[i+1].muscleMassPct) }}</span>
+            }
+          </span>
+        </div>
+      }
+    </div>
+  }
+</div>

@@ -1,0 +1,78 @@
+@use '../../../../../styles/mixins' as m;
+
+.macro-card {
+  @include m.glass-panel;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: var(--space-md);
+}
+
+.macro-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.macro-card-title {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+
+.settings-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px;
+  transition: color var(--transition-default);
+
+  &:hover { color: var(--accent); }
+}
+
+.rings-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  text-align: center;
+
+  &.placeholder {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+  }
+}
+
+.ring-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.ring-value {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.ring-label {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
+.loading-text {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+@media (max-width: 480px) {
+  .rings-row { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+}

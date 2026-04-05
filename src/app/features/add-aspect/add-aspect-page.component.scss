@@ -62,7 +62,7 @@ textarea { resize: vertical; line-height: 1.7; }
   background: var(--bg2);
   font-size: 20px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all var(--transition-default);
   display: flex;
   align-items: center;
   justify-content: center;

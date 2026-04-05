@@ -1,0 +1,84 @@
+@use '../../../../../styles/mixins' as m;
+
+.favorites-section { margin-bottom: var(--space-md); }
+
+.section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.favorites-scroll {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--glass-border) transparent;
+}
+
+.fav-card {
+  @include m.glass-panel;
+  border-radius: 12px;
+  padding: 12px;
+  min-width: 140px;
+  max-width: 160px;
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fav-remove {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 14px;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity var(--transition-default);
+
+  &:hover { opacity: 1; color: var(--danger); }
+}
+
+.fav-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 16px;
+}
+
+.fav-macros {
+  display: flex;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.fav-add-btn {
+  background: rgba(94, 207, 255, 0.1);
+  border: 0.5px solid var(--accent);
+  border-radius: 8px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 0;
+  cursor: pointer;
+  transition: all var(--transition-default);
+  margin-top: auto;
+
+  &:hover {
+    background: rgba(94, 207, 255, 0.2);
+  }
+}

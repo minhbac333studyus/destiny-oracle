@@ -71,8 +71,8 @@
 
   </div>
 
-  <!-- Dev-only debug tools -->
-  @if (isDevMode) {
+  <!-- Admin-only debug tools -->
+  @if (isAdmin) {
     <div class="debug-buttons">
       <button class="debug-toggle" (click)="onDebugToggle()">🛠</button>
       <button class="debug-toggle debug-toggle--info" (click)="onDebugInfoToggle()">📋</button>

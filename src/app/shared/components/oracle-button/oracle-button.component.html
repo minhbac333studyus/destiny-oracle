@@ -1,0 +1,10 @@
+<button
+  class="oracle-btn"
+  [ngClass]="['variant-' + variant, fullWidth ? 'full-width' : '']"
+  [disabled]="disabled"
+  [type]="type">
+  @if (loading) {
+    <span class="btn-spinner"></span>
+  }
+  <ng-content />
+</button>

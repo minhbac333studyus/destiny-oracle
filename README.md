@@ -131,7 +131,6 @@ Stage assets live in `src/assets/` — one PNG per stage name (e.g., `storm.png`
 /checkin                  → DailyCheckinPageComponent
 /add-aspect               → AddAspectPageComponent
 /profile                  → ProfilePageComponent
-/goals                    → GoalsPageComponent
 /reflection               → ReflectionChamberPageComponent  (locked until Legend stage)
 ```
 
@@ -195,6 +194,19 @@ src/
 │   ├── app.routes.ts           Top-level route tree
 │   │
 │   ├── features/               One folder per page/feature
+│   │   ├── ai-chat/            AI chat with streaming markdown
+│   │   │   ├── ai-chat-page.component.ts/html/scss
+│   │   │   ├── blueprint-prompts.ts      8 Blueprint quick-action prompts
+│   │   │   ├── general-prompts.ts        9 workout/diet quick-action prompts
+│   │   │   └── ai-chat.routes.ts
+│   │   ├── ai-tasks/           AI-generated task lists
+│   │   │   └── ai-tasks-page.component.ts/html/scss
+│   │   ├── ai-reminders/       Reminder management
+│   │   │   └── ai-reminders-page.component.ts/html/scss
+│   │   ├── ai-plans/           Saved workout/meal plans
+│   │   │   └── ai-plans-page.component.ts/html/scss
+│   │   ├── monitor/            System health dashboard + AI routing
+│   │   │   └── monitor-page.component.ts/html/scss
 │   │   ├── login/              Email login form
 │   │   ├── onboarding/         Multi-step onboarding wizard
 │   │   │   ├── onboarding-shell.component.*   Step router/controller
@@ -230,13 +242,11 @@ src/
 │   │   │   └── daily-checkin.store.ts         ⚠ Still uses MockCardService — NOT wired to API
 │   │   ├── add-aspect/         Form to add a new life aspect / card
 │   │   ├── profile/            User profile — avatar, chibi, settings
-│   │   ├── goals/              Goals + milestones tracker
-│   │   │   └── goals.store.ts                 ⚠ Hardcoded mock data — NOT wired to API
 │   │   └── reflection-chamber/ Locked page — unlocks at Legend stage (Day 365)
 │   │
 │   └── shared/
 │       ├── components/
-│       │   ├── nav-bar/                       Bottom navigation bar (Today/Spread/Goals/Profile)
+│       │   ├── nav-bar/                       Bottom navigation bar (Cards/Chat/Tasks/Nutrition/Profile)
 │       │   ├── oracle-button/                 Styled CTA button
 │       │   ├── progress-ring/                 Circular progress SVG
 │       │   ├── stage-badge/                   Colored badge showing card stage
@@ -314,7 +324,7 @@ Stores are provided at the component level (`providers: [FeatureStore]`) so they
 
 | Route | Feature | Description |
 |-------|---------|-------------|
-| `/chat` | **AI Chat** | Real-time SSE streaming chat with Claude AI. Suggestion chips, message history, auto-scroll. |
+| `/chat` | **AI Chat** | Claude.ai-style streaming chat. Full-width layout, markdown tables, `>>` action buttons, conversation history. |
 | `/tasks` | **Tasks** | AI-generated tasks with toggleable steps. XP awarded per step, progress bars, active/completed tabs. |
 | `/plans` | **Saved Plans** | Browse saved workout/meal/routine plans. Click to view JSON content, version info, schedules. Delete support. |
 | `/reminders` | **Reminders** | Create, complete, snooze (30min), and delete reminders. Repeat types: daily/weekly/monthly. Inline create form. |
@@ -333,7 +343,7 @@ getTodayInsight()
 
 ### Updated Navigation
 
-NavBar tabs: **Cards** | **Chat** | **Tasks** | **Goals** | **Profile**
+NavBar tabs: **Cards** | **Chat** | **Tasks** | **Nutrition** | **Profile**
 
 ---
 
@@ -342,7 +352,6 @@ NavBar tabs: **Cards** | **Chat** | **Tasks** | **Goals** | **Profile**
 | Feature | Status | Notes |
 |---|---|---|
 | Daily Check-in | Partially mocked | `DailyCheckinStore` uses `MockCardService` — needs wiring to real API |
-| Goals | Fully mocked | `GoalsStore` has hardcoded data — needs backend endpoints + API wiring |
 | Reflection Chamber | UI placeholder only | Shows "unlocks on Day 365" message — no real unlock logic |
 | Chibi generation | API exists | `generateChibi()` is in `ApiService` — UI polling may need work |
 | Notifications | Model field exists | `notificationsEnabled` on `AppUser` but no UI/push logic |
@@ -385,6 +394,94 @@ Each stage has its own SCSS partial in `src/app/features/card-detail/`:
 
 ---
 
+## Recent Changes (March 2026)
+
+### Component Refactoring — Extract Inline Templates/Styles
+
+All 9 components with inline `template:` / `styles:` were extracted to separate `.html` and `.scss` files:
+
+| Component | Extracted Files |
+|-----------|----------------|
+| `reflection-chamber-page` | `.html` |
+| `progress-ring` | `.html` |
+| `loading-oracle` | `.html` |
+| `stage-badge` | `.html` |
+| `oracle-button` | `.html` |
+| `ai-tasks-page` | `.html` + `.scss` |
+| `ai-reminders-page` | `.html` + `.scss` |
+| `ai-plans-page` | `.html` + `.scss` |
+| `monitor-page` | `.html` + `.scss` |
+
+Only `app.component.ts` was skipped (single-line `<router-outlet />`).
+
+### Blueprint & General Quick-Action Prompts
+
+Prompt content extracted from `ai-chat-page.component.ts` into separate files:
+
+| File | Contents |
+|------|----------|
+| `blueprint-prompts.ts` | 8 Bryan Johnson Blueprint buttons: Diet, Supplements, Exercise, Sleep, Skin, Hair, Oral, Review |
+| `general-prompts.ts` | 9 general buttons: Calisthenics, HIIT, Yoga/Mobility, Weightlifting, Cardio Endurance, Vegan, High Protein, Keto, Meal Prep |
+
+The component imports both: `quickActions = [...BLUEPRINT_QUICK_ACTIONS, ...GENERAL_QUICK_ACTIONS]`
+
+### Markdown Rendering Fixes
+
+**Problem:** Streamed AI responses showed raw markdown (`##`, `**`, `|` table pipes) instead of rendered HTML.
+
+**Root causes (3 layered issues):**
+
+1. **Pre-rendering** — `renderMarkdown()` was called in the template on every change detection cycle. With `OnPush`, this was unreliable. Fix: messages now pre-render markdown at creation time via `buildMessage()`, storing `html: SafeHtml` and `actions: string[]` on each message object.
+
+2. **NgZone** — `chatStream()` uses raw `fetch` + `ReadableStream` which runs outside Angular's zone. Signal updates in stream callbacks never triggered change detection. Fix: all stream callbacks wrapped in `this.zone.run(() => { ... })`.
+
+3. **SSE parser** — The original parser split by `\n` and filtered for `data:` lines, which broke when chunks split mid-line (partial content lost) and lost newlines between lines (tables collapsed). Fix: proper SSE event parsing — buffer by `\n\n` delimiter, join multiple `data:` fields per event with `\n` (per SSE spec).
+
+**SSE parser location:** `src/app/shared/services/api.service.ts` — `chatStream()` (~line 127)
+
+### System Activity Log
+
+Floating status pills above the chat input showing real-time system state:
+
+- Spinner + "Loading conversation..." on init
+- Spinner + "AI is thinking..." during streaming
+- Checkmark + "Response complete" (auto-dismiss 2s)
+- X + "Failed to connect" on errors (auto-dismiss 3s)
+
+Implementation: `systemLogs` signal + `pushLog()` / `removeLog()` helpers in `ai-chat-page.component.ts`.
+
+### Chat UI: Claude.ai-Style Redesign (earlier)
+
+| Before | After |
+|--------|-------|
+| Small bubbles for both user & assistant | Full-width open text for assistant, compact bubbles for user only |
+| `max-width: 480px` | `max-width: 900px` content area |
+| Raw JSON for plans | Markdown tables with styled headers, hover effects, alternating rows |
+| No follow-up actions | Clickable `>>` action buttons after AI responses |
+| `ViewEncapsulation.Emulated` | `ViewEncapsulation.None` (scoped under `app-ai-chat-page`) |
+
+**Key technical decisions:**
+
+1. **`ViewEncapsulation.None`** — Angular's default emulated encapsulation adds `_ngcontent-xxx` attributes to CSS selectors, but `[innerHTML]` content (from `marked` markdown rendering) doesn't get those attributes. Switched to `None` and scoped all CSS under `app-ai-chat-page { ... }`.
+
+2. **`>>` Action buttons** — AI responses can include follow-up suggestions as lines starting with `>>`. `buildMessage()` filters these out of rendered text and stores them as `actions[]`. Clicking a button sends that text as a new message.
+
+3. **Markdown rendering** — Uses `marked` library with `[innerHTML]` binding via `DomSanitizer.bypassSecurityTrustHtml()`. Pre-rendered at message creation via `toHtml()` private method.
+
+### What a Developer Should Know
+
+1. **`ViewEncapsulation.None` on chat component** — All styles are manually scoped under `app-ai-chat-page { }`. If you add new styles, put them inside that block or they'll leak globally.
+
+2. **`>>` convention depends on system prompt** — The backend's `ContextAssembler.java` tells the AI to output `>>` lines. If you change the system prompt, the action buttons may stop appearing.
+
+3. **Markdown table rendering** — Tables work now because of `ViewEncapsulation.None`. If you add `[innerHTML]` markdown rendering to OTHER components, they'll have the same issue unless you also disable encapsulation or use `::ng-deep`.
+
+4. **HMR can be unreliable** — After CSS changes to this component, Angular's HMR sometimes serves stale compiled styles. If styles don't update: clear `.angular/cache`, kill the dev server, and restart fresh.
+
+5. **Monitor page** (`/monitor`) — Calls `GET /api/v1/system/health` which now returns in <12s (was hanging indefinitely). Backend runs all health checks in parallel with timeouts.
+
+---
+
 ## Key Design Decisions
 
 - **Standalone components** everywhere — no NgModules.
@@ -393,3 +490,7 @@ Each stage has its own SCSS partial in `src/app/features/card-detail/`:
 - **`apiBaseUrl: ''`** in dev environment — the Angular proxy (`proxy.conf.json`) forwards `/api/*` and `/generated/*` to `:8080`, so no CORS issues.
 - **Mock services** (`mock-card.service.ts`, `mock-user.service.ts`) are legacy from early development. `ApiService` is the real replacement. New code should use `ApiService`.
 - **`stageContent` key normalization** — backend may return uppercase stage keys (`STORM`), frontend normalizes to lowercase in `ApiService.normalizeStageContent()`.
+- **`ViewEncapsulation.None` on chat** — Required for `[innerHTML]` markdown styling. All CSS manually scoped under the component selector.
+- **SSE streaming runs outside NgZone** — `chatStream()` uses raw `fetch` + `ReadableStream`, not Angular's `HttpClient`. All stream callbacks in the chat component must be wrapped in `zone.run()` or signal changes won't trigger OnPush re-rendering.
+- **SSE parser buffers by `\n\n`** — Proper event boundary handling prevents partial chunks from corrupting markdown tables and headings during streaming.
+- **Pre-rendered markdown** — Chat messages store `html: SafeHtml` at creation time, not computed in the template. This avoids `marked.parse()` running on every change detection cycle and ensures reliable rendering with OnPush.

@@ -51,8 +51,76 @@
   --space-lg: 24px;
   --space-xl: 40px;
 
-  // ── Card dimensions — BIGGER
+  // ── Card dimensions
   --card-w:      320px;
   --card-h:      420px;
   --card-radius: 16px;
+
+  // ── Radii scale
+  --radius-xs:  4px;
+  --radius-sm:  8px;
+  --radius-md:  12px;
+  --radius-lg:  20px;   // CV/tile overlay corners
+  --radius-xl:  24px;
+
+  // ── Blur scale
+  --blur-xs:  4px;
+  --blur-sm:  8px;
+  --blur-md:  14px;
+  --blur-lg:  20px;
+  --blur-xl:  32px;
+
+  // ── Shadow depths
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.5);
+
+  // ── Z-index layers
+  --z-base:    0;
+  --z-fx:      1;
+  --z-overlay: 2;
+  --z-flare:   3;
+  --z-frame:   4;
+  --z-nav:     100;
+  --z-modal:   200;
+  --z-debug:   300;
+
+  // ── Animation durations
+  --anim-fast:   1.5s;
+  --anim-normal: 3s;
+  --anim-slow:   6s;
+  --anim-slower: 10s;
+
+  // ── Transition
+  --transition-default: 0.25s ease;
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// LIGHT MODE OVERRIDES
+// ══════════════════════════════════════════════════════════════════════════
+:root[data-theme='light'] {
+  --bg:  #f5f3fa;
+  --bg2: #eae7f2;
+  --bg3: #ddd9e8;
+
+  --glass:        rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(0, 0, 0, 0.10);
+
+  --border:       rgba(0, 0, 0, 0.10);
+  --border-hover: rgba(180, 120, 50, 0.35);
+
+  --text:  #1a1432;
+  --muted: rgba(40, 30, 60, 0.60);
+  --hint:  rgba(40, 30, 60, 0.35);
+
+  --gold:        #c47a1a;
+  --gold-dim:    rgba(196, 122, 26, 0.12);
+  --gold-border: rgba(196, 122, 26, 0.30);
+  --accent:      #0e7fb5;
+  --accent-dim:  rgba(14, 127, 181, 0.10);
+  --purple:      #7c3aed;
+  --rose:        #db2777;
+  --success:     #059669;
+  --success-dim: rgba(5, 150, 105, 0.10);
+  --danger:      #e11d48;
 }

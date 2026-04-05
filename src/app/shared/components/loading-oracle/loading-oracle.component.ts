@@ -3,12 +3,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 @Component({
   selector: 'app-loading-oracle',
   standalone: true,
-  template: `
-    <div class="loading-oracle">
-      <div class="oracle-symbol">🔮</div>
-      <p class="oracle-text">{{ message }}</p>
-    </div>
-  `,
+  templateUrl: './loading-oracle.component.html',
   styleUrl: './loading-oracle.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

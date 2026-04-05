@@ -1,0 +1,35 @@
+<div class="macro-card">
+  <div class="macro-card-header">
+    <span class="macro-card-title">Daily Macros</span>
+    <button class="settings-btn" (click)="openSettings.emit()" title="Edit goals">&#9881;</button>
+  </div>
+
+  @if (summary) {
+    <div class="rings-row">
+      <div class="ring-item">
+        <app-progress-ring [percent]="summary.caloriePercent" [size]="64" color="var(--gold)" />
+        <span class="ring-value">{{ summary.totalCalories | number:'1.0-0' }}</span>
+        <span class="ring-label">/ {{ summary.calorieTarget }} kcal</span>
+      </div>
+      <div class="ring-item">
+        <app-progress-ring [percent]="summary.proteinPercent" [size]="64" color="var(--accent)" />
+        <span class="ring-value">{{ summary.totalProtein | number:'1.0-0' }}g</span>
+        <span class="ring-label">/ {{ summary.proteinTarget }}g protein</span>
+      </div>
+      <div class="ring-item">
+        <app-progress-ring [percent]="summary.fatPercent" [size]="64" color="var(--rose)" />
+        <span class="ring-value">{{ summary.totalFat | number:'1.0-0' }}g</span>
+        <span class="ring-label">/ {{ summary.fatTarget }}g fat</span>
+      </div>
+      <div class="ring-item">
+        <app-progress-ring [percent]="summary.carbPercent" [size]="64" color="var(--purple)" />
+        <span class="ring-value">{{ summary.totalCarbs | number:'1.0-0' }}g</span>
+        <span class="ring-label">/ {{ summary.carbTarget }}g carbs</span>
+      </div>
+    </div>
+  } @else {
+    <div class="rings-row placeholder">
+      <span class="loading-text">Loading...</span>
+    </div>
+  }
+</div>

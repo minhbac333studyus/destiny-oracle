@@ -1,0 +1,115 @@
+.scanner-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 300;
+  padding: 20px;
+}
+
+.scanner-panel {
+  background: var(--bg2);
+  border: 0.5px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 20px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.scanner-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.scanner-title {
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gold);
+  text-align: center;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 24px;
+  cursor: pointer;
+  &:hover { color: var(--text); }
+}
+
+.camera-area {
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 16px;
+  min-height: 200px;
+  background: #111;
+  position: relative;
+
+  #barcode-reader {
+    width: 100%;
+
+    // Override html5-qrcode internal styles
+    :global {
+      video { border-radius: 12px; }
+      #qr-shaded-region { border-color: var(--accent) !important; }
+    }
+  }
+}
+
+.camera-error {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px;
+  text-align: center;
+
+  p {
+    color: var(--muted);
+    font-size: 13px;
+  }
+}
+
+.manual-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.divider-text {
+  font-size: 12px;
+  color: var(--hint);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.manual-row {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.barcode-input {
+  flex: 1;
+  background: var(--glass);
+  border: 0.5px solid var(--glass-border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 15px;
+  padding: 10px 12px;
+  font-family: 'Noto Sans JP', sans-serif;
+  outline: none;
+  transition: border-color var(--transition-default);
+
+  &:focus { border-color: var(--accent); }
+  &::placeholder { color: var(--hint); }
+}

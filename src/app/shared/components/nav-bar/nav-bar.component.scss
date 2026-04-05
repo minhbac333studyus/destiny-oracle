@@ -3,12 +3,12 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 32px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
-  background: rgba(8, 12, 32, 0.85);
-  backdrop-filter: blur(24px);
-  z-index: 100;
+  background: var(--glass);
+  backdrop-filter: blur(var(--blur-xl));
+  z-index: var(--z-nav);
 
   @media (max-width: 600px) {
     padding: 12px 16px;
@@ -59,17 +59,17 @@
   letter-spacing: 1px;
   color: var(--muted);
   cursor: pointer;
-  transition: all 0.25s;
+  transition: all var(--transition-default);
   white-space: nowrap;
 
   &:hover {
     color: var(--text);
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--gold-dim);
   }
 
   &.active {
-    color: #fff;
-    background: linear-gradient(135deg, rgba(94, 207, 255, 0.20), rgba(168, 85, 247, 0.20));
+    color: var(--text);
+    background: var(--accent-dim);
     border-color: rgba(94, 207, 255, 0.30);
     box-shadow: 0 0 16px rgba(94, 207, 255, 0.15);
   }
@@ -113,5 +113,93 @@
 
   @media (max-width: 600px) {
     font-size: 15px;
+  }
+}
+
+// ── Nav right group (toggle + streak) ──
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+// ── Theme toggle switch ──
+.sound-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, border-color 0.2s;
+
+  &:hover {
+    background: var(--bg2);
+    border-color: var(--accent);
+  }
+}
+
+.theme-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.toggle-track {
+  display: flex;
+  align-items: center;
+  width: 52px;
+  height: 28px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  position: relative;
+  transition: background 0.3s, border-color 0.3s;
+  padding: 0 4px;
+  justify-content: space-between;
+
+  &.light {
+    background: rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.15);
+  }
+}
+
+.toggle-thumb {
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #5ecfff, #a855f7);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+
+  .light & {
+    transform: translateX(24px);
+    background: linear-gradient(135deg, #f59e0b, #f97316);
+  }
+}
+
+.toggle-icon {
+  font-size: 12px;
+  z-index: 1;
+  transition: opacity 0.3s;
+
+  &.sun {
+    opacity: 0.4;
+    .light & { opacity: 0; }
+  }
+
+  &.moon {
+    opacity: 0;
+    .light & { opacity: 0.6; }
   }
 }

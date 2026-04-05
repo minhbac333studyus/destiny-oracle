@@ -1,0 +1,421 @@
+<app-nav-bar activeTab="monitor" (tabChanged)="onTabChanged($event)" />
+
+<div class="monitor-page">
+  <header class="monitor-header">
+    <h1 class="monitor-title">SYSTEM MONITOR</h1>
+    <div class="header-actions">
+      <span class="last-updated">{{ lastUpdated() | date:'HH:mm:ss' }}</span>
+      <button class="refresh-btn" (click)="refresh()" [disabled]="loading()">
+        <span class="refresh-icon" [class.spinning]="loading()">&#x21bb;</span>
+        Refresh
+      </button>
+    </div>
+  </header>
+
+  @if (error()) {
+    <div class="error-banner">Failed to fetch health data: {{ error() }}</div>
+  }
+
+  <div class="services-grid">
+    @for (card of serviceCards(); track card.key) {
+      <div class="service-card" [ngClass]="'status-' + card.status.toLowerCase()">
+        <div class="card-header">
+          <span class="service-icon">{{ card.icon }}</span>
+          <div class="card-title-group">
+            <h3 class="service-name">{{ card.label }}</h3>
+            <span class="status-badge" [ngClass]="'badge-' + card.status.toLowerCase()">
+              <span class="status-dot"></span>
+              {{ card.status }}
+            </span>
+          </div>
+        </div>
+        <div class="card-metrics">
+          @for (m of card.metrics; track m.label) {
+            <div class="metric-row">
+              <span class="metric-label">{{ m.label }}</span>
+              <span class="metric-value" [class.metric-error]="m.label === 'Error'">{{ m.value }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Storage Usage -->
+  <section class="storage-section">
+    <div class="storage-header">
+      <h2 class="routing-title">📦 STORAGE USAGE</h2>
+      <div class="storage-summary">
+        @if (storageLoading()) {
+          <span class="refresh-icon spinning">&#x21bb;</span>
+        } @else {
+          <span class="storage-total">Total: {{ storageTotal() }}</span>
+        }
+        <button class="refresh-btn" (click)="loadStorage()" [disabled]="storageLoading()">↻</button>
+      </div>
+    </div>
+
+    @if (storageError()) {
+      <div class="error-banner">{{ storageError() }}</div>
+    }
+
+    @if (storageVolumes().length > 0) {
+      <div class="storage-list">
+        @for (vol of storageVolumes(); track vol.name) {
+          <div class="storage-row">
+            <div class="storage-info">
+              <span class="storage-service">{{ vol.service }}</span>
+              <span class="storage-size" [class]="'size-' + vol.severity">{{ vol.size }}</span>
+            </div>
+            <div class="storage-bar-track">
+              <div
+                class="storage-bar-fill"
+                [class]="'bar-' + vol.severity"
+                [style.width.%]="vol.pct">
+              </div>
+            </div>
+            <span class="storage-vol-name">{{ vol.name }}</span>
+          </div>
+        }
+      </div>
+    }
+  </section>
+
+  <!-- Smart Notifications -->
+  <section class="notif-section">
+    <div class="notif-header">
+      <h2 class="routing-title">🔔 SMART NOTIFICATIONS</h2>
+      <div class="notif-actions">
+        <button class="refresh-btn" (click)="loadNotifRules()" [disabled]="notifLoading()">
+          <span class="refresh-icon" [class.spinning]="notifLoading()">↻</span>
+        </button>
+        <button class="add-rule-btn" (click)="showRuleForm.set(!showRuleForm())">
+          {{ showRuleForm() ? '✕ Cancel' : '+ Add Rule' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Activity Quick Actions -->
+    @if (notifRules().length > 0) {
+      <div class="activity-dashboard">
+        <button class="quick-action-btn water" (click)="logQuickAction('WATER')">
+          💧 Water {{ todayActivity()['WATER'] || 0 }}/8
+        </button>
+        <button class="quick-action-btn stand" (click)="logQuickAction('STAND')">
+          🧍 Stand {{ todayActivity()['STAND'] || 0 }}
+        </button>
+        <button class="quick-action-btn stretch" (click)="logQuickAction('STRETCH')">
+          🙆 Stretch {{ todayActivity()['STRETCH'] || 0 }}
+        </button>
+      </div>
+    }
+
+    @if (notifError()) {
+      <div class="error-banner">{{ notifError() }}</div>
+    }
+
+    <!-- Add Rule Form -->
+    @if (showRuleForm()) {
+      <div class="rule-form">
+        <div class="form-row">
+          <label>Name</label>
+          <input type="text" [(ngModel)]="ruleForm.name" placeholder="Drink water" />
+        </div>
+        <div class="form-row">
+          <label>Description</label>
+          <input type="text" [(ngModel)]="ruleForm.description" placeholder="AI context (optional)" />
+        </div>
+        <div class="form-grid">
+          <div class="form-row">
+            <label>Category</label>
+            <select [(ngModel)]="ruleForm.category">
+              <option value="HABIT">Habit</option>
+              <option value="WORKOUT">Workout</option>
+              <option value="MEAL">Meal</option>
+              <option value="SHOPPING">Shopping</option>
+              <option value="STUDY">Study</option>
+              <option value="CUSTOM">Custom</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>Output</label>
+            <select [(ngModel)]="ruleForm.outputType">
+              <option value="REMINDER">Reminder</option>
+              <option value="TASK">Task (AI steps)</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>Schedule</label>
+            <select [(ngModel)]="ruleForm.schedule">
+              <option value="WATER">Water (sleep-based)</option>
+              <option value="INTERVAL">Interval</option>
+              <option value="DAILY">Daily</option>
+              <option value="WEEKLY">Weekly</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>Priority</label>
+            <select [(ngModel)]="ruleForm.priority">
+              <option [ngValue]="1">1 (Highest)</option>
+              <option [ngValue]="2">2</option>
+              <option [ngValue]="3">3</option>
+              <option [ngValue]="4">4</option>
+              <option [ngValue]="5">5 (Lowest)</option>
+            </select>
+          </div>
+        </div>
+
+        @if (ruleForm.schedule === 'WATER') {
+          <div class="form-grid">
+            <div class="form-row">
+              <label>Bedtime</label>
+              <input type="time" [(ngModel)]="ruleForm.bedtime" />
+            </div>
+            <div class="form-row">
+              <label>Wake time</label>
+              <input type="time" [(ngModel)]="ruleForm.wakeTime" />
+            </div>
+            <div class="form-row">
+              <label>Daily quota</label>
+              <input type="number" [(ngModel)]="ruleForm.dailyQuota" min="1" max="20" />
+            </div>
+          </div>
+        }
+
+        @if (ruleForm.schedule === 'INTERVAL') {
+          <div class="form-grid">
+            <div class="form-row">
+              <label>Every (minutes)</label>
+              <input type="number" [(ngModel)]="ruleForm.intervalMinutes" min="5" max="480" />
+            </div>
+            <div class="form-row">
+              <label>Daily quota</label>
+              <input type="number" [(ngModel)]="ruleForm.dailyQuota" min="1" max="50" />
+            </div>
+          </div>
+        }
+
+        @if (ruleForm.schedule === 'DAILY') {
+          <div class="form-grid">
+            <div class="form-row">
+              <label>Time</label>
+              <input type="time" [(ngModel)]="ruleForm.timeOfDay" />
+            </div>
+          </div>
+        }
+
+        @if (ruleForm.schedule === 'WEEKLY') {
+          <div class="form-grid">
+            <div class="form-row">
+              <label>Day</label>
+              <select [(ngModel)]="ruleForm.dayOfWeek">
+                <option value="MONDAY">Monday</option>
+                <option value="TUESDAY">Tuesday</option>
+                <option value="WEDNESDAY">Wednesday</option>
+                <option value="THURSDAY">Thursday</option>
+                <option value="FRIDAY">Friday</option>
+                <option value="SATURDAY">Saturday</option>
+                <option value="SUNDAY">Sunday</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label>Time</label>
+              <input type="time" [(ngModel)]="ruleForm.timeOfDay" />
+            </div>
+          </div>
+        }
+
+        <div class="form-grid">
+          <div class="form-row">
+            <label>Quiet start</label>
+            <input type="time" [(ngModel)]="ruleForm.quietStart" />
+          </div>
+          <div class="form-row">
+            <label>Quiet end</label>
+            <input type="time" [(ngModel)]="ruleForm.quietEnd" />
+          </div>
+        </div>
+
+        <div class="form-toggles">
+          <label class="toggle-label">
+            <input type="checkbox" [(ngModel)]="ruleForm.quickAction" />
+            Quick action (one-tap Done)
+          </label>
+          <label class="toggle-label">
+            <input type="checkbox" [(ngModel)]="ruleForm.suppressDuringWorkout" />
+            Suppress during workout
+          </label>
+        </div>
+
+        <button class="create-rule-btn" (click)="createRule()" [disabled]="!ruleForm.name || notifLoading()">
+          Create Rule
+        </button>
+      </div>
+    }
+
+    <!-- Rule List -->
+    @if (!notifLoading() && notifRules().length === 0 && !showRuleForm()) {
+      <div class="memories-empty">No notification rules configured yet.</div>
+    }
+
+    <div class="rule-list">
+      @for (rule of notifRules(); track rule.id) {
+        <div class="rule-item" [class.rule-inactive]="!rule.active">
+          <div class="rule-left">
+            <span class="rule-icon">{{ getCategoryIcon(rule.category) }}</span>
+            <div class="rule-info">
+              <span class="rule-name">{{ rule.name }}</span>
+              <span class="rule-schedule">{{ getScheduleLabel(rule) }}</span>
+            </div>
+          </div>
+          <div class="rule-right">
+            @if (rule.dailyQuota) {
+              <span class="rule-quota">{{ rule.firedToday }}/{{ rule.dailyQuota }}</span>
+            }
+            <span class="rule-priority priority-{{ rule.priority }}">P{{ rule.priority }}</span>
+            <button class="toggle-btn" [class.active]="rule.active" (click)="toggleRule(rule.id)">
+              {{ rule.active ? 'ON' : 'OFF' }}
+            </button>
+            <button
+              class="memory-delete-btn"
+              (click)="deleteRule(rule.id)"
+              [disabled]="deletingRuleId() === rule.id">
+              @if (deletingRuleId() === rule.id) {
+                <span class="refresh-icon spinning">↻</span>
+              } @else {
+                ✕
+              }
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- AI Routing Table -->
+  <section class="routing-section">
+    <div class="routing-header">
+      <h2 class="routing-title">🧠 AI MODEL ROUTING</h2>
+      <button class="refresh-btn" (click)="loadRouting()" [disabled]="loading()">↻</button>
+    </div>
+
+    @if (switchResult()) {
+      <div class="switch-result" [ngClass]="switchResult()!.ok ? 'result-ok' : 'result-err'">
+        {{ switchResult()!.message }}
+      </div>
+    }
+
+    <div class="routing-table-wrap">
+      <table class="routing-table">
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th>Provider</th>
+            <th>Model</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of routingRows(); track row.key) {
+            <tr>
+              <td class="svc-name">{{ row.service }}</td>
+              <td>
+                <span class="provider-badge" [ngClass]="row.provider">
+                  {{ row.provider === 'anthropic' ? '⚡ Claude' : '🤖 Ollama' }}
+                </span>
+              </td>
+              <td class="model-name">{{ row.model }}</td>
+              <td>
+                @if (!row.fixed) {
+                  <button
+                    class="switch-btn"
+                    [disabled]="switchingKey() === row.key"
+                    (click)="switchProvider(row.key, row.provider === 'anthropic' ? 'ollama' : 'anthropic')">
+                    @if (switchingKey() === row.key) {
+                      <span class="refresh-icon spinning">↻</span>
+                    } @else {
+                      Switch to {{ row.provider === 'anthropic' ? 'Ollama' : 'Claude' }}
+                    }
+                  </button>
+                } @else {
+                  <span class="fixed-label">Fixed</span>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Mem0 Memories Section -->
+  <section class="memories-section">
+    <div class="memories-header">
+      <h2 class="routing-title">💾 MEM0 MEMORIES</h2>
+      <div class="memories-actions">
+        <span class="memory-count">{{ memories().length }} memories</span>
+        <button class="refresh-btn" (click)="loadMemories()" [disabled]="memoriesLoading()">
+          <span class="refresh-icon" [class.spinning]="memoriesLoading()">&#x21bb;</span>
+        </button>
+        @if (memories().length > 0) {
+          <button class="delete-all-btn" (click)="deleteAllMemories()" [disabled]="memoriesLoading()">
+            Delete All
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="memory-search">
+      <input
+        type="text"
+        class="memory-search-input"
+        placeholder="Semantic search memories..."
+        [(ngModel)]="memorySearchQuery"
+        (keydown)="onMemorySearchKeydown($event)" />
+      <button class="search-btn" (click)="searchMemories()" [disabled]="memoriesLoading()">Search</button>
+      @if (memorySearchMode()) {
+        <button class="clear-search-btn" (click)="loadMemories()">Clear</button>
+      }
+    </div>
+
+    @if (memoriesError()) {
+      <div class="error-banner">{{ memoriesError() }}</div>
+    }
+
+    @if (memoriesLoading() && memories().length === 0) {
+      <div class="memories-loading">
+        <span class="refresh-icon spinning">&#x21bb;</span> Loading memories...
+      </div>
+    }
+
+    @if (!memoriesLoading() && memories().length === 0) {
+      <div class="memories-empty">No memories stored yet.</div>
+    }
+
+    <div class="memories-list">
+      @for (mem of memories(); track mem.id) {
+        <div class="memory-item">
+          <div class="memory-content">
+            <p class="memory-text">{{ mem.memory }}</p>
+            <div class="memory-meta">
+              <span class="memory-id">{{ mem.id }}</span>
+              @if (mem.score != null) {
+                <span class="memory-score">Score: {{ mem.score | number:'1.2-2' }}</span>
+              }
+            </div>
+          </div>
+          <button
+            class="memory-delete-btn"
+            (click)="deleteMemory(mem.id)"
+            [disabled]="deletingMemoryId() === mem.id">
+            @if (deletingMemoryId() === mem.id) {
+              <span class="refresh-icon spinning">&#x21bb;</span>
+            } @else {
+              ✕
+            }
+          </button>
+        </div>
+      }
+    </div>
+  </section>
+</div>

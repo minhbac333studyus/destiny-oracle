@@ -1,0 +1,30 @@
+.plans-page { min-height: 100vh; background: var(--bg); }
+.container { max-width: 700px; margin: 0 auto; padding: 16px; }
+h2 { color: var(--text); margin: 0 0 20px; }
+.loading, .empty { text-align: center; color: var(--muted); padding: 48px 16px; }
+.empty-icon { font-size: 2.5rem; }
+.hint { font-size: 0.85rem; }
+.go-chat { margin-top: 12px; background: var(--accent-dim); border: 1px solid var(--border); color: var(--accent); padding: 8px 20px; border-radius: 20px; cursor: pointer; }
+
+.plan-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.plan-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s;
+  &:hover { border-color: var(--border-hover); background: var(--bg3); }
+}
+.plan-type { font-size: 0.7rem; color: var(--purple); text-transform: uppercase; letter-spacing: 0.05em; }
+.plan-card h3 { color: var(--text); margin: 6px 0; font-size: 1rem; }
+.plan-desc { color: var(--muted); font-size: 0.85rem; margin: 4px 0; }
+.plan-meta { display: flex; gap: 12px; font-size: 0.75rem; color: var(--hint); margin-top: 8px; }
+
+.plan-detail-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 16px; }
+.plan-detail { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 24px; max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto; }
+.detail-header { display: flex; justify-content: space-between; align-items: center; }
+.detail-header h2 { margin: 0; color: var(--text); }
+.close-btn { background: none; border: none; color: var(--muted); font-size: 1.2rem; cursor: pointer; }
+.detail-type { color: var(--purple); font-size: 0.8rem; margin-top: 4px; }
+.detail-desc { color: var(--muted); margin: 12px 0; }
+.detail-content h4 { color: var(--text); margin: 16px 0 8px; }
+.content-json { background: var(--bg3); border-radius: 8px; padding: 12px; color: var(--accent); font-size: 0.8rem; overflow-x: auto; white-space: pre-wrap; word-break: break-all; }
+.detail-actions { margin-top: 16px; display: flex; gap: 8px; }
+.delete-btn { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: var(--danger); padding: 6px 16px; border-radius: 8px; cursor: pointer; }

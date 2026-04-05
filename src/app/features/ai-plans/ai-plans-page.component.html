@@ -1,0 +1,60 @@
+<div class="plans-page">
+  <app-nav-bar activeTab="tasks" (tabChanged)="onTabChanged($event)" />
+
+  <div class="container">
+    <h2>Saved Plans</h2>
+
+    @if (loading()) {
+      <div class="loading">Loading plans...</div>
+    }
+
+    @if (!loading() && plans().length === 0) {
+      <div class="empty">
+        <div class="empty-icon">📝</div>
+        <p>No saved plans yet.</p>
+        <p class="hint">Chat with AI to create workout, meal, or routine plans, then save them!</p>
+        <button class="go-chat" (click)="router.navigate(['/chat'])">💬 Create via Chat</button>
+      </div>
+    }
+
+    <div class="plan-grid">
+      @for (plan of plans(); track plan.id) {
+        <div class="plan-card" (click)="selectPlan(plan)">
+          <div class="plan-type">{{ plan.type }}</div>
+          <h3>{{ plan.name }}</h3>
+          @if (plan.description) {
+            <p class="plan-desc">{{ plan.description }}</p>
+          }
+          <div class="plan-meta">
+            <span>v{{ plan.version }}</span>
+            @if (plan.schedules?.length) {
+              <span>📅 {{ plan.schedules.length }} schedule(s)</span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    @if (selectedPlan()) {
+      <div class="plan-detail-overlay" (click)="selectedPlan.set(null)">
+        <div class="plan-detail" (click)="$event.stopPropagation()">
+          <div class="detail-header">
+            <h2>{{ selectedPlan()!.name }}</h2>
+            <button class="close-btn" (click)="selectedPlan.set(null)">✕</button>
+          </div>
+          <div class="detail-type">{{ selectedPlan()!.type }} · Version {{ selectedPlan()!.version }}</div>
+          @if (selectedPlan()!.description) {
+            <p class="detail-desc">{{ selectedPlan()!.description }}</p>
+          }
+          <div class="detail-content">
+            <h4>Plan Content</h4>
+            <pre class="content-json">{{ formatContent(selectedPlan()!.content) }}</pre>
+          </div>
+          <div class="detail-actions">
+            <button class="delete-btn" (click)="deletePlan(selectedPlan()!.id)">🗑 Delete</button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

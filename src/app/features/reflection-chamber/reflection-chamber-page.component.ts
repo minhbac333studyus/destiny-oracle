@@ -7,18 +7,7 @@ import { OracleButtonComponent } from '../../shared/components/oracle-button/ora
   selector: 'app-reflection-chamber-page',
   standalone: true,
   imports: [NavBarComponent, OracleButtonComponent],
-  template: `
-    <app-nav-bar activeTab="profile" (tabChanged)="onTab($event)" />
-    <div class="chamber-wrap">
-      <div class="chamber-icon">🌌</div>
-      <h1 class="chamber-title">THE REFLECTION CHAMBER</h1>
-      <p class="chamber-sub">
-        This sacred space unlocks on Day 365.<br>
-        Return when a year of effort has passed.
-      </p>
-      <app-oracle-button variant="ghost" (click)="onTab('spread')">Back to Spread</app-oracle-button>
-    </div>
-  `,
+  templateUrl: './reflection-chamber-page.component.html',
   styleUrl: './reflection-chamber-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -27,7 +16,7 @@ export class ReflectionChamberPageComponent {
 
   onTab(tab: string): void {
     const routes: Record<string, string> = {
-      today: '/checkin', spread: '/spread', goals: '/goals', profile: '/profile',
+      today: '/checkin', spread: '/spread', nutrition: '/nutrition', profile: '/profile', monitor: '/monitor',
     };
     const route = routes[tab];
     if (route) this.#router.navigate([route]);

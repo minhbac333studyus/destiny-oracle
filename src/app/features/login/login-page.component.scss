@@ -3,7 +3,7 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(160deg, #0b0c1a 0%, #1a1040 40%, #0d1230 100%);
+  background: var(--bg);
   padding: 24px;
 }
 
@@ -18,7 +18,7 @@
   font-size: 2.8rem;
   font-weight: 700;
   letter-spacing: 0.12em;
-  color: #d4a856;
+  color: var(--gold);
   line-height: 1.15;
   margin-bottom: 12px;
   text-shadow: 0 0 40px rgba(212, 168, 86, 0.3);
@@ -28,7 +28,7 @@
   font-family: 'Cormorant Garamond', serif;
   font-size: 1.1rem;
   font-style: italic;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--muted);
   margin-bottom: 48px;
 }
 
@@ -45,10 +45,10 @@
 .login-input {
   width: 100%;
   padding: 16px 20px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--bg2);
+  border: 1px solid var(--border);
   border-radius: 12px;
-  color: #e8e0d0;
+  color: var(--text);
   font-family: 'Cormorant Garamond', serif;
   font-size: 1.1rem;
   outline: none;
@@ -56,12 +56,12 @@
   box-sizing: border-box;
 
   &::placeholder {
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--hint);
   }
 
   &:focus {
-    border-color: rgba(212, 168, 86, 0.5);
-    box-shadow: 0 0 20px rgba(212, 168, 86, 0.15);
+    border-color: var(--gold-border);
+    box-shadow: 0 0 20px var(--gold-dim);
   }
 
   &:disabled {
@@ -74,7 +74,7 @@
   background: linear-gradient(135deg, #d4a856, #b8860b);
   border: none;
   border-radius: 12px;
-  color: #0b0c1a;
+  color: var(--bg);
   font-family: 'Cinzel', serif;
   font-size: 1rem;
   font-weight: 700;
@@ -98,7 +98,7 @@
 }
 
 .login-error {
-  color: #ff6b6b;
+  color: var(--danger);
   font-size: 0.9rem;
   margin: 0;
 }
@@ -106,5 +106,5 @@
 .login-hint {
   margin-top: 32px;
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.25);
+  color: var(--hint);
 }

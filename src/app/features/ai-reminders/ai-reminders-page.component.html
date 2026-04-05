@@ -1,0 +1,63 @@
+<div class="reminders-page">
+  <app-nav-bar activeTab="tasks" (tabChanged)="onTabChanged($event)" />
+
+  <div class="container">
+    <div class="page-header">
+      <h2>Reminders</h2>
+      <button class="add-btn" (click)="showForm.set(!showForm())">{{ showForm() ? '✕' : '+ New' }}</button>
+    </div>
+
+    @if (showForm()) {
+      <div class="new-form">
+        <input type="text" [(ngModel)]="newTitle" placeholder="Reminder title..." class="form-input" />
+        <input type="text" [(ngModel)]="newBody" placeholder="Details (optional)" class="form-input" />
+        <input type="datetime-local" [(ngModel)]="newDateTime" class="form-input" />
+        <select [(ngModel)]="newRepeat" class="form-input">
+          <option value="NONE">No repeat</option>
+          <option value="DAILY">Daily</option>
+          <option value="WEEKLY">Weekly</option>
+          <option value="MONTHLY">Monthly</option>
+        </select>
+        <button class="create-btn" (click)="createReminder()" [disabled]="!newTitle.trim() || !newDateTime">Create Reminder</button>
+      </div>
+    }
+
+    @if (loading()) {
+      <div class="loading">Loading reminders...</div>
+    }
+
+    @if (!loading() && reminders().length === 0) {
+      <div class="empty">
+        <div class="empty-icon">🔔</div>
+        <p>No active reminders.</p>
+        <p class="hint">Create one above or ask AI in chat!</p>
+      </div>
+    }
+
+    <div class="reminder-list">
+      @for (r of reminders(); track r.id) {
+        <div class="reminder-card" [class.sent]="r.notificationSent">
+          <div class="reminder-main">
+            <div class="reminder-info">
+              <h4>{{ r.title }}</h4>
+              @if (r.body) { <p class="reminder-body">{{ r.body }}</p> }
+              <div class="reminder-meta">
+                <span>📅 {{ r.scheduledAt | date:'MMM d, h:mm a' }}</span>
+                @if (r.repeatType !== 'NONE') { <span class="repeat-badge">🔁 {{ r.repeatType }}</span> }
+              </div>
+            </div>
+            <div class="reminder-actions">
+              @if (!r.completed) {
+                <button class="action-btn done" (click)="complete(r.id)" title="Mark done">✅</button>
+                <button class="action-btn snooze" (click)="snooze(r.id)" title="Snooze 30min">💤</button>
+              } @else {
+                <span class="completed-badge">Done ✓</span>
+              }
+              <button class="action-btn delete" (click)="deleteReminder(r.id)" title="Delete">🗑</button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

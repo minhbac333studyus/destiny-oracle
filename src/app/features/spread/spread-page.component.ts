@@ -125,8 +125,12 @@ export class SpreadPageComponent implements OnInit {
     const routes: Record<string, string> = {
       today:   '/checkin',
       spread:  '/spread',
-      goals:   '/goals',
-      profile: '/profile',
+      chat:    '/chat',
+      tasks:   '/tasks',
+      goals:     '/goals',
+      nutrition: '/nutrition',
+      profile:   '/profile',
+      monitor: '/monitor',
     };
     const route = routes[tab];
     if (route) this.#router.navigate([route]);

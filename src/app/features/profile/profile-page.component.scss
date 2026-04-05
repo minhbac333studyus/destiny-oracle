@@ -1,7 +1,7 @@
 .profile-main {
   max-width: 600px;
   margin: 0 auto;
-  padding: 32px 24px 80px;
+  padding: 32px var(--space-lg) 80px;
 }
 
 .profile-header {
@@ -35,7 +35,7 @@
   font-size: 24px;
   font-weight: 600;
   color: var(--text);
-  margin-bottom: 4px;
+  margin-bottom: var(--space-xs);
 }
 
 .profile-since { font-size: 15px; color: var(--muted); }
@@ -50,7 +50,7 @@
   padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-md);
 }
 
 .section-title {
@@ -58,11 +58,11 @@
   font-size: 14px;
   letter-spacing: 2px;
   color: var(--muted);
-  padding-bottom: 8px;
+  padding-bottom: var(--space-sm);
   border-bottom: 0.5px solid var(--glass-border);
 }
 
-.field { display: flex; flex-direction: column; gap: 8px; }
+.field { display: flex; flex-direction: column; gap: var(--space-sm); }
 
 .field-label {
   font-size: 13px;
@@ -78,7 +78,7 @@ input[type='time'] {
   background: var(--glass);
   border: 0.5px solid var(--glass-border);
   border-radius: 12px;
-  padding: 14px 16px;
+  padding: 14px var(--space-md);
   font-family: 'Noto Sans JP', sans-serif;
   font-size: 16px;
   color: var(--text);
@@ -92,7 +92,7 @@ input[type='time'] {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--space-md);
 }
 
 .toggle-label { font-size: 16px; color: var(--text); margin-bottom: 2px; }
@@ -139,11 +139,11 @@ input[type='time'] {
   }
 }
 
-.profile-actions { margin-top: 8px; }
+.profile-actions { margin-top: var(--space-sm); }
 
 .logout-section {
   margin-top: 32px;
-  padding-top: 24px;
+  padding-top: var(--space-lg);
   border-top: 0.5px solid var(--glass-border);
 }
 

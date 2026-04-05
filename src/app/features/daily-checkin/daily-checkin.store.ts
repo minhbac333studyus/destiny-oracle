@@ -1,11 +1,11 @@
 import { Injectable, computed, signal, inject, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { MockCardService } from '../../shared/services/mock-card.service';
+import { ApiService } from '../../shared/services/api.service';
 import { CheckinSession, HabitCheckItem } from './daily-checkin.model';
 
 @Injectable()
 export class DailyCheckinStore {
-  readonly #cardService = inject(MockCardService);
+  readonly #cardService = inject(ApiService);
   readonly #destroyRef  = inject(DestroyRef);
 
   readonly session = signal<CheckinSession | null>(null);

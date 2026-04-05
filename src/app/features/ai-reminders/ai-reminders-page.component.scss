@@ -1,0 +1,26 @@
+.reminders-page { min-height: 100vh; background: var(--bg); }
+.container { max-width: 700px; margin: 0 auto; padding: 16px; }
+.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.page-header h2 { color: var(--text); margin: 0; }
+.add-btn { background: var(--accent-dim); border: 1px solid var(--border); color: var(--accent); padding: 6px 16px; border-radius: 8px; cursor: pointer; }
+
+.new-form { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; display: flex; flex-direction: column; gap: 10px; }
+.form-input { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; color: var(--text); font-size: 0.9rem; outline: none; }
+.form-input:focus { border-color: var(--accent); }
+.create-btn { background: linear-gradient(135deg, var(--accent), var(--purple)); border: none; color: white; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: 600; &:disabled { opacity: 0.5; } }
+
+.loading, .empty { text-align: center; color: var(--muted); padding: 48px 16px; }
+.empty-icon { font-size: 2.5rem; }
+.hint { font-size: 0.85rem; }
+
+.reminder-list { display: flex; flex-direction: column; gap: 10px; }
+.reminder-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 14px; &.sent { border-left: 3px solid var(--gold); } }
+.reminder-main { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.reminder-info { flex: 1; }
+.reminder-info h4 { color: var(--text); margin: 0; font-size: 0.95rem; }
+.reminder-body { color: var(--muted); font-size: 0.85rem; margin: 4px 0 0; }
+.reminder-meta { display: flex; gap: 10px; font-size: 0.75rem; color: var(--hint); margin-top: 6px; }
+.repeat-badge { color: var(--purple); }
+.reminder-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.action-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; padding: 4px; border-radius: 6px; transition: background 0.15s; &:hover { background: var(--bg3); } }
+.completed-badge { color: var(--success); font-size: 0.8rem; }

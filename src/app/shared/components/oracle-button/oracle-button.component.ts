@@ -11,18 +11,7 @@ export type OracleButtonVariant = 'primary' | 'ghost' | 'danger';
   selector: 'app-oracle-button',
   standalone: true,
   imports: [NgClass],
-  template: `
-    <button
-      class="oracle-btn"
-      [ngClass]="['variant-' + variant, fullWidth ? 'full-width' : '']"
-      [disabled]="disabled"
-      [type]="type">
-      @if (loading) {
-        <span class="btn-spinner"></span>
-      }
-      <ng-content />
-    </button>
-  `,
+  templateUrl: './oracle-button.component.html',
   styleUrl: './oracle-button.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -1,0 +1,45 @@
+<div class="log-section">
+  <h2 class="section-title">Food Log</h2>
+
+  @if (foodLogByMeal.size === 0) {
+    <div class="empty-state">No food logged yet. Use the search above to add foods.</div>
+  }
+
+  @for (entry of foodLogByMeal | keyvalue; track entry.key) {
+    <div class="meal-group">
+      <h3 class="meal-title">{{ mealLabels[entry.key] }}</h3>
+      @for (food of entry.value; track food.id) {
+        <div class="food-row">
+          <div class="food-info">
+            <span class="food-name">{{ food.foodName }}</span>
+            <div class="serving-controls">
+              <button class="qty-btn minus" (click)="adjustServing.emit({ entryId: food.id, delta: -1 })" [disabled]="food.servingQty <= 1">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="6" y1="12" x2="18" y2="12"/></svg>
+              </button>
+              <span class="food-serving">{{ food.servingQty }}x {{ food.servingUnit }}</span>
+              <button class="qty-btn plus" (click)="adjustServing.emit({ entryId: food.id, delta: 1 })">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="6" x2="12" y2="18"/><line x1="6" y1="12" x2="18" y2="12"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="food-macros">
+            <span class="pill cal">{{ food.calories | number:'1.0-0' }}</span>
+            <span class="pill pro">{{ food.proteinG | number:'1.0-0' }}</span>
+            <span class="pill fat">{{ food.fatG | number:'1.0-0' }}</span>
+            <span class="pill carb">{{ food.carbsG | number:'1.0-0' }}</span>
+          </div>
+          <button class="remove-btn" (click)="removeEntry.emit(food.id)">&times;</button>
+        </div>
+      }
+      <div class="subtotal-row">
+        <span class="subtotal-label">Subtotal</span>
+        <div class="food-macros">
+          <span class="pill cal">{{ mealSubtotal(entry.value).cal | number:'1.0-0' }}</span>
+          <span class="pill pro">{{ mealSubtotal(entry.value).pro | number:'1.0-0' }}</span>
+          <span class="pill fat">{{ mealSubtotal(entry.value).fat | number:'1.0-0' }}</span>
+          <span class="pill carb">{{ mealSubtotal(entry.value).carb | number:'1.0-0' }}</span>
+        </div>
+      </div>
+    </div>
+  }
+</div>

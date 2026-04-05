@@ -1,0 +1,16 @@
+<div class="favorites-section">
+  <h2 class="section-title">Favorites</h2>
+  <div class="favorites-scroll">
+    @for (fav of favorites; track fav.id) {
+      <div class="fav-card">
+        <button class="fav-remove" (click)="remove.emit(fav.id)">&times;</button>
+        <div class="fav-name">{{ fav.foodName }}</div>
+        <div class="fav-macros">
+          <span>{{ fav.calories | number:'1.0-0' }} kcal</span>
+          <span>{{ fav.proteinG | number:'1.0-0' }}g P</span>
+        </div>
+        <button class="fav-add-btn" (click)="addToSnack(fav)">+ Add</button>
+      </div>
+    }
+  </div>
+</div>

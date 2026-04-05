@@ -24,7 +24,7 @@ export class DailyCheckinPageComponent implements OnInit {
 
   onTabChanged(tab: string): void {
     const routes: Record<string, string> = {
-      today: '/checkin', spread: '/spread', goals: '/goals', profile: '/profile',
+      today: '/checkin', spread: '/spread', nutrition: '/nutrition', profile: '/profile', monitor: '/monitor',
     };
     const route = routes[tab];
     if (route) this.#router.navigate([route]);

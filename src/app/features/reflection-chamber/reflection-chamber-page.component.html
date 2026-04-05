@@ -1,0 +1,10 @@
+<app-nav-bar activeTab="profile" (tabChanged)="onTab($event)" />
+<div class="chamber-wrap">
+  <div class="chamber-icon">🌌</div>
+  <h1 class="chamber-title">THE REFLECTION CHAMBER</h1>
+  <p class="chamber-sub">
+    This sacred space unlocks on Day 365.<br>
+    Return when a year of effort has passed.
+  </p>
+  <app-oracle-button variant="ghost" (click)="onTab('spread')">Back to Spread</app-oracle-button>
+</div>

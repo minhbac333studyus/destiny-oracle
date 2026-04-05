@@ -1,7 +1,7 @@
 .stage-badge {
   display: inline-block;
   padding: 5px 14px;
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 1px;

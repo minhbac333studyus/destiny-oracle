@@ -7,8 +7,9 @@ body {
   color: var(--text);
   min-height: 100vh;
   overflow-x: hidden;
+  transition: background 0.3s, color 0.3s;
 
-  // SAO sunset sky gradient background
+  // SAO sunset sky gradient background (dark mode)
   background:
     radial-gradient(ellipse 120% 60% at 50% 110%, rgba(255, 140, 50, 0.18) 0%, transparent 60%),
     radial-gradient(ellipse 100% 50% at 30% 90%, rgba(244, 114, 182, 0.12) 0%, transparent 50%),
@@ -23,6 +24,20 @@ body {
       #4a2050 85%,
       #5a2848 92%,
       #6a3040 100%
+    );
+  background-attachment: fixed;
+}
+
+// Light mode body background
+:root[data-theme='light'] body {
+  background:
+    radial-gradient(ellipse 120% 60% at 50% 110%, rgba(168, 85, 247, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 100% 50% at 30% 90%, rgba(94, 207, 255, 0.05) 0%, transparent 50%),
+    linear-gradient(180deg,
+      #f8f6fd 0%,
+      #f0ecf8 30%,
+      #e8e4f2 60%,
+      #e2dced 100%
     );
   background-attachment: fixed;
 }

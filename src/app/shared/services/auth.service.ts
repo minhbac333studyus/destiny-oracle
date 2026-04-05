@@ -29,6 +29,11 @@ export class AuthService {
     return this._user()?.onboardingComplete ?? false;
   }
 
+  isAdmin(): boolean {
+    const id = this.getUserId();
+    return id === 'a0098338-2efd-4c90-b97f-1ff57377cae0';
+  }
+
   login(email: string): Observable<any> {
     return this.#http
       .post<any>(`${environment.apiBaseUrl}/api/v1/auth/login`, { email })

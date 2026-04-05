@@ -6,11 +6,7 @@ import { CardStage, STAGE_LABELS } from '../../models/card-stage.model';
   selector: 'app-stage-badge',
   standalone: true,
   imports: [NgClass],
-  template: `
-    <span class="stage-badge" [ngClass]="'stage-' + stage">
-      {{ label }}
-    </span>
-  `,
+  templateUrl: './stage-badge.component.html',
   styleUrl: './stage-badge.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

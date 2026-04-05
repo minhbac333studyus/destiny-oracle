@@ -9,7 +9,7 @@
   font-weight: 600;
   letter-spacing: 1px;
   cursor: pointer;
-  transition: all 0.25s;
+  transition: all var(--transition-default);
   border: 1px solid transparent;
 
   &.full-width { width: 100%; }
@@ -62,6 +62,3 @@
   animation: spin 0.7s linear infinite;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}

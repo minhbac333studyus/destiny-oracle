@@ -18,7 +18,7 @@ import { CardStageNavComponent } from './card-stage-nav.component';
 import { CardStatsPanelComponent } from './card-stats-panel.component';
 import { CardHabitsListComponent } from './card-habits-list.component';
 import { CardStage, STAGE_ORDER, STAGE_LABELS } from '../../shared/models/card-stage.model';
-import { environment } from '../../../environments/environment';
+import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
   selector: 'app-card-detail-page',
@@ -42,11 +42,12 @@ export class CardDetailPageComponent implements OnInit {
 
   readonly store   = inject(CardDetailStore);
   readonly #router = inject(Router);
+  private readonly auth = inject(AuthService);
 
   readonly viewStage = signal<CardStage | null>(null);
 
-  // ── Debug bar (dev-only) ──
-  readonly isDevMode     = !environment.production;
+  // ── Debug bar (admin-only) ──
+  readonly isAdmin       = this.auth.isAdmin();
   readonly debugOpen     = signal(false);
   readonly debugPercent  = signal(0);
   readonly debugStages   = STAGE_ORDER;
@@ -86,7 +87,7 @@ export class CardDetailPageComponent implements OnInit {
 
   onTabChanged(tab: string): void {
     const routes: Record<string, string> = {
-      today: '/checkin', spread: '/spread', goals: '/goals', profile: '/profile',
+      today: '/checkin', spread: '/spread', nutrition: '/nutrition', profile: '/profile', monitor: '/monitor', chat: '/chat'
     };
     const route = routes[tab];
     if (route) this.#router.navigate([route]);

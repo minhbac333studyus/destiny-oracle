@@ -24,7 +24,7 @@
   cursor: pointer;
   width: 100%;
   text-align: left;
-  transition: all 0.2s;
+  transition: all var(--transition-default);
   font-family: 'Noto Sans JP', sans-serif;
 
   &:hover { border-color: var(--border-hover); }
@@ -51,7 +51,7 @@
   flex: 1;
   font-size: 15px;
   color: var(--text);
-  transition: all 0.2s;
+  transition: all var(--transition-default);
 }
 
 .habit-streak {

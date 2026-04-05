@@ -1,0 +1,283 @@
+<app-nav-bar activeTab="nutrition" (tabChanged)="onTabChanged($event)" />
+
+<main class="nutrition-main">
+  <!-- Date nav -->
+  <div class="date-nav">
+    <button class="date-arrow" (click)="store.prevDay()">&larr;</button>
+    <span class="date-label">{{ dateLabel }}</span>
+    <button class="date-arrow" (click)="store.nextDay()">&rarr;</button>
+  </div>
+
+  <!-- Big calorie ring -->
+  <div class="calorie-hero">
+    <div class="calorie-ring-wrap">
+      <svg class="calorie-ring" viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="85" fill="none" stroke="var(--glass-border)" stroke-width="12" />
+        <circle cx="100" cy="100" r="85" fill="none"
+          stroke="var(--gold)" stroke-width="12" stroke-linecap="round"
+          [attr.stroke-dasharray]="534"
+          [attr.stroke-dashoffset]="534 - (534 * caloriePercent / 100)"
+          transform="rotate(-90 100 100)" />
+      </svg>
+      <div class="calorie-center" (click)="showGoalSettings.set(true)">
+        <span class="calorie-remaining">{{ calorieRemaining }}</span>
+        <span class="calorie-sub">Remaining</span>
+        <span class="calorie-goal">Goal {{ store.dailySummary()?.calorieTarget ?? 0 }} kcal</span>
+      </div>
+    </div>
+    <div class="calorie-sides">
+      <div class="side-stat">
+        <span class="side-val">{{ store.dailySummary()?.totalCalories ?? 0 | number:'1.0-0' }}</span>
+        <span class="side-label">Eaten</span>
+      </div>
+      <div class="side-stat">
+        <span class="side-val">0</span>
+        <span class="side-label">Burned</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Macro bars -->
+  <div class="macro-bars">
+    <div class="macro-bar-item">
+      <div class="macro-bar-header">
+        <span class="macro-bar-name">Carbs</span>
+        <span class="macro-bar-val">{{ store.dailySummary()?.totalCarbs ?? 0 | number:'1.0-0' }}/{{ store.dailySummary()?.carbTarget ?? 0 }}g</span>
+      </div>
+      <div class="macro-track"><div class="macro-fill carb" [style.width.%]="store.dailySummary()?.carbPercent ?? 0"></div></div>
+    </div>
+    <div class="macro-bar-item">
+      <div class="macro-bar-header">
+        <span class="macro-bar-name">Protein</span>
+        <span class="macro-bar-val">{{ store.dailySummary()?.totalProtein ?? 0 | number:'1.0-0' }}/{{ store.dailySummary()?.proteinTarget ?? 0 }}g</span>
+      </div>
+      <div class="macro-track"><div class="macro-fill pro" [style.width.%]="store.dailySummary()?.proteinPercent ?? 0"></div></div>
+    </div>
+    <div class="macro-bar-item">
+      <div class="macro-bar-header">
+        <span class="macro-bar-name">Fat</span>
+        <span class="macro-bar-val">{{ store.dailySummary()?.totalFat ?? 0 | number:'1.0-0' }}/{{ store.dailySummary()?.fatTarget ?? 0 }}g</span>
+      </div>
+      <div class="macro-track"><div class="macro-fill fat" [style.width.%]="store.dailySummary()?.fatPercent ?? 0"></div></div>
+    </div>
+  </div>
+
+  <!-- Meals logged -->
+  <h2 class="section-title">MEALS LOGGED</h2>
+
+  <div class="meal-cards">
+    @for (meal of mealSlots; track meal.type) {
+      <div class="meal-card" (click)="openMealLog(meal.type)">
+        <span class="meal-icon">{{ meal.icon }}</span>
+        <div class="meal-card-info">
+          <span class="meal-card-name">{{ meal.label }}</span>
+          <span class="meal-card-logged">
+            @if (getMealCalories(meal.type) > 0) {
+              {{ getMealCalories(meal.type) | number:'1.0-0' }} kcal logged
+            } @else {
+              Tap to add
+            }
+          </span>
+        </div>
+        <button class="meal-add-btn">+</button>
+      </div>
+    }
+  </div>
+
+  <!-- Body Composition -->
+  <app-body-comp-section
+    [history]="store.bodyCompHistory()"
+    [latest]="store.latestBodyComp()"
+    [goals]="store.goals()"
+    (addEntry)="store.addBodyComp($event)" />
+
+  <!-- Meal Logging Overlay -->
+  @if (activeMealType()) {
+    <div class="overlay" (click)="activeMealType.set(null)">
+      <div class="meal-log-panel" (click)="$event.stopPropagation()">
+        <div class="meal-log-header">
+          <button class="close-btn" (click)="activeMealType.set(null)">&times;</button>
+          <h2 class="meal-log-title">{{ activeMealLabel }}</h2>
+          <button class="menu-btn" (click)="showCreateMenu = !showCreateMenu">&#8943;</button>
+        </div>
+
+        <!-- Create menu dropdown -->
+        @if (showCreateMenu) {
+          <div class="create-menu">
+            <button class="create-option" (click)="showCreateMenu = false; showMyFoods.set(true)">Create food</button>
+            <button class="create-option" (click)="showCreateMenu = false; showMyMeals.set(true)">Create meal</button>
+            <button class="create-option" (click)="showCreateMenu = false">Cancel</button>
+          </div>
+        }
+
+        <!-- Search bar + barcode -->
+        <div class="meal-log-search">
+          <app-food-search
+            [results]="store.usdaResults()"
+            [searching]="store.searching()"
+            [selectedDate]="store.selectedDate()"
+            [favoritedKeys]="favoritedKeys"
+            (search)="store.searchFood($event)"
+            (addEntry)="onAddFromSearch($event)"
+            (addFavorite)="store.addFavorite($event)"
+            (toggleFavorite)="onToggleSearchFav($event)" />
+          <button class="barcode-btn" (click)="showScanner.set(true)" title="Scan barcode">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 7V5a2 2 0 012-2h2M17 3h2a2 2 0 012 2v2M21 17v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2"/>
+              <line x1="7" y1="8" x2="7" y2="16"/><line x1="11" y1="8" x2="11" y2="16"/>
+              <line x1="15" y1="8" x2="15" y2="16"/><line x1="19" y1="8" x2="19" y2="16"/>
+            </svg>
+          </button>
+        </div>
+
+        @if (store.barcodeError()) {
+          <div class="barcode-error">{{ store.barcodeError() }}</div>
+        }
+
+        <!-- Logged items for this meal -->
+        @if (activeMealEntries.length) {
+          <div class="logged-section">
+            <div class="logged-header">
+              <span class="logged-title">Added</span>
+              <span class="logged-total">{{ activeMealTotalCal | number:'1.0-0' }} kcal</span>
+            </div>
+            @for (item of activeMealEntries; track item.id) {
+              <div class="logged-row">
+                <div class="logged-info">
+                  <span class="logged-name">{{ item.foodName }}</span>
+                  <div class="dual-qty">
+                    <div class="qty-group">
+                      <button class="qty-btn" (click)="onServingChange(item, getItemServings(item) - 0.5)">-</button>
+                      <input class="qty-input" type="number" [value]="getItemServings(item) | number:'1.1-1'" step="0.5" min="0"
+                        (change)="onServingChange(item, $any($event.target).valueAsNumber)" />
+                      <span class="qty-unit">srv</span>
+                      <button class="qty-btn" (click)="onServingChange(item, getItemServings(item) + 0.5)">+</button>
+                    </div>
+                    <div class="qty-group">
+                      <button class="qty-btn" (click)="onGramChange(item, getItemGrams(item) - 5)">-</button>
+                      <input class="qty-input" type="number" [value]="getItemGrams(item) | number:'1.0-0'" step="1" min="0"
+                        (change)="onGramChange(item, $any($event.target).valueAsNumber)" />
+                      <span class="qty-unit">g</span>
+                      <button class="qty-btn" (click)="onGramChange(item, getItemGrams(item) + 5)">+</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="logged-macros">
+                  <span class="lm cal">{{ item.calories | number:'1.0-0' }}</span>
+                  <span class="lm pro">{{ item.proteinG | number:'1.0-0' }}P</span>
+                  <span class="lm fat">{{ item.fatG | number:'1.0-0' }}F</span>
+                  <span class="lm carb">{{ item.carbsG | number:'1.0-0' }}C</span>
+                </div>
+                <button class="logged-remove" (click)="store.removeFoodEntry(item.id)">&times;</button>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Tabs: Recent / Favorites -->
+        <div class="log-tabs">
+          <button class="log-tab" [class.active]="activeLogTab === 'recent'" (click)="activeLogTab = 'recent'">Recent</button>
+          <button class="log-tab" [class.active]="activeLogTab === 'favorites'" (click)="activeLogTab = 'favorites'">Favorites</button>
+        </div>
+
+        <div class="log-tab-content">
+          @if (activeLogTab === 'recent') {
+            @if (store.recentFoods().length) {
+              @for (food of store.recentFoods(); track food.id) {
+                <div class="log-food-row">
+                  <button class="recent-fav-btn"
+                    [class.saved]="isFavorited(food.foodName)"
+                    (click)="toggleRecentFavorite(food)"
+                    title="{{ isFavorited(food.foodName) ? 'Remove from favorites' : 'Save to favorites' }}">&#9733;</button>
+                  <div class="log-food-info" (click)="quickLogRecent(food)">
+                    <span class="log-food-name">{{ food.foodName }}</span>
+                    <span class="log-food-meta">{{ food.servingQty | number:'1.0-2' }} {{ food.servingUnit }}</span>
+                  </div>
+                  <div class="log-food-macros">
+                    <span class="log-cal">{{ food.calories | number:'1.0-0' }} kcal</span>
+                  </div>
+                  <span class="log-food-add" (click)="quickLogRecent(food)">+</span>
+                </div>
+              }
+            } @else {
+              <div class="log-empty">No recently logged foods yet.</div>
+            }
+          }
+
+          @if (activeLogTab === 'favorites') {
+            @if (store.favorites().length) {
+              @for (fav of store.favorites(); track fav.id) {
+                <div class="log-food-row" (click)="quickLogFavorite(fav)">
+                  <div class="log-food-info">
+                    <span class="log-food-name">{{ fav.foodName }}</span>
+                    <span class="log-food-meta">{{ fav.servingSize }} {{ fav.servingUnit }}</span>
+                  </div>
+                  <div class="log-food-macros">
+                    <span class="log-cal">{{ fav.calories | number:'1.0-0' }} kcal</span>
+                  </div>
+                  <span class="log-food-add">+</span>
+                </div>
+              }
+            } @else {
+              <div class="log-empty">No favorites yet. Star a food from search to save it here.</div>
+            }
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- My Foods overlay -->
+  @if (showMyFoods()) {
+    <div class="overlay" (click)="showMyFoods.set(false)">
+      <div class="overlay-panel" (click)="$event.stopPropagation()">
+        <div class="overlay-header">
+          <h2 class="overlay-title">My Foods</h2>
+          <button class="close-btn" (click)="showMyFoods.set(false)">&times;</button>
+        </div>
+        <app-custom-food-section
+          [customFoods]="store.customFoods()"
+          (addFood)="store.addCustomFood($event)"
+          (updateFood)="store.updateCustomFood($event.id, $event.food)"
+          (deleteFood)="store.deleteCustomFood($event)"
+          (toggleFavorite)="store.toggleFavorite($event)"
+          (logFood)="store.logCustomFood($event.food, $event.qty, activeMealType() ?? $event.mealType)" />
+      </div>
+    </div>
+  }
+
+  <!-- My Meals overlay -->
+  @if (showMyMeals()) {
+    <div class="overlay" (click)="showMyMeals.set(false)">
+      <div class="overlay-panel" (click)="$event.stopPropagation()">
+        <div class="overlay-header">
+          <h2 class="overlay-title">My Meals</h2>
+          <button class="close-btn" (click)="showMyMeals.set(false)">&times;</button>
+        </div>
+        <app-meal-section
+          [meals]="store.mealRecipes()"
+          [customFoods]="store.customFoods()"
+          (addMeal)="store.addMealRecipe($event)"
+          (updateMeal)="store.updateMealRecipe($event.id, $event.meal)"
+          (deleteMeal)="store.deleteMealRecipe($event)"
+          (logMeal)="store.logMeal($event.meal, $event.mealType)" />
+      </div>
+    </div>
+  }
+
+  <!-- Barcode Scanner overlay -->
+  @if (showScanner()) {
+    <app-barcode-scanner
+      (scanned)="onBarcodeScanned($event)"
+      (close)="showScanner.set(false)" />
+  }
+
+  <!-- Goal Settings overlay -->
+  @if (showGoalSettings()) {
+    <app-goal-settings
+      [goals]="store.goals()"
+      [firstTime]="isFirstTime()"
+      (save)="store.updateGoals($event); showGoalSettings.set(false); isFirstTime.set(false)"
+      (close)="showGoalSettings.set(false)" />
+  }
+</main>

@@ -1,0 +1,32 @@
+<div class="scanner-overlay">
+  <div class="scanner-panel">
+    <div class="scanner-header">
+      <button class="close-btn" (click)="close.emit()">&times;</button>
+      <h3 class="scanner-title">Scan Barcode</h3>
+      <span></span>
+    </div>
+
+    <div class="camera-area">
+      <div id="barcode-reader" #scannerContainer></div>
+      @if (error()) {
+        <div class="camera-error">
+          <p>{{ error() }}</p>
+          <app-oracle-button variant="ghost" (click)="startCamera()">Retry Camera</app-oracle-button>
+        </div>
+      }
+    </div>
+
+    <div class="manual-section">
+      <span class="divider-text">or enter barcode manually</span>
+      <div class="manual-row">
+        <input
+          type="text"
+          class="barcode-input"
+          [(ngModel)]="manualBarcode"
+          placeholder="e.g. 0049000006346"
+          (keydown.enter)="submitManual()" />
+        <app-oracle-button variant="primary" (click)="submitManual()">Look up</app-oracle-button>
+      </div>
+    </div>
+  </div>
+</div>

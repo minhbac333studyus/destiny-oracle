@@ -1,0 +1,130 @@
+<div class="chat-page">
+  <app-nav-bar activeTab="chat" (tabChanged)="onTabChanged($event)" />
+
+  <div class="chat-container">
+    <div class="chat-header">
+      <h2>Conquer Future AI</h2>
+      <p class="subtitle">Your personal growth assistant</p>
+    </div>
+
+    <div class="messages-area" #messagesArea (scroll)="onScroll()">
+      @if (messages().length === 0) {
+        <div class="empty-state">
+          <div class="oracle-icon">🔮</div>
+          <h3>Start a conversation</h3>
+          <p>Ask me about workouts, meal plans, habits, or anything else.</p>
+          <div class="suggestions">
+            @for (s of suggestions; track s) {
+              <button class="suggestion-chip" (click)="sendMessage(s)">{{ s }}</button>
+            }
+          </div>
+        </div>
+      }
+
+      @for (msg of messages(); track $index) {
+        <div class="message" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'">
+          @if (msg.role === 'assistant') {
+            <div class="avatar">🔮</div>
+          }
+          <div class="bubble">
+            <div class="bubble-content" [innerHTML]="msg.html"></div>
+            @if (msg.usage && isAdmin) {
+              <div class="usage-badge">
+                ⚡ {{ msg.usage.totalTokens | number }} tokens · ${{ msg.usage.cost.toFixed(4) }}
+                <span class="usage-detail">{{ msg.usage.inputTokens | number }} in / {{ msg.usage.outputTokens | number }} out · {{ msg.usage.model }}</span>
+              </div>
+            }
+            @if (msg.actions && msg.actions.length > 0) {
+              <div class="action-buttons">
+                @for (action of msg.actions; track action) {
+                  <button class="action-chip" (click)="sendMessage(action)">{{ action }}</button>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      @if (streaming()) {
+        <div class="message assistant">
+          <div class="avatar">🔮</div>
+          <div class="bubble">
+            <div class="bubble-content" [innerHTML]="streamingHtml()"></div>
+            <span class="cursor">▊</span>
+          </div>
+        </div>
+      }
+    </div>
+
+    @if (showScrollBtn()) {
+      <button class="scroll-bottom-btn" (click)="scrollToBottom()">
+        <span class="scroll-arrow">↓</span>
+      </button>
+    }
+
+    <!-- System activity log -->
+    @if (systemLogs().length > 0) {
+      <div class="system-log">
+        @for (log of systemLogs(); track log.id) {
+          <div class="log-entry" [class.log-info]="log.type === 'info'" [class.log-success]="log.type === 'success'" [class.log-error]="log.type === 'error'">
+            @if (log.type === 'info') {
+              <span class="log-spinner"></span>
+            }
+            @if (log.type === 'success') {
+              <span class="log-icon">✓</span>
+            }
+            @if (log.type === 'error') {
+              <span class="log-icon">✕</span>
+            }
+            <span class="log-text">{{ log.text }}</span>
+          </div>
+        }
+      </div>
+    }
+
+    <div class="input-area">
+      @if (activePrompts().length > 0) {
+        <div class="active-prompts">
+          @for (ap of activePrompts(); track ap) {
+            <span class="prompt-tag">
+              {{ ap }}
+              <button class="prompt-tag-remove" (click)="removePrompt(ap)">&times;</button>
+            </span>
+          }
+        </div>
+      }
+      <div class="input-wrapper">
+        <button class="add-btn" (click)="toggleQuickActions()" [class.active]="showQuickActions()">
+          +
+        </button>
+        <textarea
+          #chatTextarea
+          [(ngModel)]="inputText"
+          (keydown)="onKeydown($event)"
+          (input)="autoResize($event)"
+          placeholder="Reply..."
+          [disabled]="streaming()"
+          class="chat-input"
+          rows="1"
+        ></textarea>
+        <button
+          class="send-btn"
+          (click)="sendMessage(inputText)"
+          [disabled]="streaming() || (!inputText.trim() && activePrompts().length === 0)">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M2 14L14.5 8L2 2V6.5L10 8L2 9.5V14Z" fill="currentColor"/>
+          </svg>
+        </button>
+      </div>
+      @if (showQuickActions()) {
+        <div class="quick-actions">
+          @for (qa of quickActions; track qa.label) {
+            <button class="qa-chip" (click)="injectPrompt(qa.label, qa.prompt)">
+              {{ qa.label }}
+            </button>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

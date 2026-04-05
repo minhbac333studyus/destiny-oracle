@@ -30,7 +30,7 @@ export class ProfilePageComponent {
 
   onTabChanged(tab: string): void {
     const routes: Record<string, string> = {
-      today: '/checkin', spread: '/spread', goals: '/goals', profile: '/profile',
+      today: '/checkin', spread: '/spread', nutrition: '/nutrition', profile: '/profile', monitor: '/monitor', chat: '/chat'
     };
     const route = routes[tab];
     if (route) this.#router.navigate([route]);

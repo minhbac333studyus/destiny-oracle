@@ -1,0 +1,77 @@
+<div class="search-section">
+  <div class="search-bar">
+    <span class="search-icon">&#128269;</span>
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Search foods (e.g. chicken breast, rice)..."
+      [(ngModel)]="query"
+      (input)="onInput()" />
+    @if (searching) {
+      <span class="search-spinner">&#8987;</span>
+    }
+  </div>
+
+  @if (results.length) {
+    <div class="results-dropdown">
+      @for (item of results; track item.fdcId) {
+        <div class="result-item" [class.expanded]="expandedItem === item">
+          <div class="result-main" (click)="selectItem(item)">
+            <div class="result-top">
+              <div class="result-name">
+                {{ item.description }}
+                <span class="source-badge" [class.off]="item.source === 'OFF'">{{ item.source }}</span>
+              </div>
+              <button class="result-fav" [class.active]="isFav(item)" (click)="$event.stopPropagation(); onToggleFav(item)">&#9733;</button>
+            </div>
+            @if (item.brandOwner) {
+              <span class="result-brand">{{ item.brandOwner }}</span>
+            }
+            <div class="result-macros">
+              <span class="macro-pill cal">{{ item.calories | number:'1.0-0' }} kcal</span>
+              <span class="macro-pill pro">{{ item.proteinG | number:'1.0-0' }}g P</span>
+              <span class="macro-pill fat">{{ item.fatG | number:'1.0-0' }}g F</span>
+              <span class="macro-pill carb">{{ item.carbsG | number:'1.0-0' }}g C</span>
+            </div>
+            <span class="result-serving">per {{ item.servingSize }}</span>
+          </div>
+
+          @if (expandedItem === item) {
+            <div class="add-form" (click)="$event.stopPropagation()">
+              <div class="form-row">
+                <label class="form-label">Amount</label>
+                <input type="number" class="form-input small" [(ngModel)]="servingQty" min="0.5" step="0.5" />
+                <select class="form-input unit-select" [(ngModel)]="servingUnit">
+                  @for (u of units; track u) {
+                    <option [value]="u">{{ u }}</option>
+                  }
+                </select>
+              </div>
+              @if (servingInfo) {
+                <span class="serving-hint">{{ servingInfo }}</span>
+              }
+              <div class="form-row">
+                <label class="form-label">Meal</label>
+                <select class="form-input" [(ngModel)]="mealType">
+                  <option value="BREAKFAST">Breakfast</option>
+                  <option value="LUNCH">Lunch</option>
+                  <option value="DINNER">Dinner</option>
+                  <option value="SNACK">Snack</option>
+                </select>
+              </div>
+              <div class="preview-macros">
+                <span class="macro-pill cal">{{ previewCalories | number:'1.0-0' }} kcal</span>
+                <span class="macro-pill pro">{{ previewProtein | number:'1.0-0' }}g P</span>
+                <span class="macro-pill fat">{{ previewFat | number:'1.0-0' }}g F</span>
+                <span class="macro-pill carb">{{ previewCarbs | number:'1.0-0' }}g C</span>
+              </div>
+              <div class="form-actions">
+                <app-oracle-button variant="primary" (click)="addToLog()">Add to Log</app-oracle-button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

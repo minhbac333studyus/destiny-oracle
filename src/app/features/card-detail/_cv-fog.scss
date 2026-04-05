@@ -49,7 +49,7 @@
   z-index: 2;
   pointer-events: none;
   overflow: hidden;
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
 }
 
 .fog-wisp {

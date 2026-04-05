@@ -1,0 +1,138 @@
+<div class="custom-food-section">
+  <div class="section-header">
+    <h2 class="section-title">My Foods</h2>
+    <button class="add-btn" (click)="showAddForm ? showAddForm = false : openAddForm()">
+      {{ showAddForm ? 'Cancel' : '+ Add Food' }}
+    </button>
+  </div>
+
+  <!-- Add new food form -->
+  @if (showAddForm) {
+    <ng-container *ngTemplateOutlet="foodForm; context: { mode: 'add' }" />
+  }
+
+  <!-- Food list -->
+  @if (customFoods.length) {
+    <div class="food-list">
+      @for (food of customFoods; track food.id) {
+        <div class="food-card" [class.editing]="editingId === food.id">
+          <!-- Normal view -->
+          <div class="food-row" (click)="startEdit(food)">
+            <div class="food-info">
+              <span class="food-name">{{ food.foodName }}</span>
+              <span class="food-serving">{{ food.servingSize }} {{ food.servingUnit }}</span>
+            </div>
+            <div class="food-macros">
+              <span class="pill cal">{{ food.calories | number:'1.0-0' }}</span>
+              <span class="pill pro">{{ food.proteinG | number:'1.0-0' }}P</span>
+              <span class="pill fat">{{ food.fatG | number:'1.0-0' }}F</span>
+              <span class="pill carb">{{ food.carbsG | number:'1.0-0' }}C</span>
+            </div>
+            <div class="food-actions" (click)="$event.stopPropagation()">
+              <button class="fav-toggle" [class.active]="food.favorite" (click)="toggleFavorite.emit(food.id)" title="Toggle favorite">&#9733;</button>
+              <button class="quick-log-btn" (click)="quickLog(food)">+</button>
+              <button class="del-btn" (click)="deleteFood.emit(food.id)">&times;</button>
+            </div>
+          </div>
+
+          <!-- Inline edit form (expanded) -->
+          @if (editingId === food.id) {
+            <div class="edit-form" (click)="$event.stopPropagation()">
+              <div class="form-field full">
+                <label>Food Name</label>
+                <input type="text" [(ngModel)]="foodName" />
+              </div>
+              <div class="form-row-3">
+                <div class="form-field">
+                  <label>Per Serving</label>
+                  <div class="inline-row">
+                    <input type="number" [(ngModel)]="servingSize" min="1" />
+                    <select [(ngModel)]="servingUnit">
+                      @for (u of units; track u) {
+                        <option [value]="u">{{ u }}</option>
+                      }
+                    </select>
+                  </div>
+                </div>
+                <div class="form-field">
+                  <label>Calories</label>
+                  <input type="number" [(ngModel)]="calories" />
+                </div>
+              </div>
+              <div class="form-row-4">
+                <div class="form-field">
+                  <label>Protein</label>
+                  <input type="number" [(ngModel)]="proteinG" />
+                </div>
+                <div class="form-field">
+                  <label>Fat</label>
+                  <input type="number" [(ngModel)]="fatG" />
+                </div>
+                <div class="form-field">
+                  <label>Carbs</label>
+                  <input type="number" [(ngModel)]="carbsG" />
+                </div>
+                <div class="form-field">
+                  <label>Sugar</label>
+                  <input type="number" [(ngModel)]="sugarG" />
+                </div>
+              </div>
+              <div class="edit-actions">
+                <app-oracle-button variant="ghost" (click)="cancelEdit()">Cancel</app-oracle-button>
+                <app-oracle-button variant="primary" (click)="saveEdit()">Save</app-oracle-button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  } @else if (!showAddForm) {
+    <div class="empty">No custom foods yet. Add your own foods with macros.</div>
+  }
+</div>
+
+<!-- Reusable form template for add -->
+<ng-template #foodForm let-mode="mode">
+  <div class="add-form">
+    <div class="form-field full">
+      <label>Food Name</label>
+      <input type="text" [(ngModel)]="foodName" placeholder="e.g. Homemade Granola" />
+    </div>
+    <div class="form-row-3">
+      <div class="form-field">
+        <label>Per Serving</label>
+        <div class="inline-row">
+          <input type="number" [(ngModel)]="servingSize" min="1" />
+          <select [(ngModel)]="servingUnit">
+            @for (u of units; track u) {
+              <option [value]="u">{{ u }}</option>
+            }
+          </select>
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Calories</label>
+        <input type="number" [(ngModel)]="calories" placeholder="kcal" />
+      </div>
+    </div>
+    <div class="form-row-4">
+      <div class="form-field">
+        <label>Protein (g)</label>
+        <input type="number" [(ngModel)]="proteinG" placeholder="0" />
+      </div>
+      <div class="form-field">
+        <label>Fat (g)</label>
+        <input type="number" [(ngModel)]="fatG" placeholder="0" />
+      </div>
+      <div class="form-field">
+        <label>Carbs (g)</label>
+        <input type="number" [(ngModel)]="carbsG" placeholder="0" />
+      </div>
+      <div class="form-field">
+        <label>Sugar (g)</label>
+        <input type="number" [(ngModel)]="sugarG" placeholder="0" />
+      </div>
+    </div>
+    <app-oracle-button variant="primary" (click)="submitFood()">Save Food</app-oracle-button>
+  </div>
+</ng-template>

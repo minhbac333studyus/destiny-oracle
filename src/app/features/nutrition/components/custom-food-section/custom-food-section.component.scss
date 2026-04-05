@@ -1,0 +1,125 @@
+@use '../../../../../styles/mixins' as m;
+
+.custom-food-section { margin-bottom: var(--space-md); }
+
+.section-header {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
+}
+
+.section-title {
+  font-family: 'Cinzel', serif; font-size: 16px; font-weight: 600;
+  letter-spacing: 1.5px; color: var(--gold); text-transform: uppercase;
+}
+
+.add-btn {
+  background: rgba(94, 207, 255, 0.1); border: 0.5px solid var(--accent);
+  border-radius: 8px; color: var(--accent); font-size: 13px; font-weight: 500;
+  padding: 6px 14px; cursor: pointer; transition: all var(--transition-default);
+  &:hover { background: rgba(94, 207, 255, 0.2); }
+}
+
+.add-form {
+  @include m.glass-panel; border-radius: 12px; padding: 16px;
+  margin-bottom: 12px; display: flex; flex-direction: column; gap: 12px;
+}
+
+.form-field {
+  display: flex; flex-direction: column; gap: 4px;
+  label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  input, select {
+    background: var(--glass); border: 0.5px solid var(--glass-border); border-radius: 8px;
+    color: var(--text); font-size: 14px; padding: 8px 10px;
+    font-family: 'Noto Sans JP', sans-serif; outline: none;
+    transition: border-color var(--transition-default);
+    &:focus { border-color: var(--accent); }
+    &::placeholder { color: var(--hint); }
+  }
+  &.full { width: 100%; }
+}
+
+.inline-row { display: flex; gap: 6px; }
+.inline-row input { flex: 1; }
+.inline-row select { width: 80px; }
+
+.form-row-3 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.form-row-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+
+.food-list { display: flex; flex-direction: column; gap: 6px; }
+
+.food-card {
+  @include m.glass-panel; border-radius: 10px; padding: 0;
+  overflow: hidden;
+  transition: border-color var(--transition-default);
+
+  &.editing { border-color: var(--accent); }
+}
+
+.food-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background var(--transition-default);
+
+  &:hover { background: rgba(94, 207, 255, 0.04); }
+}
+
+.edit-form {
+  padding: 12px 14px;
+  border-top: 0.5px solid var(--glass-border);
+  display: flex; flex-direction: column; gap: 10px;
+}
+
+.edit-actions {
+  display: flex; justify-content: flex-end; gap: 8px;
+}
+
+.food-info { flex: 1; min-width: 0; }
+
+.food-name {
+  display: block; font-size: 14px; font-weight: 500; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.food-serving { font-size: 12px; color: var(--hint); }
+
+.food-macros { display: flex; gap: 4px; flex-shrink: 0; }
+
+.pill {
+  font-size: 11px; padding: 2px 6px; border-radius: 5px; font-weight: 500;
+  min-width: 28px; text-align: center;
+  &.cal  { background: rgba(255, 179, 71, 0.15); color: var(--gold); }
+  &.pro  { background: rgba(94, 207, 255, 0.15); color: var(--accent); }
+  &.fat  { background: rgba(244, 114, 182, 0.15); color: var(--rose); }
+  &.carb { background: rgba(168, 85, 247, 0.15); color: var(--purple); }
+}
+
+.food-actions { display: flex; gap: 4px; flex-shrink: 0; }
+
+.fav-toggle {
+  background: none; border: none; font-size: 18px; cursor: pointer;
+  color: var(--hint); transition: color var(--transition-default);
+  &.active { color: var(--gold); }
+  &:hover { color: var(--gold); }
+}
+
+.quick-log-btn {
+  background: rgba(94, 207, 255, 0.1); border: 0.5px solid var(--accent);
+  border-radius: 6px; color: var(--accent); font-size: 16px; width: 28px; height: 28px;
+  cursor: pointer; transition: all var(--transition-default);
+  &:hover { background: rgba(94, 207, 255, 0.2); }
+}
+
+.del-btn {
+  background: none; border: none; color: var(--muted); font-size: 16px;
+  cursor: pointer; opacity: 0.5; transition: opacity var(--transition-default);
+  &:hover { opacity: 1; color: var(--danger); }
+}
+
+.empty {
+  @include m.glass-panel; border-radius: 12px; padding: 20px;
+  text-align: center; color: var(--muted); font-size: 13px;
+}
+
+@media (max-width: 480px) {
+  .form-row-4 { grid-template-columns: repeat(2, 1fr); }
+}

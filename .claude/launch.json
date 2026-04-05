@@ -1,11 +1,1 @@
-{
-  "version": "0.0.1",
-  "configurations": [
-    {
-      "name": "destiny-oracle",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "start"],
-      "port": 4200
-    }
-  ]
-}
+{"version":"0.0.1","configurations":[{"name":"destiny-oracle-angular","runtimeExecutable":"npm","runtimeArgs":["start","--","--port","4200"],"port":4200}]}

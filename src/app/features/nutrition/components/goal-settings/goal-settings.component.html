@@ -1,0 +1,169 @@
+<div class="overlay" (click)="close.emit()">
+  <div class="settings-panel" (click)="$event.stopPropagation()">
+    <div class="panel-header">
+      <h2 class="panel-title">{{ firstTime ? 'Setup Your Goals' : 'Nutrition Goals' }}</h2>
+      <button class="close-btn" (click)="close.emit()">&times;</button>
+    </div>
+
+    <!-- Quick Setup -->
+    <div class="form-section">
+      <h3 class="form-section-title">Quick Setup (Mifflin-St Jeor)</h3>
+      <p class="section-hint">Enter your stats to calculate TDEE-based macros</p>
+
+      <!-- Gender -->
+      <div class="option-group">
+        <label class="option-label">Gender</label>
+        <div class="option-chips row">
+          @for (opt of genderOptions; track opt.value) {
+            <button
+              class="chip"
+              [class.active]="gender === opt.value"
+              (click)="gender = opt.value; calculate()">
+              <span class="chip-label">{{ opt.label }}</span>
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Age, Height, Weight -->
+      <div class="form-grid three-col">
+        <div class="field">
+          <label>Age</label>
+          <input type="number" [(ngModel)]="age" placeholder="25" min="10" max="100" (ngModelChange)="calculate()" />
+        </div>
+        <div class="field">
+          <label>Height (cm)</label>
+          <input type="number" [(ngModel)]="heightCm" placeholder="175" min="100" max="250" (ngModelChange)="calculate()" />
+        </div>
+        <div class="field">
+          <label>Weight (kg)</label>
+          <input type="number" [(ngModel)]="bodyWeightKg" placeholder="75" step="0.5" (ngModelChange)="calculate()" />
+        </div>
+      </div>
+
+      <!-- Activity Level -->
+      <div class="option-group">
+        <label class="option-label">Activity Level</label>
+        <div class="option-chips">
+          @for (opt of activityOptions; track opt.value) {
+            <button
+              class="chip"
+              [class.active]="activityLevel === opt.value"
+              (click)="activityLevel = opt.value; calculate()">
+              <span class="chip-label">{{ opt.label }}</span>
+              <span class="chip-desc">{{ opt.mult }}</span>
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Fitness Goal -->
+      <div class="option-group">
+        <label class="option-label">Goal</label>
+        <div class="option-chips row">
+          @for (opt of goalOptions; track opt.value) {
+            <button
+              class="chip"
+              [class.active]="fitnessGoal === opt.value"
+              (click)="fitnessGoal = opt.value; calculate()">
+              <span class="chip-label">{{ opt.label }}</span>
+              <span class="chip-desc">{{ opt.desc }}</span>
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- TDEE Breakdown + Macro Result -->
+      @if (canCalculate) {
+        <div class="tdee-breakdown">
+          <div class="tdee-row">
+            <span class="tdee-label">BMR</span>
+            <span class="tdee-val">{{ bmr }} kcal</span>
+          </div>
+          <div class="tdee-row">
+            <span class="tdee-label">TDEE (BMR × {{ activityLevel }})</span>
+            <span class="tdee-val highlight">{{ tdee }} kcal</span>
+          </div>
+        </div>
+
+        <div class="calc-result">
+          <div class="calc-item cal">
+            <span class="calc-val">{{ calorieTarget }}</span>
+            <span class="calc-label">kcal/day</span>
+          </div>
+          <div class="calc-item pro">
+            <span class="calc-val">{{ proteinGrams }}g</span>
+            <span class="calc-label">protein</span>
+          </div>
+          <div class="calc-item fat">
+            <span class="calc-val">{{ fatGrams }}g</span>
+            <span class="calc-label">fat</span>
+          </div>
+          <div class="calc-item carb">
+            <span class="calc-val">{{ carbGrams }}g</span>
+            <span class="calc-label">carbs</span>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Manual Override Toggle -->
+    <button class="toggle-manual" (click)="showManual = !showManual">
+      {{ showManual ? 'Hide' : 'Fine-tune' }} manual targets
+    </button>
+
+    @if (showManual) {
+      <div class="form-section">
+        <h3 class="form-section-title">Manual Override</h3>
+        <p class="section-hint">Adjust macros → calories auto-update. Adjust calories → carbs adjust.</p>
+        <div class="form-grid">
+          <div class="field span-2">
+            <label>Calories (kcal)</label>
+            <input type="number" [(ngModel)]="calorieTarget" (ngModelChange)="onCaloriesChanged()" />
+          </div>
+          <div class="field">
+            <label>Protein (g) <small class="macro-kcal">× 4 = {{ proteinGrams * 4 }} kcal</small></label>
+            <input type="number" [(ngModel)]="proteinGrams" (ngModelChange)="onMacroChanged()" />
+          </div>
+          <div class="field">
+            <label>Fat (g) <small class="macro-kcal">× 9 = {{ fatGrams * 9 }} kcal</small></label>
+            <input type="number" [(ngModel)]="fatGrams" (ngModelChange)="onMacroChanged()" />
+          </div>
+          <div class="field">
+            <label>Carbs (g) <small class="macro-kcal">× 4 = {{ carbGrams * 4 }} kcal</small></label>
+            <input type="number" [(ngModel)]="carbGrams" (ngModelChange)="onMacroChanged()" />
+          </div>
+        </div>
+        <div class="macro-total">
+          Total: {{ proteinGrams * 4 + fatGrams * 9 + carbGrams * 4 }} kcal
+          @if (calorieTarget !== proteinGrams * 4 + fatGrams * 9 + carbGrams * 4) {
+            <span class="macro-diff">({{ calorieTarget - (proteinGrams * 4 + fatGrams * 9 + carbGrams * 4) > 0 ? '+' : '' }}{{ calorieTarget - (proteinGrams * 4 + fatGrams * 9 + carbGrams * 4) }} vs target)</span>
+          }
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="form-section-title">Body Composition Targets</h3>
+        <div class="form-grid">
+          <div class="field">
+            <label>Target Weight (kg)</label>
+            <input type="number" [(ngModel)]="targetWeightKg" step="0.1" placeholder="Optional" />
+          </div>
+          <div class="field">
+            <label>Body Fat %</label>
+            <input type="number" [(ngModel)]="targetBodyFatPct" step="0.1" placeholder="Optional" />
+          </div>
+          <div class="field">
+            <label>Muscle %</label>
+            <input type="number" [(ngModel)]="targetMusclePct" step="0.1" placeholder="Optional" />
+          </div>
+        </div>
+      </div>
+    }
+
+    <div class="panel-actions">
+      <app-oracle-button variant="ghost" (click)="close.emit()">Cancel</app-oracle-button>
+      <app-oracle-button variant="primary" (click)="onSave()">Save Goals</app-oracle-button>
+    </div>
+  </div>
+</div>

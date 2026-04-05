@@ -12,10 +12,24 @@
     }
   </div>
 
-  @if (streakDays > 0) {
-    <div class="nav-streak">
-      <span class="streak-flame">🔥</span>
-      <span>{{ streakDays }} day streak</span>
-    </div>
-  }
+  <div class="nav-right">
+    <button class="sound-toggle" (click)="soundService.toggle()" [attr.aria-label]="soundService.enabled() ? 'Mute sounds' : 'Enable sounds'">
+      {{ soundService.enabled() ? '🔊' : '🔇' }}
+    </button>
+
+    <button class="theme-toggle" (click)="themeService.toggle()" [attr.aria-label]="themeService.theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'">
+      <span class="toggle-track" [ngClass]="{ light: themeService.theme() === 'light' }">
+        <span class="toggle-icon sun">☀️</span>
+        <span class="toggle-thumb"></span>
+        <span class="toggle-icon moon">🌙</span>
+      </span>
+    </button>
+
+    @if (streakDays > 0) {
+      <div class="nav-streak">
+        <span class="streak-flame">🔥</span>
+        <span>{{ streakDays }} day streak</span>
+      </div>
+    }
+  </div>
 </nav>

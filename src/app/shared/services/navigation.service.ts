@@ -34,10 +34,6 @@ export class NavigationService {
     this.#router.navigate(['/profile']);
   }
 
-  toGoals(): void {
-    this.#router.navigate(['/goals']);
-  }
-
   back(): void {
     history.back();
   }

@@ -1,0 +1,134 @@
+<div class="meal-section">
+  <div class="section-header">
+    <h2 class="section-title">My Meals</h2>
+    <button class="add-btn" (click)="showBuilder = !showBuilder; showBuilder && addIngredient()">
+      {{ showBuilder ? 'Cancel' : '+ New Meal' }}
+    </button>
+  </div>
+
+  <!-- Meal Builder -->
+  @if (showBuilder) {
+    <div class="meal-builder">
+      <div class="builder-row">
+        <div class="form-field flex-1">
+          <label>Meal Name</label>
+          <input type="text" [(ngModel)]="mealName" placeholder="e.g. Chicken Stir Fry" />
+        </div>
+        <div class="form-field small">
+          <label>Servings</label>
+          <input type="number" [(ngModel)]="servings" min="1" />
+        </div>
+      </div>
+
+      <div class="ingredients-header">
+        <span class="ing-label">Ingredients</span>
+        <button class="ing-add" (click)="addIngredient()">+ Add</button>
+      </div>
+
+      @for (ing of ingredients; track ing; let i = $index) {
+        <div class="ingredient-card">
+          <!-- Search input -->
+          <div class="ing-search-wrap">
+            <input
+              class="ing-search"
+              type="text"
+              [(ngModel)]="ing.searchQuery"
+              (input)="onIngredientSearch(ing, i)"
+              (focus)="ing.searchQuery.length >= 2 && (ing.showResults = true)"
+              placeholder="Search food..." />
+            <button class="ing-del" (click)="removeIngredient(i)">&times;</button>
+          </div>
+
+          <!-- Search results dropdown -->
+          @if (ing.showResults && ing.searchResults.length) {
+            <div class="ing-results">
+              @for (food of ing.searchResults; track food.description) {
+                <div class="ing-result" (click)="selectFood(ing, food)">
+                  <span class="ir-name">{{ food.description }}</span>
+                  @if (food.brandOwner) {
+                    <span class="ir-brand">{{ food.brandOwner }}</span>
+                  }
+                  <span class="ir-cal">{{ food.calories | number:'1.0-0' }} kcal/100g</span>
+                </div>
+              }
+            </div>
+          }
+          @if (ing.searching) {
+            <div class="ing-searching">Searching...</div>
+          }
+
+          <!-- Qty + unit + macros (shown after food selected) -->
+          @if (ing.foodName) {
+            <div class="ing-detail">
+              <div class="ing-qty-row">
+                <input class="ing-num" type="number" [(ngModel)]="ing.qty" min="1" (ngModelChange)="onQtyChange(ing)" />
+                <select class="ing-unit" [(ngModel)]="ing.unit">
+                  @for (u of units; track u) {
+                    <option [value]="u">{{ u }}</option>
+                  }
+                </select>
+              </div>
+              <div class="ing-macros">
+                <span class="pill cal">{{ ing.calories | number:'1.0-0' }}</span>
+                <span class="pill pro">{{ ing.proteinG | number:'1.0-0' }}P</span>
+                <span class="pill fat">{{ ing.fatG | number:'1.0-0' }}F</span>
+                <span class="pill carb">{{ ing.carbsG | number:'1.0-0' }}C</span>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      @if (ingredients.length && totalCal > 0) {
+        <div class="totals-row">
+          <div class="total-block">
+            <span class="total-label">Total</span>
+            <span class="pill cal">{{ totalCal | number:'1.0-0' }} kcal</span>
+            <span class="pill pro">{{ totalPro | number:'1.0-0' }}g P</span>
+            <span class="pill fat">{{ totalFat | number:'1.0-0' }}g F</span>
+            <span class="pill carb">{{ totalCarb | number:'1.0-0' }}g C</span>
+          </div>
+          @if (servings > 1) {
+            <div class="total-block per-serving">
+              <span class="total-label">Per serving</span>
+              <span class="pill cal">{{ perServingCal | number:'1.0-0' }}</span>
+              <span class="pill pro">{{ perServingPro | number:'1.0-0' }}P</span>
+              <span class="pill fat">{{ perServingFat | number:'1.0-0' }}F</span>
+              <span class="pill carb">{{ perServingCarb | number:'1.0-0' }}C</span>
+            </div>
+          }
+        </div>
+        <app-oracle-button variant="primary" (click)="submitMeal()">
+          {{ editingMealId ? 'Update Meal' : 'Save Meal' }}
+        </app-oracle-button>
+      }
+    </div>
+  }
+
+  <!-- Saved Meals List -->
+  @if (meals.length) {
+    <div class="meal-list">
+      @for (meal of meals; track meal.id) {
+        <div class="meal-card">
+          <div class="meal-info">
+            <span class="meal-name">{{ meal.mealName }}</span>
+            <span class="meal-serving">{{ meal.servings }} serving{{ meal.servings > 1 ? 's' : '' }} · {{ meal.ingredients.length }} ingredients</span>
+          </div>
+          <div class="meal-macros">
+            <span class="pill cal">{{ meal.caloriesPerServing | number:'1.0-0' }}</span>
+            <span class="pill pro">{{ meal.proteinPerServing | number:'1.0-0' }}P</span>
+            <span class="pill fat">{{ meal.fatPerServing | number:'1.0-0' }}F</span>
+            <span class="pill carb">{{ meal.carbsPerServing | number:'1.0-0' }}C</span>
+          </div>
+          <div class="meal-actions">
+            <button class="edit-btn" (click)="startEdit(meal)" title="Edit meal">&#9998;</button>
+            <button class="quick-log-btn" (click)="quickLogMeal(meal)" title="Log 1 serving">+</button>
+            <button class="del-btn" (click)="deleteMeal.emit(meal.id)">&times;</button>
+          </div>
+        </div>
+      }
+    </div>
+  } @else if (!showBuilder) {
+    <div class="empty">No meals saved yet. Build a meal from multiple ingredients.</div>
+  }
+</div>

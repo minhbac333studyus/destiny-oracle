@@ -22,7 +22,7 @@
   height: 6px;
   border-radius: 50%;
   background: var(--border);
-  transition: all 0.3s;
+  transition: all var(--transition-default);
 
   &.active {
     background: var(--gold);
