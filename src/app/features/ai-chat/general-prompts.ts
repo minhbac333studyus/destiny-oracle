@@ -192,9 +192,31 @@ Give me: a complete grocery list with quantities, step-by-step prep order (what 
   },
 ];
 
+// ── Daily Planning ────────────────────────────────────────────────────────
+
+export const DAILY_PLAN_QUICK_ACTIONS: QuickAction[] = [
+  {
+    label: '📅 Daily Plan',
+    prompt: `Generate my backward-planned daily schedule for today.
+
+Work BACKWARD from my terminal goal. Check my schedule template for fixed blocks, meal times, and recurring reminders. Check yesterday's plan to see what I completed or skipped.
+
+RULES:
+- Start from terminal goal, work backward
+- Never overlap fixed blocks (work hours)
+- Buffer 15 min between tasks
+- Shopping trips: parent item + child items for each thing to buy
+- Meal prep: schedule if not done yesterday
+- Hydration reminders every 2h during waking hours
+
+Present the plan as a clean timeline, then create it with a DAILY_PLAN action block.`,
+  },
+];
+
 // ── Combined non-Blueprint actions ─────────────────────────────────────────
 
 export const GENERAL_QUICK_ACTIONS: QuickAction[] = [
+  ...DAILY_PLAN_QUICK_ACTIONS,
   ...WORKOUT_QUICK_ACTIONS,
   ...DIET_QUICK_ACTIONS,
 ];

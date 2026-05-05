@@ -266,6 +266,22 @@
   opacity: .6;
 }
 
+.route-badge {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 2px;
+  font-size: .72rem;
+  color: var(--accent);
+  opacity: .8;
+}
+
+.route-meta {
+  font-size: .62rem;
+  color: var(--muted);
+  opacity: .6;
+}
+
 // ── Action buttons (from >> lines) ───────────────────────────────────────
 
 .action-buttons {
@@ -439,6 +455,35 @@
   transition: opacity 0.15s;
 
   &:hover { opacity: 1; }
+}
+
+// ── Pinned shortcuts ─────────────────────────────────────────────────────
+
+.pinned-shortcuts {
+  display: flex;
+  gap: 6px;
+  max-width: 900px;
+  margin: 0 auto 8px;
+  padding: 0 6px;
+}
+
+.pinned-chip {
+  background: linear-gradient(135deg, rgba(94, 207, 255, 0.1), rgba(167, 139, 250, 0.1));
+  border: 1px solid rgba(94, 207, 255, 0.25);
+  color: var(--accent);
+  padding: 5px 14px;
+  border-radius: 16px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  white-space: nowrap;
+
+  &:hover {
+    background: linear-gradient(135deg, rgba(94, 207, 255, 0.2), rgba(167, 139, 250, 0.2));
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
 }
 
 // ── Input area ───────────────────────────────────────────────────────────

@@ -15,7 +15,7 @@ export interface QuickAction {
 export const BLUEPRINT_QUICK_ACTIONS: QuickAction[] = [
   {
     label: '🥗 BluePrint-Diet',
-    prompt: `Blueprint diet plan for today. Rules: ~2,250 cal/day, 6-hour eating window, last meal 4+ hrs before bed, no coffee/salt/sugar. Meals: Green Giant (morning drink ~150 cal), Super Veggie (lentils+broccoli+cauliflower ~500 cal), Nutty Pudding (nuts+chia+berries+chocolate ~430 cal), rotating third meal (~500 cal). Daily: 30mL olive oil, 15g dark chocolate. Give me today's meals with portions, timing, and prep steps.`,
+    prompt: `Blueprint diet plan for today. Rules: 6-hour eating window, last meal finished 4h30 min+ hrs before bed, no coffee/salt/sugar.   Daily: 30mL olive oil, 15g dark chocolate. Give me today's meals plan fit with my suggestion calories and personal schedule  and result with portions, timing, and prep steps.`,
   },
   {
     label: '💊 BluePrint-Supplements',

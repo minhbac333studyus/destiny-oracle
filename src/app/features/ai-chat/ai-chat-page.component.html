@@ -32,6 +32,12 @@
               <div class="usage-badge">
                 ⚡ {{ msg.usage.totalTokens | number }} tokens · ${{ msg.usage.cost.toFixed(4) }}
                 <span class="usage-detail">{{ msg.usage.inputTokens | number }} in / {{ msg.usage.outputTokens | number }} out · {{ msg.usage.model }}</span>
+                @if (msg.route) {
+                  <span class="route-badge">
+                    🧭 {{ msg.route.layers.join(' · ') }}
+                    <span class="route-meta">{{ msg.route.routerMs }}ms · {{ msg.route.contextTokens }}t ctx</span>
+                  </span>
+                }
               </div>
             }
             @if (msg.actions && msg.actions.length > 0) {
@@ -82,7 +88,25 @@
       </div>
     }
 
+    <!-- Schedule Template Form (opened when no template exists) -->
+    @if (showTemplateForm()) {
+      <app-schedule-template-form
+        (close)="showTemplateForm.set(false)"
+        (saved)="onTemplateSaved()" />
+    }
+
     <div class="input-area">
+      <!-- Pinned shortcuts — always visible -->
+      @if (!streaming()) {
+        <div class="pinned-shortcuts">
+          @for (pin of pinnedActions; track pin.label) {
+            <button class="pinned-chip" (click)="sendPinnedAction(pin.promptLabel)">
+              {{ pin.label }}
+            </button>
+          }
+        </div>
+      }
+
       @if (activePrompts().length > 0) {
         <div class="active-prompts">
           @for (ap of activePrompts(); track ap) {
