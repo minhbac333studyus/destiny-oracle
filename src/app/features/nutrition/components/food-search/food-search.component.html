@@ -20,7 +20,7 @@
             <div class="result-top">
               <div class="result-name">
                 {{ item.description }}
-                <span class="source-badge" [class.off]="item.source === 'OFF'">{{ item.source }}</span>
+                <span class="source-badge" [ngClass]="'source-' + item.source.toLowerCase()">{{ item.source }}</span>
               </div>
               <button class="result-fav" [class.active]="isFav(item)" (click)="$event.stopPropagation(); onToggleFav(item)">&#9733;</button>
             </div>

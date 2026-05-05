@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DecimalPipe } from '@angular/common';
+import { DecimalPipe, NgClass } from '@angular/common';
 import { OracleButtonComponent } from '../../../../shared/components/oracle-button/oracle-button.component';
 import { UsdaFoodItem, MealType } from '../../nutrition.model';
 
 @Component({
   selector: 'app-food-search',
   standalone: true,
-  imports: [FormsModule, DecimalPipe, OracleButtonComponent],
+  imports: [FormsModule, DecimalPipe, NgClass, OracleButtonComponent],
   templateUrl: './food-search.component.html',
   styleUrl: './food-search.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

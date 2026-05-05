@@ -66,7 +66,7 @@ export interface UsdaFoodItem {
   fatG: number | null;
   carbsG: number | null;
   servingSize: string;
-  source: 'USDA' | 'OFF';
+  source: string;
 }
 
 /**

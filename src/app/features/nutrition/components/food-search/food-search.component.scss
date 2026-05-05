@@ -111,7 +111,8 @@
   vertical-align: middle;
   letter-spacing: 0.5px;
 
-  &.off { background: rgba(52, 211, 153, 0.15); color: var(--success); }
+  &.source-off { background: rgba(52, 211, 153, 0.15); color: var(--success); }
+  &.source-my { background: rgba(244, 114, 182, 0.2); color: var(--rose, #f472b6); }
 }
 
 .result-serving {

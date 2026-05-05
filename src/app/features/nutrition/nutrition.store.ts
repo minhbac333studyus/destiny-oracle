@@ -124,7 +124,7 @@ export class NutritionStore {
               fatG: item.fatG,
               carbsG: item.carbsG,
               servingSize: item.servingSize ?? '100 g',
-              source: 'OFF' as const,
+              source: item.source ?? 'OFF',
             }]);
             this.barcodeResult.set(item);
           } else {
