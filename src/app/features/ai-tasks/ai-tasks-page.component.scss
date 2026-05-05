@@ -1,26 +1,103 @@
 .tasks-page { min-height: 100vh; background: var(--bg); }
-.container { max-width: 700px; margin: 0 auto; padding: 16px; }
-.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.page-header h2 { color: var(--text); margin: 0; }
-.tab-toggle { display: flex; gap: 4px; background: var(--bg2); border-radius: 8px; padding: 2px; }
-.tab-toggle button {
-  border: none; background: transparent; color: var(--muted); padding: 6px 14px;
-  border-radius: 6px; cursor: pointer; font-size: 0.85rem;
-  &.active { background: var(--accent-dim); color: var(--accent); }
-}
-.loading, .empty { text-align: center; color: var(--muted); padding: 48px 16px; }
-.empty-icon { font-size: 2.5rem; margin-bottom: 8px; }
-.hint { font-size: 0.85rem; margin-top: 4px; }
-.go-chat { margin-top: 12px; background: var(--accent-dim); border: 1px solid var(--border); color: var(--accent); padding: 8px 20px; border-radius: 20px; cursor: pointer; }
+.container { max-width: 1100px; margin: 0 auto; padding: 16px; }
 
-// ── Generate Plan CTA ─────────────────────────────────────────────────
+// ── Top Grid: Plan + Reminders side by side ──────────────────────────
+.top-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+  align-items: start;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.grid-col { min-width: 0; } // prevent overflow
+
+// ── Reminders Panel ──────────────────────────────────────────────────
+.reminders-panel {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg);
+  overflow: hidden;
+}
+
+.section-title {
+  color: var(--text);
+  font-size: 1rem;
+  margin: 0;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, rgba(255, 179, 71, 0.08), rgba(251, 113, 133, 0.08));
+  border-bottom: 1px solid var(--border);
+}
+
+.empty-mini {
+  padding: 24px 16px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.reminder-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--border);
+}
+
+.reminder-card {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  background: var(--bg); padding: 10px 14px;
+  transition: all 0.5s ease;
+  overflow: hidden;
+  max-height: 120px;
+
+  &:last-child { border-radius: 0 0 14px 14px; }
+  &.past { opacity: 0.5; }
+  &.completed {
+    .reminder-title { text-decoration: line-through; color: var(--muted); }
+    .reminder-time { color: var(--muted); text-decoration: line-through; }
+    opacity: 0.5;
+  }
+  &.completing {
+    opacity: 0;
+    transform: translateX(100%);
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-color: transparent;
+  }
+}
+
+.reminder-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.reminder-time { font-size: 0.78rem; color: var(--accent); font-weight: 600; font-family: monospace; }
+.reminder-title { font-size: 0.9rem; color: var(--text); }
+.reminder-body { font-size: 0.78rem; color: var(--muted); }
+.reminder-repeat { font-size: 0.7rem; color: var(--gold); }
+
+.reminder-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.reminder-btn {
+  width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border);
+  background: transparent; cursor: pointer; font-size: 0.8rem; display: flex;
+  align-items: center; justify-content: center; transition: all 0.15s;
+}
+.done-btn { color: var(--success); &:hover { background: rgba(34,197,94,.12); border-color: var(--success); } }
+.del-btn { color: var(--danger); opacity: 0.5; &:hover { opacity: 1; background: rgba(251,113,133,.12); border-color: var(--danger); } }
+
+// ── Generate Plan CTA ────────────────────────────────────────────────
 .generate-plan-cta {
   text-align: center;
   padding: 20px 16px;
-  margin-bottom: 20px;
   border: 1px dashed var(--border);
   border-radius: 14px;
   background: linear-gradient(135deg, rgba(94, 207, 255, 0.04), rgba(167, 139, 250, 0.04));
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .generate-btn {
@@ -40,18 +117,6 @@
   &:hover:not(:disabled) { opacity: 0.9; transform: scale(1.02); }
   &:disabled { opacity: 0.6; cursor: not-allowed; }
 }
-
-.spinner {
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-  border: 2px solid rgba(255,255,255,0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
 
 .cta-buttons {
   display: flex;
@@ -79,6 +144,20 @@
   margin-top: 8px;
 }
 
+// ── Tasks Section (full width) ───────────────────────────────────────
+.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.page-header h2 { color: var(--text); margin: 0; }
+.tab-toggle { display: flex; gap: 4px; background: var(--bg2); border-radius: 8px; padding: 2px; }
+.tab-toggle button {
+  border: none; background: transparent; color: var(--muted); padding: 6px 14px;
+  border-radius: 6px; cursor: pointer; font-size: 0.85rem;
+  &.active { background: var(--accent-dim); color: var(--accent); }
+}
+.loading, .empty { text-align: center; color: var(--muted); padding: 48px 16px; }
+.empty-icon { font-size: 2.5rem; margin-bottom: 8px; }
+.hint { font-size: 0.85rem; margin-top: 4px; }
+.go-chat { margin-top: 12px; background: var(--accent-dim); border: 1px solid var(--border); color: var(--accent); padding: 8px 20px; border-radius: 20px; cursor: pointer; }
+
 .task-list { display: flex; flex-direction: column; gap: 16px; }
 .task-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
 .task-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
@@ -101,45 +180,3 @@
 .check { font-size: 1.1rem; }
 .step-title { flex: 1; font-size: 0.9rem; }
 .xp-badge { font-size: 0.7rem; color: var(--gold); background: var(--gold-dim); padding: 2px 8px; border-radius: 10px; }
-
-// ── Reminders ──────────────────────────────────────────────────────────
-.reminders-section { margin-top: 32px; }
-.section-title { color: var(--text); font-size: 1rem; margin: 0 0 12px; }
-.reminder-list { display: flex; flex-direction: column; gap: 8px; }
-
-.reminder-card {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px;
-  transition: all 0.5s ease;
-  overflow: hidden;
-  max-height: 120px;
-  &.past { opacity: 0.5; }
-  &.completed {
-    .reminder-title { text-decoration: line-through; color: var(--muted); }
-    .reminder-time { color: var(--muted); text-decoration: line-through; }
-    opacity: 0.5;
-  }
-  &.completing {
-    opacity: 0;
-    transform: translateX(100%);
-    max-height: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    margin-bottom: -8px;
-    border-color: transparent;
-  }
-}
-.reminder-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.reminder-time { font-size: 0.78rem; color: var(--accent); font-weight: 600; font-family: monospace; }
-.reminder-title { font-size: 0.9rem; color: var(--text); }
-.reminder-body { font-size: 0.78rem; color: var(--muted); }
-.reminder-repeat { font-size: 0.7rem; color: var(--gold); }
-
-.reminder-actions { display: flex; gap: 6px; flex-shrink: 0; }
-.reminder-btn {
-  width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border);
-  background: transparent; cursor: pointer; font-size: 0.8rem; display: flex;
-  align-items: center; justify-content: center; transition: all 0.15s;
-}
-.done-btn { color: var(--success); &:hover { background: rgba(34,197,94,.12); border-color: var(--success); } }
-.del-btn { color: var(--danger); opacity: 0.5; &:hover { opacity: 1; background: rgba(251,113,133,.12); border-color: var(--danger); } }

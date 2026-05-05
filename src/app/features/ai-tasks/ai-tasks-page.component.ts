@@ -26,7 +26,6 @@ export class AiTasksPageComponent implements OnInit {
 
   // Daily Plan
   todayPlan = signal<any | null>(null);
-  generatingPlan = signal(false);
   showTemplateForm = signal(false);
 
   ngOnInit() {
@@ -45,19 +44,22 @@ export class AiTasksPageComponent implements OnInit {
   }
 
   generatePlan() {
-    this.generatingPlan.set(true);
-    this.api.generateDailyPlan().subscribe({
-      next: (plan) => {
-        this.sound.play('confirm');
-        this.todayPlan.set(plan);
-        this.generatingPlan.set(false);
-      },
-      error: () => this.generatingPlan.set(false),
-    });
+    this.router.navigate(['/chat'], { queryParams: { action: 'daily-plan' } });
   }
 
   onPlanUpdated() {
     this.loadTodayPlan();
+  }
+
+  onResetPlan() {
+    const plan = this.todayPlan();
+    if (!plan?.id) return;
+    this.api.deleteDailyPlan(plan.id).subscribe({
+      next: () => {
+        this.todayPlan.set(null);
+        this.sound.play('confirm');
+      },
+    });
   }
 
   // ── Tasks ───────────────────────────────────────────────────

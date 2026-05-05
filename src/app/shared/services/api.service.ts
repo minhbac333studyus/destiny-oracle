@@ -311,6 +311,10 @@ export class ApiService {
     return this.http.post<any>(`${this.baseUrl}/api/v1/daily-plans/${planId}/items`, item, { headers: this.headers() });
   }
 
+  deleteDailyPlan(planId: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/api/v1/daily-plans/${planId}`, { headers: this.headers() });
+  }
+
   replanDaily(planId: string, reason?: string): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/api/v1/daily-plans/${planId}/replan`, { reason }, { headers: this.headers() });
   }

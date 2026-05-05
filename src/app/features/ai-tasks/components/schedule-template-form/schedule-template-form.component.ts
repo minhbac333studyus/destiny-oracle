@@ -3,8 +3,8 @@ import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../../shared/services/api.service';
 import { SoundService } from '../../../../shared/services/sound.service';
 
-interface FixedBlock { name: string; start: string; end: string; }
-interface MealTime { name: string; time: string; }
+interface FixedBlock { name: string; start: string; end: string; custom?: boolean; }
+interface MealTime { name: string; time: string; custom?: boolean; }
 interface RecurringReminder { name: string; intervalHours: number; }
 
 @Component({
@@ -49,11 +49,27 @@ interface RecurringReminder { name: string; intervalHours: number; }
               <label>Fixed Blocks</label>
               <button class="add-btn" (click)="addFixedBlock()">+</button>
             </div>
+            <p class="section-hint">Time ranges AI cannot schedule over</p>
             @for (block of fixedBlocks; track $index) {
               <div class="row-3">
-                <input type="text" [(ngModel)]="block.name" placeholder="Work" />
-                <input type="time" [(ngModel)]="block.start" />
-                <input type="time" [(ngModel)]="block.end" />
+                @if (block.custom) {
+                  <input type="text" [(ngModel)]="block.name" placeholder="Custom name" />
+                } @else {
+                  <select [(ngModel)]="block.name" (ngModelChange)="onBlockTypeChange(block, $event)">
+                    @for (opt of blockPresets; track opt) {
+                      <option [value]="opt">{{ opt }}</option>
+                    }
+                    <option value="__custom__">Custom...</option>
+                  </select>
+                }
+                <div class="time-field">
+                  <span class="time-label">from</span>
+                  <input type="time" [(ngModel)]="block.start" />
+                </div>
+                <div class="time-field">
+                  <span class="time-label">to</span>
+                  <input type="time" [(ngModel)]="block.end" />
+                </div>
                 <button class="remove-btn" (click)="fixedBlocks.splice($index, 1)">✕</button>
               </div>
             }
@@ -67,7 +83,16 @@ interface RecurringReminder { name: string; intervalHours: number; }
             </div>
             @for (meal of mealTimes; track $index) {
               <div class="row-2">
-                <input type="text" [(ngModel)]="meal.name" placeholder="Lunch" />
+                @if (meal.custom) {
+                  <input type="text" [(ngModel)]="meal.name" placeholder="Custom meal" />
+                } @else {
+                  <select [(ngModel)]="meal.name" (ngModelChange)="onMealTypeChange(meal, $event)">
+                    @for (opt of mealPresets; track opt) {
+                      <option [value]="opt">{{ opt }}</option>
+                    }
+                    <option value="__custom__">Custom...</option>
+                  </select>
+                }
                 <input type="time" [(ngModel)]="meal.time" />
                 <button class="remove-btn" (click)="mealTimes.splice($index, 1)">✕</button>
               </div>
@@ -174,6 +199,13 @@ interface RecurringReminder { name: string; intervalHours: number; }
       &:hover { background: var(--accent); color: white; }
     }
 
+    .section-hint {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin: -4px 0 4px;
+      opacity: 0.7;
+    }
+
     .row-2, .row-3 {
       display: flex; gap: 8px; align-items: center;
 
@@ -183,6 +215,13 @@ interface RecurringReminder { name: string; intervalHours: number; }
         padding: 6px 10px; color: var(--text); font-size: 0.85rem;
         &:focus { outline: none; border-color: var(--accent); }
       }
+    }
+
+    .time-field {
+      display: flex; align-items: center; gap: 4px;
+
+      .time-label { font-size: 0.72rem; color: var(--muted); white-space: nowrap; }
+      input { width: 100%; }
     }
 
     .interval-input {
@@ -236,41 +275,104 @@ export class ScheduleTemplateFormComponent implements OnInit {
   }
 
   loadExisting() {
+    console.log('[ScheduleTemplate] Loading templates for dayType:', this.dayType);
     this.api.getScheduleTemplates().subscribe({
       next: (templates) => {
+        console.log('[ScheduleTemplate] API returned:', templates);
         const match = templates?.find((t: any) => t.dayType === this.dayType);
+        console.log('[ScheduleTemplate] Matched template:', match);
         if (match) {
           this.terminalGoal = match.terminalGoal || 'Sleep';
-          this.terminalGoalTime = match.terminalGoalTime || '21:00';
-          this.fixedBlocks = match.fixedBlocks ? JSON.parse(match.fixedBlocks) : [];
-          this.mealTimes = match.mealTimes ? JSON.parse(match.mealTimes) : [];
-          this.recurringReminders = match.recurringReminders ? JSON.parse(match.recurringReminders) : [];
+          this.terminalGoalTime = this.normalizeTime(match.terminalGoalTime) || '21:00';
+          this.fixedBlocks = this.parseJsonSafe(match.fixedBlocks, []).map((b: FixedBlock) => ({
+            ...b,
+            custom: !this.blockPresets.includes(b.name),
+          }));
+          this.mealTimes = this.parseJsonSafe(match.mealTimes, []).map((m: MealTime) => ({
+            ...m,
+            custom: !this.mealPresets.includes(m.name),
+          }));
+          this.recurringReminders = this.parseJsonSafe(match.recurringReminders, []);
+          console.log('[ScheduleTemplate] Loaded:', {
+            terminalGoal: this.terminalGoal,
+            terminalGoalTime: this.terminalGoalTime,
+            fixedBlocks: this.fixedBlocks,
+            mealTimes: this.mealTimes,
+            recurringReminders: this.recurringReminders,
+          });
+        } else {
+          console.log('[ScheduleTemplate] No match found — showing defaults');
         }
       },
+      error: (err) => console.error('[ScheduleTemplate] Load failed:', err),
     });
   }
 
-  addFixedBlock() { this.fixedBlocks.push({ name: '', start: '09:00', end: '17:00' }); }
-  addMealTime() { this.mealTimes.push({ name: '', time: '12:00' }); }
+  /** Parse JSON string or return as-is if already an object. */
+  private parseJsonSafe(value: any, fallback: any): any {
+    if (!value) return fallback;
+    if (typeof value === 'string') {
+      try { return JSON.parse(value); } catch { return fallback; }
+    }
+    return value; // already parsed object/array
+  }
+
+  /** Normalize LocalTime: "21:00:00" → "21:00", [21,0] → "21:00" */
+  private normalizeTime(value: any): string {
+    if (!value) return '';
+    if (Array.isArray(value)) {
+      return `${String(value[0]).padStart(2, '0')}:${String(value[1] || 0).padStart(2, '0')}`;
+    }
+    if (typeof value === 'string') {
+      return value.replace(/^(\d{2}:\d{2})(:\d{2})?$/, '$1');
+    }
+    return '';
+  }
+
+  blockPresets = ['Work', 'School', 'Meeting', 'Family', 'Nap'];
+  mealPresets = ['Breakfast', 'Lunch', 'Dinner', 'Snack', 'Pre-workout', 'Post-workout'];
+
+  addFixedBlock() { this.fixedBlocks.push({ name: 'Work', start: '09:00', end: '17:00' }); }
+  addMealTime() { this.mealTimes.push({ name: 'Lunch', time: '12:00' }); }
   addReminder() { this.recurringReminders.push({ name: '', intervalHours: 2 }); }
+
+  onBlockTypeChange(block: FixedBlock, value: string) {
+    if (value === '__custom__') {
+      block.name = '';
+      block.custom = true;
+    }
+  }
+
+  onMealTypeChange(meal: MealTime, value: string) {
+    if (value === '__custom__') {
+      meal.name = '';
+      meal.custom = true;
+    }
+  }
 
   save() {
     this.saving.set(true);
-    this.api.saveScheduleTemplate({
+    const payload = {
       dayType: this.dayType,
       terminalGoal: this.terminalGoal,
-      terminalGoalTime: this.terminalGoalTime,
+      terminalGoalTime: this.terminalGoalTime, // "HH:mm" → backend parses as LocalTime
       fixedBlocks: JSON.stringify(this.fixedBlocks.filter(b => b.name.trim())),
       mealTimes: JSON.stringify(this.mealTimes.filter(m => m.name.trim())),
       recurringReminders: JSON.stringify(this.recurringReminders.filter(r => r.name.trim())),
-    }).subscribe({
-      next: () => {
+    };
+    console.log('[ScheduleTemplate] Saving:', payload);
+    this.api.saveScheduleTemplate(payload).subscribe({
+      next: (res) => {
+        console.log('[ScheduleTemplate] Saved OK:', res);
         this.sound.play('confirm');
         this.saving.set(false);
         this.saved.emit();
         this.close.emit();
       },
-      error: () => this.saving.set(false),
+      error: (err) => {
+        console.error('[ScheduleTemplate] Save failed:', err);
+        this.saving.set(false);
+      },
     });
   }
 }

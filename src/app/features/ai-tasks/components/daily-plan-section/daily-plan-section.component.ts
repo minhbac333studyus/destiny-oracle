@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { PlanItemTreeComponent, PlanItemEvent, PlanItemNode } from '../plan-item-tree/plan-item-tree.component';
 import { ApiService } from '../../../../shared/services/api.service';
@@ -28,6 +28,8 @@ import { SoundService } from '../../../../shared/services/sound.service';
           <div class="progress-bar-mini">
             <div class="progress-fill-mini" [style.width.%]="progressPercent()"></div>
           </div>
+          <button class="header-icon-btn" (click)="openSettings.emit()" title="Schedule Settings">⚙️</button>
+          <button class="header-icon-btn reset" (click)="resetPlan.emit()" title="Reset Plan">🗑</button>
         </div>
       </div>
 
@@ -114,6 +116,23 @@ import { SoundService } from '../../../../shared/services/sound.service';
       transition: width 0.3s ease;
     }
 
+    .header-icon-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+
+      &:hover { background: var(--bg2); border-color: var(--accent); }
+      &.reset:hover { border-color: var(--danger); }
+    }
+
     .plan-timeline {
       padding: 8px 12px;
       display: flex;
@@ -132,6 +151,8 @@ import { SoundService } from '../../../../shared/services/sound.service';
 export class DailyPlanSectionComponent {
   @Input({ required: true }) plan!: any;
   @Output() planUpdated = new EventEmitter<void>();
+  @Output() resetPlan = new EventEmitter<void>();
+  @Output() openSettings = new EventEmitter<void>();
 
   private readonly api = inject(ApiService);
   private readonly sound = inject(SoundService);

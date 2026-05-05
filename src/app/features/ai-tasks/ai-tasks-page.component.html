@@ -3,24 +3,62 @@
 
   <div class="container">
 
-    <!-- ═══ Daily Plan Section ═══ -->
-    @if (todayPlan()) {
-      <app-daily-plan-section [plan]="todayPlan()" (planUpdated)="onPlanUpdated()" />
-    } @else {
-      <div class="generate-plan-cta">
-        <div class="cta-buttons">
-          <button class="generate-btn" (click)="generatePlan()" [disabled]="generatingPlan()">
-            @if (generatingPlan()) {
-              <span class="spinner"></span> Generating...
-            } @else {
-              🗓️ Generate Today's Plan
-            }
-          </button>
-          <button class="settings-btn" (click)="showTemplateForm.set(true)" title="Schedule Settings">⚙️</button>
-        </div>
-        <p class="cta-hint">AI will create a backward plan from your terminal goal</p>
+    <!-- ═══ Top Row: Daily Plan + Reminders (2 columns) ═══ -->
+    <div class="top-grid">
+
+      <!-- LEFT: Daily Plan -->
+      <div class="grid-col plan-col">
+        @if (todayPlan()) {
+          <app-daily-plan-section
+            [plan]="todayPlan()"
+            (planUpdated)="onPlanUpdated()"
+            (resetPlan)="onResetPlan()"
+            (openSettings)="showTemplateForm.set(true)" />
+        } @else {
+          <div class="generate-plan-cta">
+            <div class="cta-buttons">
+              <button class="generate-btn" (click)="generatePlan()">
+                🗓️ Generate Today's Plan
+              </button>
+              <button class="settings-btn" (click)="showTemplateForm.set(true)" title="Schedule Settings">⚙️</button>
+            </div>
+            <p class="cta-hint">Opens Chat — AI will plan your day naturally</p>
+          </div>
+        }
       </div>
-    }
+
+      <!-- RIGHT: Reminders -->
+      <div class="grid-col reminder-col">
+        <div class="reminders-panel">
+          <h3 class="section-title">⏰ Reminders</h3>
+          @if (reminders().length === 0) {
+            <div class="empty-mini">
+              <p>No reminders</p>
+            </div>
+          }
+          <div class="reminder-list">
+            @for (r of reminders(); track r.id) {
+              <div class="reminder-card" [class.past]="isPast(r.scheduledAt)" [class.completed]="r.completed" [class.completing]="dismissingId() === r.id">
+                <div class="reminder-info">
+                  <span class="reminder-time">{{ formatTime(r.scheduledAt) }}</span>
+                  <span class="reminder-title">{{ r.title }}</span>
+                  @if (r.body) {
+                    <span class="reminder-body">{{ r.body }}</span>
+                  }
+                  @if (r.repeatType && r.repeatType !== 'NONE') {
+                    <span class="reminder-repeat">🔁 {{ r.repeatType }}</span>
+                  }
+                </div>
+                <div class="reminder-actions">
+                  <button class="reminder-btn done-btn" (click)="completeReminder(r.id)" title="Complete">✓</button>
+                  <button class="reminder-btn del-btn" (click)="deleteReminder(r.id)" title="Delete">✕</button>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Schedule Template Modal -->
     @if (showTemplateForm()) {
@@ -29,7 +67,7 @@
         (saved)="showTemplateForm.set(false)" />
     }
 
-    <!-- ═══ Tasks Section ═══ -->
+    <!-- ═══ Tasks Section (full width below) ═══ -->
     <div class="page-header">
       <h2>Tasks</h2>
       <div class="tab-toggle">
@@ -81,32 +119,5 @@
         </div>
       }
     </div>
-
-    <!-- ═══ Reminders Section ═══ -->
-    @if (reminders().length > 0) {
-      <div class="reminders-section">
-        <h3 class="section-title">⏰ Reminders</h3>
-        <div class="reminder-list">
-          @for (r of reminders(); track r.id) {
-            <div class="reminder-card" [class.past]="isPast(r.scheduledAt)" [class.completed]="r.completed" [class.completing]="dismissingId() === r.id">
-              <div class="reminder-info">
-                <span class="reminder-time">{{ formatTime(r.scheduledAt) }}</span>
-                <span class="reminder-title">{{ r.title }}</span>
-                @if (r.body) {
-                  <span class="reminder-body">{{ r.body }}</span>
-                }
-                @if (r.repeatType && r.repeatType !== 'NONE') {
-                  <span class="reminder-repeat">🔁 {{ r.repeatType }}</span>
-                }
-              </div>
-              <div class="reminder-actions">
-                <button class="reminder-btn done-btn" (click)="completeReminder(r.id)" title="Complete">✓</button>
-                <button class="reminder-btn del-btn" (click)="deleteReminder(r.id)" title="Delete">✕</button>
-              </div>
-            </div>
-          }
-        </div>
-      </div>
-    }
   </div>
 </div>
